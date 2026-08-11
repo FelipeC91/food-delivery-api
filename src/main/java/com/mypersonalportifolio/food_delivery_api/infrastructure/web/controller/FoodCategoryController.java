@@ -2,6 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.FoodCategory;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.FoodCategoryRepository;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -38,8 +39,12 @@ public class FoodCategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public FoodCategory createResource(@RequestBody FoodCategory foodCategory) {
-        return foodCategoryRepository.save(foodCategory);
+        foodCategoryRepository.findByName(foodCategory.getName())
+                .orElseThrow(() -> new EntityExistsException(
+                        String.format("FoodCategory with name %s already exists", foodCategory.getName())
+                ));
 
+                return foodCategoryRepository.save(foodCategory);
     }
 
     @PutMapping("/{foodCategoryId}")
