@@ -1,0 +1,10 @@
+services:
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_DATABASE=food-delivery-api-db'
+      - 'MYSQL_ROOT_PASSWORD=verysecret'
+    ports:
+      - '3306:3306'
+    volumes:
+      - '/home/felipe-campos/Documents/dev/data:/var/lib/mysql'
