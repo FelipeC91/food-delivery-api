@@ -1,6 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntitySequence;
+import com.mypersonalportifolio.food_delivery_api.domain.model.State;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -17,10 +18,10 @@ import lombok.Setter;
 public class City extends DomainEntitySequence {
 
     @Column(nullable = false)
-    private String nome;
+    private String name;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "state_id", nullable = false)
     @Setter
     private State estado;
 }
