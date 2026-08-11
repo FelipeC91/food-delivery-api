@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class State extends DomainEntitySequence {
 
     @Column(nullable = false)
-    private String nome;
+    private String name;
 }
