@@ -44,7 +44,7 @@ public class RestaurantController {
     }
 
     @PostMapping
-    private ResponseEntity<?> addResource(@RequestBody Restaurant restaurant) {
+    private ResponseEntity<?> createResource(@RequestBody Restaurant restaurant) {
         try {
             var savedrestaurant = restaurantRepository.save(restaurant);
 
