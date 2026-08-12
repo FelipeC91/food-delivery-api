@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/food-category")
+@RequestMapping("/food-categories")
 public class FoodCategoryController {
 
     @Autowired
@@ -38,13 +38,15 @@ public class FoodCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FoodCategory createResource(@RequestBody FoodCategory foodCategory) {
-        foodCategoryRepository.findByName(foodCategory.getName())
-                .orElseThrow(() -> new EntityExistsException(
-                        String.format("FoodCategory with name %s already exists", foodCategory.getName())
-                ));
+    public ResponseEntity createResource(@RequestBody FoodCategory foodCategory) {
+        var foodCategoryOptional = foodCategoryRepository.findByName(foodCategory.getName());
 
-                return foodCategoryRepository.save(foodCategory);
+        if (foodCategoryOptional.isEmpty()) {
+            var newFoodCategory = foodCategoryRepository.save(foodCategory);
+
+            return ResponseEntity.ok(newFoodCategory);
+        } else
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Categoria já catalogada");
     }
 
     @PutMapping("/{foodCategoryId}")
