@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, UUID>,
-                                                //RestaurantRepositoryCustomQueries,
+                                                CustomRestaurantRepository,
                                                 JpaSpecificationExecutor<Restaurant> {
     //	@Query("from Restaurant where name like %:name% and foodCategory.id = :id")
     List<Restaurant> findByName(String nome, @Param("id") UUID foodCategory);

@@ -11,12 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,7 +61,7 @@ class CustomRestaurantRepositoryImplTest {
                 null
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(1, result.size());
         assertEquals("McDonald's", result.get(0).getName());
@@ -78,7 +76,7 @@ class CustomRestaurantRepositoryImplTest {
                 null
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(2, result.size());
         assertTrue(result.stream().allMatch(r -> r.getShippingCost().compareTo(new BigDecimal("5.00")) >= 0));
@@ -93,7 +91,7 @@ class CustomRestaurantRepositoryImplTest {
                 new BigDecimal("5.00")
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(2, result.size());
         assertTrue(result.stream().allMatch(r -> r.getShippingCost().compareTo(new BigDecimal("5.00")) <= 0));
@@ -108,7 +106,7 @@ class CustomRestaurantRepositoryImplTest {
                 new BigDecimal("6.00")
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(2, result.size());
         assertTrue(result.stream().allMatch(r ->
@@ -126,7 +124,7 @@ class CustomRestaurantRepositoryImplTest {
                 null
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(1, result.size());
         assertEquals("Pizza Hut", result.get(0).getName());
@@ -142,7 +140,7 @@ class CustomRestaurantRepositoryImplTest {
                 new BigDecimal("4.00")
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(1, result.size());
         assertEquals("Subway", result.get(0).getName());
@@ -157,7 +155,7 @@ class CustomRestaurantRepositoryImplTest {
                 new BigDecimal("6.00")
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(1, result.size());
         assertEquals("McDonald's", result.get(0).getName());
@@ -172,7 +170,7 @@ class CustomRestaurantRepositoryImplTest {
                 null
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(3, result.size());
     }
@@ -186,7 +184,7 @@ class CustomRestaurantRepositoryImplTest {
                 null
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(3, result.size());
     }
@@ -200,7 +198,7 @@ class CustomRestaurantRepositoryImplTest {
                 null
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertTrue(result.isEmpty());
     }
@@ -214,7 +212,7 @@ class CustomRestaurantRepositoryImplTest {
                 new BigDecimal("200.00")
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertTrue(result.isEmpty());
     }
@@ -228,7 +226,7 @@ class CustomRestaurantRepositoryImplTest {
                 null
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(1, result.size());
         assertEquals("McDonald's", result.get(0).getName());
@@ -243,7 +241,7 @@ class CustomRestaurantRepositoryImplTest {
                 null
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(3, result.size());
         assertTrue(result.stream().anyMatch(r -> r.getName().equals("Subway")));
@@ -258,7 +256,7 @@ class CustomRestaurantRepositoryImplTest {
                 new BigDecimal("7.99")
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(3, result.size());
         assertTrue(result.stream().anyMatch(r -> r.getName().equals("Pizza Hut")));
@@ -273,8 +271,8 @@ class CustomRestaurantRepositoryImplTest {
                 null
         );
 
-        var result1 = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
-        var result2 = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result1 = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
+        var result2 = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(result1.size(), result2.size());
         assertNotNull(result1);
@@ -290,7 +288,7 @@ class CustomRestaurantRepositoryImplTest {
                 null
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(3, result.size());
     }
@@ -304,7 +302,7 @@ class CustomRestaurantRepositoryImplTest {
                 null
         );
 
-        var result = customRestaurantRepository.customFindByNameLikeAndShippingCostBetween(filterDTO);
+        var result = customRestaurantRepository.customQueryByNameLikeAndShippingCostBetween(filterDTO);
 
         assertEquals(3, result.size());
         assertTrue(result.stream().anyMatch(r -> r.getName().equals("McDonald's")));

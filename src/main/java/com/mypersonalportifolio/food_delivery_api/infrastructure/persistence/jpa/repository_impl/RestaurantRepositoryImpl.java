@@ -1,13 +1,18 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.persistence.jpa.repository_impl;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
+
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant_;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.CustomRestaurantRepository;
+import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.persistence.jpa.query_specification.RestaurantQueryPredicatesFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -15,13 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class CustomRestaurantRepositoryImpl implements CustomRestaurantRepository {
+public class RestaurantRepositoryImpl implements CustomRestaurantRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired @Lazy
+    private RestaurantRepository restaurantRepository;
+
     @Override
-    public List<Restaurant> customFindByNameLikeAndShippingCostBetween(ByNameLikeAndShippingCostBetweenFilterDTO filterDTO){
+    public List<Restaurant> custom11(ByNameLikeAndShippingCostBetweenFilterDTO filterDTO){
 
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(Restaurant.class);
@@ -35,6 +43,7 @@ public class CustomRestaurantRepositoryImpl implements CustomRestaurantRepositor
         return entityManager.createQuery(criteriaQuery)
                                 .getResultList();
     }
+
 
     private Predicate[] setUpCriteriaPredicates(CriteriaBuilder criteriaBuilder, Root<Restaurant> fromRestaurant, ByNameLikeAndShippingCostBetweenFilterDTO filterDTO) {
         var predicates = new ArrayList<Predicate>();
@@ -52,16 +61,11 @@ public class CustomRestaurantRepositoryImpl implements CustomRestaurantRepositor
 
         return predicates.toArray(new Predicate[predicates.size()]);
     }
-//
-//
-//    @Autowired @Lazy
-//    private RestaurantRepository restaurantRepository;
-//
-//
-//    @Override
-//    public List<Restaurant> findInFreeShipping(String name) {
-//        return restaurantRepository.findAll(RestaurantQuerySpecifications.inFreeShippingCost()
-//                                                                        .and(RestaurantQuerySpecifications.withSimilarName(name))
-//                                            );
-//    }
+
+    @Override
+    public List<Restaurant> custom2(String name) {
+        return restaurantRepository.findAll( RestaurantQueryPredicatesFactory.withSimilarName(name)
+                .and(RestaurantQueryPredicatesFactory.inFreeShippingCost())
+        );
+}
 }
