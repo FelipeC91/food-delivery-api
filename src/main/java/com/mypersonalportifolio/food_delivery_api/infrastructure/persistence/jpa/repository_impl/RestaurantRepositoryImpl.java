@@ -29,7 +29,7 @@ public class RestaurantRepositoryImpl implements CustomRestaurantRepository {
     private RestaurantRepository restaurantRepository;
 
     @Override
-    public List<Restaurant> custom11(ByNameLikeAndShippingCostBetweenFilterDTO filterDTO){
+    public List<Restaurant> customQueryByNameLikeAndShippingCostBetween(ByNameLikeAndShippingCostBetweenFilterDTO filterDTO){
 
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(Restaurant.class);
@@ -63,7 +63,7 @@ public class RestaurantRepositoryImpl implements CustomRestaurantRepository {
     }
 
     @Override
-    public List<Restaurant> custom2(String name) {
+    public List<Restaurant> customQueryByFreeShippingAndNameLike(String name) {
         return restaurantRepository.findAll( RestaurantQueryPredicatesFactory.withSimilarName(name)
                 .and(RestaurantQueryPredicatesFactory.inFreeShippingCost())
         );

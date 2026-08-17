@@ -11,7 +11,7 @@ public interface CustomRestaurantRepository {
                                                            BigDecimal minimumShippingCost,
                                                             BigDecimal maximumShippingCost) {}
 
-    List<Restaurant> custom11(ByNameLikeAndShippingCostBetweenFilterDTO filterDTO);
+    List<Restaurant> customQueryByNameLikeAndShippingCostBetween(ByNameLikeAndShippingCostBetweenFilterDTO filterDTO);
 
-    List<Restaurant> custom2(String name);
+    List<Restaurant> customQueryByFreeShippingAndNameLike(String name);
 }
