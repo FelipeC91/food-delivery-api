@@ -25,7 +25,7 @@ public class FoodCategory  extends DomainEntityUUID {
     private String name;
 
 //    @JsonIgnore
-//    @OneToMany(mappedBy = "food_category")
+//    @OneToMany(mappedBy = "foodCategory")
 //    private List<Restaurant> restaurants = new ArrayList<>();
 
 }
