@@ -1,9 +1,12 @@
 package com.mypersonalportifolio.food_delivery_api.domain.repository;
 
+
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
+import com.mypersonalportifolio.food_delivery_api.domain.model.dto.RestaurantBasicInfoDTO;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,10 +17,12 @@ import java.util.UUID;
 public interface RestaurantRepository extends JpaRepository<Restaurant, UUID>,
                                                 CustomRestaurantRepository,
                                                 JpaSpecificationExecutor<Restaurant> {
-    //	@Query("from Restaurant where name like %:name% and foodCategory.id = :id")
-    List<Restaurant> findByName(String nome, @Param("id") UUID foodCategory);
 
-    //	List<Restaurant> findByNameContainingAndFoodCategoryId(String name, UUID foodCategory);
+
+
+    @Query("SELECT new com.mypersonalportifolio.food_delivery_api.domain.model.dto.RestaurantBasicInfoDTO(r.name, r.shippingCost, fc.name) " +
+           "FROM Restaurant r JOIN r.foodCategory fc")
+    List<RestaurantBasicInfoDTO> findAllReturningBasicInfo();
 
     Optional<Restaurant> findFirstRestaurantByNameContaining(String name);
 

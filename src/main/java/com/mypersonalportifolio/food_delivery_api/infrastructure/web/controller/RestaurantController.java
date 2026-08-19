@@ -1,8 +1,10 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
+import com.mypersonalportifolio.food_delivery_api.domain.model.dto.RestaurantBasicInfoDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
+
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +30,8 @@ public class RestaurantController {
     private RestaurantService restaurantService;
 
     @GetMapping
-    public List<Restaurant> listAllResources() {
-        return restaurantRepository.findAll();
+    public List<RestaurantBasicInfoDTO> listAllResources() {
+        return restaurantRepository.findAllReturningBasicInfo();
     }
 
     @GetMapping("/{restaurantId}")
@@ -81,7 +83,7 @@ public class RestaurantController {
 
     @PatchMapping("/{restaurantId}")
     public ResponseEntity<?> updatePartiallyResource(@PathVariable("restaurantId") UUID restaurantTargetId,
-                                                        @RequestBody Map<String, Objects> restaurantFieldsSourceProperties) {
+                                                        @RequestBody Map<String, Object> restaurantFieldsSourceProperties) {
         var restaurantTargetOptional = restaurantRepository.findById(restaurantTargetId);
 
         if (restaurantTargetOptional.isEmpty())
