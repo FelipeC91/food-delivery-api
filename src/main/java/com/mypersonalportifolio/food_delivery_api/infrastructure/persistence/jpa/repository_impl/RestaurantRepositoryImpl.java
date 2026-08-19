@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class RestaurantRepositoryImpl implements CustomRestaurantRepository {
         var fromRestaurant = criteriaQuery.from(Restaurant.class);
 
 
-        var predicates = setUpCriteriaPredicates(criteriaBuilder, fromRestaurant, filterDTO);
+        var predicates = setUpCriteriaPredicatesByNameLikeAndShippingCostBetween(criteriaBuilder, fromRestaurant, filterDTO);
 
         criteriaQuery.where(predicates);
 
@@ -45,7 +46,7 @@ public class RestaurantRepositoryImpl implements CustomRestaurantRepository {
     }
 
 
-    private Predicate[] setUpCriteriaPredicates(CriteriaBuilder criteriaBuilder, Root<Restaurant> fromRestaurant, ByNameLikeAndShippingCostBetweenFilterDTO filterDTO) {
+    private Predicate[] setUpCriteriaPredicatesByNameLikeAndShippingCostBetween(CriteriaBuilder criteriaBuilder, Root<Restaurant> fromRestaurant, ByNameLikeAndShippingCostBetweenFilterDTO filterDTO) {
         var predicates = new ArrayList<Predicate>();
 
         if (StringUtils.hasText( filterDTO.name() ) && !filterDTO.name().isBlank())
