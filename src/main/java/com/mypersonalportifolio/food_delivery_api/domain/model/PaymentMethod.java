@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "payment_method")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
