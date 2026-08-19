@@ -1,9 +1,9 @@
 insert into food_category (id, name) values ('c516dda8-ff4b-4464-92b6-7fa38bf533e9', 'Tailandesa');
 insert into food_category (id, name) values ('cd1b20d6-ed7a-43d7-aa3c-ea910006ceb0', 'Indiana');
 
-insert into restaurant (id, name, shipping_cost, food_category_id) values ('ec3b02ea-6240-4a56-9da3-199f2bdda03d', 'Thai Gourmet', 10, 'c516dda8-ff4b-4464-92b6-7fa38bf533e9');
-insert into restaurant (id, name, shipping_cost, food_category_id) values ('f1b460c9-dcc0-4ec3-bb72-deec95803e99', 'Thai Delivery', 9.50, 'c516dda8-ff4b-4464-92b6-7fa38bf533e9');
-insert into restaurant (id, name, shipping_cost, food_category_id) values ('b7a08d8d-95cd-11f1-9aa3-564fb7a4cb2a', 'Tuk Tuk Comida Indiana', 15, 'cd1b20d6-ed7a-43d7-aa3c-ea910006ceb0');
+insert into restaurant (id, name, shipping_cost, food_category_id, neighborhood, address_zip_code, address_street_name, address_street_number, address_city_id) values ('ec3b02ea-6240-4a56-9da3-199f2bdda03d', 'Thai Gourmet', 10, 'c516dda8-ff4b-4464-92b6-7fa38bf533e9', 'Centro', '38400-100', 'Avenida Getúlio Vargas', '1500', 1);
+insert into restaurant (id, name, shipping_cost, food_category_id, neighborhood, address_zip_code, address_street_name, address_street_number, address_city_id) values ('f1b460c9-dcc0-4ec3-bb72-deec95803e99', 'Thai Delivery', 9.50, 'c516dda8-ff4b-4464-92b6-7fa38bf533e9', 'Saraiva', '38408-250', 'Rua Goitacazes', '850', 2);
+insert into restaurant (id, name, shipping_cost, food_category_id, neighborhood, address_zip_code, address_street_name, address_street_number, address_city_id) values ('b7a08d8d-95cd-11f1-9aa3-564fb7a4cb2a', 'Tuk Tuk Comida Indiana', 15, 'cd1b20d6-ed7a-43d7-aa3c-ea910006ceb0', 'Consolação', '01301-100', 'Avenida Paulista', '2000', 3);
 
 insert into state (id, name) values (1, 'Minas Gerais');
 insert into state (id, name) values (2, 'São Paulo');
@@ -38,9 +38,11 @@ insert into city (id, name, state_id) values (3, 'São Paulo', 2);
 insert into city (id, name, state_id) values (4, 'Campinas', 2);
 insert into city (id, name, state_id) values (5, 'Fortaleza', 3);
 
-insert into payment_method (id, description) values (1, 'Cartão de crédito');
-insert into payment_method (id, description) values (2, 'Cartão de débito');
-insert into payment_method (id, description) values (3, 'Dinheiro');
+insert into payment_method (id, description) values ('d53d294e-9b40-11f1-b8aa-a2d63dc49d10', 'Cartão de crédito');
+insert into payment_method (id, description) values ('9d5e46bf-89c5-427f-b535-4f497a7e131a', 'Cartão de débito');
+insert into payment_method (id, description) values ('d9adeb5e-2b12-4939-a22c-31092f536e92', 'Dinheiro');
 
 insert into permission (id, name, description) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 insert into permission (id, name, description) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+
+INSERT INTO restaurant_payment_method (restaurant_id, payment_method_id) VALUES('ec3b02ea-6240-4a56-9da3-199f2bdda03d', 'd53d294e-9b40-11f1-b8aa-a2d63dc49d10'), ('ec3b02ea-6240-4a56-9da3-199f2bdda03d', '9d5e46bf-89c5-427f-b535-4f497a7e131a'), ('ec3b02ea-6240-4a56-9da3-199f2bdda03d', 'd9adeb5e-2b12-4939-a22c-31092f536e92'), ('f1b460c9-dcc0-4ec3-bb72-deec95803e99', 'd53d294e-9b40-11f1-b8aa-a2d63dc49d10'), ('f1b460c9-dcc0-4ec3-bb72-deec95803e99', '9d5e46bf-89c5-427f-b535-4f497a7e131a'),('f1b460c9-dcc0-4ec3-bb72-deec95803e99', 'd9adeb5e-2b12-4939-a22c-31092f536e92'), ('b7a08d8d-95cd-11f1-9aa3-564fb7a4cb2a', 'd9adeb5e-2b12-4939-a22c-31092f536e92');
