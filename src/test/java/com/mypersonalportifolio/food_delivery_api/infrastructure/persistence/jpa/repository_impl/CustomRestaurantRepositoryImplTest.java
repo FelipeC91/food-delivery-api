@@ -45,9 +45,9 @@ class CustomRestaurantRepositoryImplTest {
         testCategory = new FoodCategory("Italian");
         testCategory = foodCategoryRepository.save(testCategory);
 
-        restaurant1 = new Restaurant("McDonald's", new BigDecimal("5.00"), testCategory);
-        restaurant2 = new Restaurant("Subway", new BigDecimal("3.50"), testCategory);
-        restaurant3 = new Restaurant("Pizza Hut", new BigDecimal("7.99"), testCategory);
+        restaurant1 = new Restaurant("McDonald's", new BigDecimal("5.00"), testCategory, new ArrayList<>());
+        restaurant2 = new Restaurant("Subway", new BigDecimal("3.50"), testCategory, new ArrayList<>());
+        restaurant3 = new Restaurant("Pizza Hut", new BigDecimal("7.99"), testCategory, new ArrayList<>());
 
         restaurantRepository.saveAll(List.of(restaurant1, restaurant2, restaurant3));
     }

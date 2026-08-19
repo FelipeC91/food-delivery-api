@@ -1,22 +1,23 @@
 package com.mypersonalportifolio.food_delivery_api.domain.service;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.*;
 
 @Service
 public class RestaurantService {
 
-    public void mergeProperties(Map<String, Objects> restaurantFieldsSourceProperties, Restaurant restaurantTarget) {
+    public void mergeProperties(Map<String, Object> restaurantFieldsSourceProperties, Restaurant restaurantTarget) {
+        if (restaurantFieldsSourceProperties == null || restaurantFieldsSourceProperties.isEmpty()) {
+            return;
+        }
+
         var objectMapper = new ObjectMapper();
         var restaurantSource = objectMapper.convertValue(restaurantFieldsSourceProperties, Restaurant.class);
-
-
 
         BeanUtils.copyProperties(restaurantSource, restaurantTarget, filterNullPropertyNames(restaurantSource));
     }
