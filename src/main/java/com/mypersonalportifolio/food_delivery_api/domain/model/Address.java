@@ -1,5 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
+import com.mypersonalportifolio.food_delivery_api.domain.model.City;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +26,6 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "address_city_id",  nullable = false)
-    private String city;
+    private City city;
 }
 
