@@ -11,8 +11,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,12 +42,19 @@ public class Restaurant extends DomainEntityUUID {
     @Embedded
     private Address address;
 
-
     @ManyToMany
     @JoinTable(name = "restaurant_payment_method",
                 joinColumns = @JoinColumn(name = "restaurant_id"),
                 inverseJoinColumns = @JoinColumn( name = "payment_method_id")
     )
     private List<PaymentMethod> paymentMethods = new ArrayList<>();
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
+    private OffsetDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "created_at", nullable = false)
+    private OffsetDateTime updatedAt;
 
 }
