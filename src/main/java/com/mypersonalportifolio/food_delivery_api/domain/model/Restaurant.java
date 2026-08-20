@@ -1,12 +1,8 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
-import com.mypersonalportifolio.food_delivery_api.domain.model.FoodCategory;
-import com.mypersonalportifolio.food_delivery_api.domain.model.PaymentMethod;
-import com.mypersonalportifolio.food_delivery_api.domain.model.Address;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,9 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -57,6 +51,7 @@ public class Restaurant extends DomainEntityUUID {
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
-    private List<Product>
+    @OneToMany(mappedBy = "restaurant")
+    private List<Product> products = new ArrayList<>();
 
 }
