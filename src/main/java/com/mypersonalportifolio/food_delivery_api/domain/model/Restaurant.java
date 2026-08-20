@@ -54,7 +54,9 @@ public class Restaurant extends DomainEntityUUID {
     private OffsetDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
+
+    private List<Product>
 
 }

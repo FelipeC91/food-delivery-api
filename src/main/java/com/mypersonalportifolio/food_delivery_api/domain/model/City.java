@@ -1,7 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntitySequence;
-import com.mypersonalportifolio.food_delivery_api.domain.model.State;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
