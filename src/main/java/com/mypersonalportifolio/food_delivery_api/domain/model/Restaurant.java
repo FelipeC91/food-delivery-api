@@ -28,7 +28,6 @@ public class Restaurant extends DomainEntityUUID {
 
     private BigDecimal shippingCost;
 
-    //@JsonIgnore
     @ManyToOne
     @JoinColumn(name = "food_category_id", nullable = false)
     private FoodCategory foodCategory;
