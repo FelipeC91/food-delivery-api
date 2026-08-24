@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Address {
 
+    @Column(name = "address_neighborhood")
     private String neighborhood;
 
     @Column(name = "address_zip_code")
