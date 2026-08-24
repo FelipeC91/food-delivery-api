@@ -1,10 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -16,9 +13,12 @@ public class Product extends DomainEntityUUID {
     private String name;
     private String description;
     private BigDecimal price;
+
+    @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "restaurant_id",nullable = false)
+    @PrimaryKeyJoinColumn
+    //@JoinColumn(name= "restaurant_id",nullable = false)
     private Restaurant restaurant;
 }

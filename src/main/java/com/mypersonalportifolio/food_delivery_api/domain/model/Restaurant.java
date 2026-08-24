@@ -25,11 +25,11 @@ public class Restaurant extends DomainEntityUUID {
     private String name;
 
     @Column(name = "shipping_cost", nullable = false)
-
     private BigDecimal shippingCost;
 
     @ManyToOne
-    @JoinColumn(name = "food_category_id", nullable = false)
+    @PrimaryKeyJoinColumn
+    //@JoinColumn(name = "food_category_id", nullable = false)
     private FoodCategory foodCategory;
 
     @Embedded
