@@ -18,6 +18,8 @@ public class FoodCategory  extends DomainEntityUUID {
     @Column(nullable = false)
     private String name;
 
+    private String description;
+
 //    @JsonIgnore
 //    @OneToMany(mappedBy = "foodCategory")
 //    private List<Restaurant> restaurants = new ArrayList<>();
