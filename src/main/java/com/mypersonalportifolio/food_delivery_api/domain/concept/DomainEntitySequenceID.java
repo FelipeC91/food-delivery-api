@@ -12,7 +12,7 @@ import java.util.Objects;
 @MappedSuperclass
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class DomainEntitySequence {
+public class DomainEntitySequenceID {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -22,7 +22,7 @@ public class DomainEntitySequence {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        DomainEntitySequence that = (DomainEntitySequence) o;
+        DomainEntitySequenceID that = (DomainEntitySequenceID) o;
         return Objects.equals(id, that.id);
     }
 }
