@@ -7,6 +7,8 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.Objects;
+
 @MappedSuperclass
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -16,4 +18,11 @@ public class DomainEntitySequence {
     @Id
     @EqualsAndHashCode.Include
     private Long id;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        DomainEntitySequence that = (DomainEntitySequence) o;
+        return Objects.equals(id, that.id);
+    }
 }
