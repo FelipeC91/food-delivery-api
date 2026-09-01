@@ -1,16 +1,17 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
 
 
+import com.mypersonalportifolio.food_delivery_api.domain.exception.NonExistentEntityException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
-import com.mypersonalportifolio.food_delivery_api.domain.repository.CityService;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.BeanUtils;
+import com.mypersonalportifolio.food_delivery_api.domain.service.CityService;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -30,66 +31,38 @@ public class CityController {
     }
 
     @GetMapping("/{cityId}")
-    public ResponseEntity<City> findOneResource(@PathVariable Long cityID) {
-        var cityOptional = cityRepository.findById(cityID);
+    public ResponseEntity<City> findOneResource(@PathVariable Long cityId) {
+        var city = cityRepository.findById(cityId)
+                                        .orElseThrow( () -> new EntityNotFoundException(City.class, cityId.toString()) );
 
-        if (cityOptional.isPresent())
-            return ResponseEntity.ok(cityOptional.get());
-
-        else
-            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(city);
     }
 
     @PostMapping
     public ResponseEntity<?> createResource(@RequestBody City cityCandidate){
-        try {
+
             cityService.create(cityCandidate);
 
             return ResponseEntity.status(HttpStatus.CREATED).build();
 
-        } catch (EntityNotFoundException e) {
-           return ResponseEntity.badRequest().body(e.getMessage());
-
-        }
-
     }
 
     @PutMapping("/{cityId}")
-    public ResponseEntity<?> updateResource(@PathVariable Long cityId,
+    @ResponseStatus(HttpStatus.OK)
+    public City updateResource(@PathVariable Long cityId,
                                                     @RequestBody City citySource) {
-        try {
-            var cityTargetOptional = cityRepository.findById(cityId);
+        var cityTarget = cityRepository.findById(cityId)
+                .orElseThrow( () -> new EntityNotFoundException(City.class, cityId.toString()) );
 
-            if (cityTargetOptional.isPresent()) {
-                BeanUtils.copyProperties(citySource, cityTargetOptional.get(), "id");
 
-                var cityNewState = cityRepository.saveAndFlush(cityTargetOptional.get());
-
-                return ResponseEntity.ok(cityNewState);
-
-            } else
-                return ResponseEntity.notFound().build();
-
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
+        return cityService.updateProperties(citySource, cityTarget);
     }
 
     @DeleteMapping("/cityId")
     public ResponseEntity<City> deleteResource(@PathVariable Long cityId) {
-        try {
-            cityRepository.deleteById(cityId);
+        cityRepository.deleteById(cityId);
 
-            return ResponseEntity.noContent().build();
-
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-
-        }
+        return ResponseEntity.noContent().build();
     }
 
 }

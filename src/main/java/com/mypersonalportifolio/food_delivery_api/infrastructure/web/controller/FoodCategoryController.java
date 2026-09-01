@@ -2,13 +2,16 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.FoodCategory;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.FoodCategoryRepository;
-import jakarta.persistence.EntityExistsException;
-import org.springframework.beans.BeanUtils;
+import com.mypersonalportifolio.food_delivery_api.domain.service.FoodCategoryService;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
+
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -20,49 +23,45 @@ public class FoodCategoryController {
     @Autowired
     private FoodCategoryRepository foodCategoryRepository;
 
+    @Autowired
+    private FoodCategoryService foodCategoryService;
+
     @GetMapping
     public List<FoodCategory> listAllResources() {
         return foodCategoryRepository.findAll();
     }
 
     @GetMapping("/{foodCategoryId}")
-    public ResponseEntity<?> findOneResource(@PathVariable UUID foodCategoryId) {
-        var foodCategoryOptional = foodCategoryRepository.findById(foodCategoryId);
+    public ResponseEntity<FoodCategory> findOneResource(@PathVariable UUID foodCategoryId) {
+        var foodCategory = foodCategoryRepository.findById(foodCategoryId)
+                                            .orElseThrow( () -> new EntityNotFoundException(FoodCategory.class, foodCategoryId.toString()) );
 
-        if (foodCategoryOptional.isPresent())
-            return ResponseEntity.ok(foodCategoryOptional.get());
+        return ResponseEntity.ok(foodCategory);
 
-        else
-            return ResponseEntity.notFound().build();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity createResource(@RequestBody FoodCategory foodCategory) {
-        var foodCategoryOptional = foodCategoryRepository.findByName(foodCategory.getName());
+    public FoodCategory createResource(@RequestBody FoodCategory foodCategoryCandidate) {
+        try {
+            return foodCategoryRepository.save(foodCategoryCandidate);
 
-        if (foodCategoryOptional.isEmpty()) {
-            var newFoodCategory = foodCategoryRepository.save(foodCategory);
+        } catch (IllegalArgumentException e) {
+            throw new CandidateEntityInvalidException(FoodCategory.class, foodCategoryCandidate.getName());
 
-            return ResponseEntity.ok(newFoodCategory);
-        } else
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Categoria já catalogada");
+        }
     }
 
     @PutMapping("/{foodCategoryId}")
     public ResponseEntity<?> updateResource(@PathVariable("foodCategoryId") UUID foodCategoryTargetId,
-                                                @RequestBody FoodCategory foodCategorySource) {
-        var foodCategoryTargetOptional = foodCategoryRepository.findById(foodCategoryTargetId);
+                                                @RequestBody @Valid FoodCategory foodCategorySource) {
+        var foodCategoryTarget = foodCategoryRepository.findById(foodCategoryTargetId)
+                .orElseThrow( () -> new EntityNotFoundException(FoodCategory.class,foodCategoryTargetId.toString() ));
 
-        if (foodCategoryTargetOptional.isPresent()){
-            BeanUtils.copyProperties(foodCategoryTargetOptional.get(), foodCategorySource, "id");
+        var updatedFoodCategory=  foodCategoryService.updateProperties(foodCategoryTarget, foodCategorySource);
 
-            var foodCategoryUpdated = foodCategoryRepository.saveAndFlush(foodCategoryTargetOptional.get());
+        return ResponseEntity.status(HttpStatus.OK).body(updatedFoodCategory);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(foodCategoryUpdated);
-        }
-
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{foodCategoryId}")
@@ -72,8 +71,8 @@ public class FoodCategoryController {
 
             return ResponseEntity.noContent().build();
 
-        } catch (EmptyResultDataAccessException e) {
-            return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            throw  new EntityNotFoundException(FoodCategory.class, foodCategoryTargetId.toString());
         }
     }
 }
