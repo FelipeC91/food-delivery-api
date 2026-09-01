@@ -1,13 +1,13 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
 
 
+import com.mypersonalportifolio.food_delivery_api.infrastructure.bean_validation.ValidationGroups;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,21 +26,22 @@ import java.util.List;
 @NoArgsConstructor
 public class Restaurant extends DomainEntityUUID {
 
-    @Pattern(regexp = "^[^0-9]*$", message = "Numeric characters are not allowed")
-    @NotNull
+    @Pattern(regexp = "^[^0-9]*$", message = "Numeric characters are not allowed", groups = ValidationGroups.Restaurant.class)
+    @NotBlank(groups = ValidationGroups.Restaurant.class)
     @Column(nullable = false)
     @Setter
     private String name;
 
+    @PositiveOrZero(message = "Taxa deve ser maior ou igual a 0", groups = ValidationGroups.Restaurant.class)
     @Column(name = "shipping_cost", nullable = false)
     private BigDecimal shippingCost;
 
+    @Valid
     @ManyToOne
     @JoinColumn(name = "food_category_id", nullable = false)
     private FoodCategory foodCategory;
 
     @JsonIgnore
-    
     @Embedded
     private Address address;
 
