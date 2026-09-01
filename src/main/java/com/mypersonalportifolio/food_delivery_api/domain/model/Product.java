@@ -1,5 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,8 +18,8 @@ public class Product extends DomainEntityUUID {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn
-    //@JoinColumn(name= "restaurant_id",nullable = false)
+    @JoinColumn(name= "restaurant_id",nullable = false)
     private Restaurant restaurant;
 }

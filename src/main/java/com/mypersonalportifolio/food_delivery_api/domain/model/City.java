@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,8 +18,6 @@ public class City extends DomainEntitySequenceID {
     private String name;
 
     @ManyToOne
-    @PrimaryKeyJoinColumn
-//    @JoinColumn(name = "state_id", nullable = false)
-    @Setter
+    @JoinColumn(name = "state_id", nullable = false)
     private State estado;
 }
