@@ -6,10 +6,11 @@ import com.mypersonalportifolio.food_delivery_api.domain.service.FoodCategorySer
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 
-import jakarta.validation.Valid;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.bean_validation.ValidationGroups;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -42,7 +43,7 @@ public class FoodCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FoodCategory createResource(@RequestBody FoodCategory foodCategoryCandidate) {
+    public FoodCategory createResource(@RequestBody  @Validated(ValidationGroups.FoodCategory.class) FoodCategory foodCategoryCandidate) {
         try {
             return foodCategoryRepository.save(foodCategoryCandidate);
 
@@ -54,7 +55,7 @@ public class FoodCategoryController {
 
     @PutMapping("/{foodCategoryId}")
     public ResponseEntity<?> updateResource(@PathVariable("foodCategoryId") UUID foodCategoryTargetId,
-                                                @RequestBody @Valid FoodCategory foodCategorySource) {
+                                                @RequestBody FoodCategory foodCategorySource) {
         var foodCategoryTarget = foodCategoryRepository.findById(foodCategoryTargetId)
                 .orElseThrow( () -> new EntityNotFoundException(FoodCategory.class,foodCategoryTargetId.toString() ));
 

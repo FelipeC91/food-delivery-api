@@ -7,15 +7,15 @@ import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantServi
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
-import jakarta.validation.Valid;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.bean_validation.ValidationGroups;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.List;
@@ -48,7 +48,7 @@ public class RestaurantController {
     }
 
     @PostMapping
-    private ResponseEntity<?> createResource(@RequestBody @Valid Restaurant restaurantCandidate) {
+    private ResponseEntity<?> createResource(@RequestBody @Validated(ValidationGroups.Restaurant.class) Restaurant restaurantCandidate) {
         try {
             var savedRestaurant = restaurantRepository.save(restaurantCandidate);
 
