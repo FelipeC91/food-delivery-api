@@ -1,14 +1,17 @@
-package com.mypersonalportifolio.food_delivery_api.domain.exception;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.web.exception;
 
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityAlreadyExistsException;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jspecify.annotations.Nullable;
 
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -121,25 +124,27 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .collect(Collectors.joining("."));
     }
 
+
     @Override
-    protected @Nullable ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body,
-                                                                       HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
-        var IntegerHttpStatusCode = statusCode.value();
+    protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        var defaultMessage = "Recurso submetido possui propriedades inconsistentes";
 
-        if ( Objects.isNull(body) ) {
-            body = ApiProblemDetails.builder()
-                                    .title(HttpStatus.resolve(IntegerHttpStatusCode).getReasonPhrase())
-                                    .httpStatusCode(IntegerHttpStatusCode)
-                                    .timestamp(OffsetDateTime.now())
-                                    .build();
+        var detail = "revise as propriedades e tente novamente";
 
-        } else if ( body instanceof String ) {
-            body = ApiProblemDetails.builder()
-                                    .title( (String) body)
-                                    .httpStatusCode(statusCode.value())
-                                    .build();
-        }
-        return super.handleExceptionInternal(ex, body, HttpHeaders.EMPTY, statusCode, request);
+        var invalidResourceFields = ex.getBindingResult().getFieldErrors()
+                                                            .stream()
+                                                            .map(fielError -> new ApiProblemDetails.InvalidResourceField(fielError.getField(), fielError.getDefaultMessage()))
+                                                            .collect(Collectors.toList());
+
+        var problemDetails = ApiProblemDetails.builder()
+                                                                        .title(defaultMessage)
+                                                                        .detail(detail)
+                                                                        .timestamp(OffsetDateTime.now())
+                                                                        .httpStatusCode(status.value())
+                                                                        .invalidResourceFields(invalidResourceFields)
+                                                                        .build();
+
+        return handleExceptionInternal(ex, problemDetails, HttpHeaders.EMPTY, status,request);
     }
 
     @ExceptionHandler(Exception.class)
@@ -158,5 +163,26 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ex.printStackTrace();
 
         return handleExceptionInternal(ex, problemDetails, HttpHeaders.EMPTY, defaultHttpStatusCode,request);
+    }
+
+    @Override
+    protected @Nullable ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body,
+                                                                       HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+        var IntegerHttpStatusCode = statusCode.value();
+
+        if ( Objects.isNull(body) ) {
+            body = ApiProblemDetails.builder()
+                    .title(HttpStatus.resolve(IntegerHttpStatusCode).getReasonPhrase())
+                    .httpStatusCode(IntegerHttpStatusCode)
+                    .timestamp(OffsetDateTime.now())
+                    .build();
+
+        } else if ( body instanceof String ) {
+            body = ApiProblemDetails.builder()
+                    .title( (String) body)
+                    .httpStatusCode(statusCode.value())
+                    .build();
+        }
+        return super.handleExceptionInternal(ex, body, HttpHeaders.EMPTY, statusCode, request);
     }
 }
