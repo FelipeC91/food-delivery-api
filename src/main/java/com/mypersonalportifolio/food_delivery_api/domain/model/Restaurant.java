@@ -1,12 +1,17 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -21,17 +26,21 @@ import java.util.List;
 @NoArgsConstructor
 public class Restaurant extends DomainEntityUUID {
 
+    @Pattern(regexp = "^[^0-9]*$", message = "Numeric characters are not allowed")
+    @NotNull
     @Column(nullable = false)
+    @Setter
     private String name;
 
     @Column(name = "shipping_cost", nullable = false)
     private BigDecimal shippingCost;
 
     @ManyToOne
-    @PrimaryKeyJoinColumn
-    //@JoinColumn(name = "food_category_id", nullable = false)
+    @JoinColumn(name = "food_category_id", nullable = false)
     private FoodCategory foodCategory;
 
+    @JsonIgnore
+    
     @Embedded
     private Address address;
 
@@ -50,7 +59,9 @@ public class Restaurant extends DomainEntityUUID {
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
-    @OneToMany(mappedBy = "restaurant")
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "restaurant", fetch =  FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
 
 }
