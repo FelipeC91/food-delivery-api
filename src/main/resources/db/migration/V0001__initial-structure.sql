@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS restaurant (
     `address_neighborhood` VARCHAR(150) NOT NULL,
     `address_zip_code` VARCHAR(8) NOT NULL,
     `address_street_name` VARCHAR(255) NOT NULL,
-    `address_street_number` VARCHAR(5) NOT NULL,
+    `address_street_number` SMALLINT NOT NULL,
     `address_city_id` BIGINT NOT NULL,
 
     FOREIGN KEY (food_category_id) REFERENCES food_category(id),

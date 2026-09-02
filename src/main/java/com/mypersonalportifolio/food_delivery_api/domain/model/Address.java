@@ -21,7 +21,7 @@ public class Address {
     private String streetName;
 
     @Column(name = "address_street_number")
-    private String StreetNumber;
+    private Integer streetNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_city_id",  nullable = false)

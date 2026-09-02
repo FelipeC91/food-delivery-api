@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `order` (
     `customer_address_neighborhood` VARCHAR(150) NOT NULL,
     `customer_address_zip_code` VARCHAR(8) NOT NULL,
     `customer_address_street_name` VARCHAR(255) NOT NULL,
-    `customer_address_street_number` VARCHAR(5) NOT NULL,
+    `customer_address_street_number` SMALLINT NOT NULL,
     `customer_address_city_id` BIGINT NOT NULL,
 
     status VARCHAR(10) NOT NULL,
