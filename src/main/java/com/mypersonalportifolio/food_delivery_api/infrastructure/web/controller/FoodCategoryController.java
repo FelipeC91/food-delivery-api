@@ -1,5 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
 
+import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityIntegrityViolationException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.FoodCategory;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.FoodCategoryRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.FoodCategoryService;
@@ -7,7 +8,9 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEnti
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 
 import com.mypersonalportifolio.food_delivery_api.infrastructure.bean_validation.ValidationGroups;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -43,7 +46,7 @@ public class FoodCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FoodCategory createResource(@RequestBody  @Validated(ValidationGroups.FoodCategory.class) FoodCategory foodCategoryCandidate) {
+    public FoodCategory createResource(@RequestBody  @Valid FoodCategory foodCategoryCandidate) {
         try {
             return foodCategoryRepository.save(foodCategoryCandidate);
 
@@ -74,6 +77,9 @@ public class FoodCategoryController {
 
         } catch (IllegalArgumentException e) {
             throw  new EntityNotFoundException(FoodCategory.class, foodCategoryTargetId.toString());
+
+        } catch (DataIntegrityViolationException e) {
+            throw new EntityIntegrityViolationException(FoodCategory.class, foodCategoryTargetId.toString());
         }
     }
 }

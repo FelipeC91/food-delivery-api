@@ -4,16 +4,25 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.web.exception;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityAlreadyExistsException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
+
+import com.mypersonalportifolio.food_delivery_api.domain.exception.FailOnValidateEntityPropertiesException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import org.jspecify.annotations.Nullable;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -22,8 +31,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Autowired
+    private MessageSource errorMessageSource;
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException exception, WebRequest request) {
@@ -94,6 +106,8 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+
+
     private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex,
                                                                 HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
         var defaultMessage = "Recurso submetido possui propriedades inconsistentes";
@@ -124,25 +138,38 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .collect(Collectors.joining("."));
     }
 
+    @ExceptionHandler(FailOnValidateEntityPropertiesException.class)
+    public ResponseEntity<Object> handleFailOnValidateEntityPropertiesException(FailOnValidateEntityPropertiesException ex, WebRequest request) {
+        return this.handleValidationErrorInternal(ex, ex.getBindingResult(), HttpStatus.BAD_REQUEST, request);
+    }
+
 
     @Override
     protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return this.handleValidationErrorInternal(ex, ex.getBindingResult(), status, request);
+    }
+
+    private ResponseEntity<Object> handleValidationErrorInternal(Exception ex, BindingResult bindingResult,  HttpStatusCode status, WebRequest request) {
         var defaultMessage = "Recurso submetido possui propriedades inconsistentes";
 
         var detail = "revise as propriedades e tente novamente";
 
-        var invalidResourceFields = ex.getBindingResult().getFieldErrors()
-                                                            .stream()
-                                                            .map(fielError -> new ApiProblemDetails.InvalidResourceField(fielError.getField(), fielError.getDefaultMessage()))
-                                                            .collect(Collectors.toList());
+        var invalidResourceFields = bindingResult.getFieldErrors()
+                .stream()
+                .map(fieldError -> {
+                    var errorMessage = errorMessageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+                    var formattedErrorMessage = String.format(errorMessage, fieldError.getField());
+                    return new ApiProblemDetails.InvalidResourceField(fieldError.getField(), formattedErrorMessage);
+                })
+                .collect(Collectors.toList());
 
         var problemDetails = ApiProblemDetails.builder()
-                                                                        .title(defaultMessage)
-                                                                        .detail(detail)
-                                                                        .timestamp(OffsetDateTime.now())
-                                                                        .httpStatusCode(status.value())
-                                                                        .invalidResourceFields(invalidResourceFields)
-                                                                        .build();
+                .title(defaultMessage)
+                .detail(detail)
+                .timestamp(OffsetDateTime.now())
+                .httpStatusCode(status.value())
+                .invalidResourceFields(invalidResourceFields)
+                .build();
 
         return handleExceptionInternal(ex, problemDetails, HttpHeaders.EMPTY, status,request);
     }
@@ -161,6 +188,10 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         ex.printStackTrace();
+
+        System.out.println("---------------------------------------------------");
+        System.out.println(ExceptionUtils.getRootCause(ex));
+        System.out.println("---------------------------------------------------");
 
         return handleExceptionInternal(ex, problemDetails, HttpHeaders.EMPTY, defaultHttpStatusCode,request);
     }

@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,8 +23,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class FoodCategory  extends DomainEntityUUID {
 
-    @Pattern(regexp = "^[^0-9]*$", message = "Caracteres numéricos não são permitidos", groups = ValidationGroups.FoodCategory.class)
-    @NotBlank(groups = ValidationGroups.FoodCategory.class)
+    @Pattern(regexp = "^[^0-9]*$", groups = ValidationGroups.FoodCategoryRegistration.class)
+    @NotBlank(groups = ValidationGroups.FoodCategoryRegistration.class)
     @Column(nullable = false)
     private String name;
 
@@ -34,7 +35,7 @@ public class FoodCategory  extends DomainEntityUUID {
 //    private List<Restaurant> restaurants = new ArrayList<>();
 
 
-    @NotBlank(groups = ValidationGroups.Restaurant.class, message = "ID da categoria inválido")
+    @NotNull(groups = ValidationGroups.RestaurantRegistration.class)
     public UUID getId() {
         return super.getId();
     }

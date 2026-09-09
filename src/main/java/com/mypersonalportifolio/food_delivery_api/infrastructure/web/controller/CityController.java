@@ -1,12 +1,11 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
 
 
-import com.mypersonalportifolio.food_delivery_api.domain.exception.NonExistentEntityException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.CityService;
-import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +38,11 @@ public class CityController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createResource(@RequestBody City cityCandidate){
+    public ResponseEntity<?> createResource(@RequestBody @Valid City cityCandidate){
 
-            cityService.create(cityCandidate);
+            var city = cityService.create(cityCandidate);
 
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(city);
 
     }
 
