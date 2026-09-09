@@ -7,26 +7,8 @@ INSERT IGNORE INTO state (id, name) VALUES (3, 'Rio Grande do Sul');
 INSERT IGNORE INTO state (id, name) VALUES (4, 'Santa Catarina');
 INSERT IGNORE INTO state (id, name) VALUES (5, 'Mato Grossodo Sul');
 INSERT IGNORE INTO state (id, name) VALUES (6, 'Goias');
-INSERT IGNORE INTO state (id, name) VALUES (7, 'Espirito Santo');
-INSERT IGNORE INTO state (id, name) VALUES (8, 'Paraná');
-INSERT IGNORE INTO state (id, name) VALUES (9, 'Mato Grosso');
-INSERT IGNORE INTO state (id, name) VALUES (10, 'Tocantins');
-INSERT IGNORE INTO state (id, name) VALUES (11, 'Distrito Federal');
-INSERT IGNORE INTO state (id, name) VALUES (12, 'Bahia');
-INSERT IGNORE INTO state (id, name) VALUES (13, 'Rondônia');
-INSERT IGNORE INTO state (id, name) VALUES (14, 'Acre');
-INSERT IGNORE INTO state (id, name) VALUES (15, 'Amazonas');
-INSERT IGNORE INTO state (id, name) VALUES (16, 'Roraima');
-INSERT IGNORE INTO state (id, name) VALUES (17, 'Pará');
-INSERT IGNORE INTO state (id, name) VALUES (18, 'Amapá');
 INSERT IGNORE INTO state (id, name) VALUES (19, 'Ceará');
-INSERT IGNORE INTO state (id, name) VALUES (20, 'Pernambuco');
-INSERT IGNORE INTO state (id, name) VALUES (21, 'Sergipe');
-INSERT IGNORE INTO state (id, name) VALUES (22, 'Maranhão');
-INSERT IGNORE INTO state (id, name) VALUES (23, 'Piauí');
-INSERT IGNORE INTO state (id, name) VALUES (24, 'RioGrade do Norte');
-INSERT IGNORE INTO state (id, name) VALUES (25, 'Paraiba');
-INSERT IGNORE INTO state (id, name) VALUES (26, 'Alagoas');
+
 
 INSERT IGNORE INTO city (id, name, state_id) VALUES (1, 'Uberlândia', 1);
 INSERT IGNORE INTO city (id, name, state_id) VALUES (2, 'Belo Horizonte', 1);
@@ -34,9 +16,9 @@ INSERT IGNORE INTO city (id, name, state_id) VALUES (3, 'São Paulo', 2);
 INSERT IGNORE INTO city (id, name, state_id) VALUES (4, 'Campinas', 2);
 INSERT IGNORE INTO city (id, name, state_id) VALUES (5, 'Fortaleza', 3);
 
-INSERT IGNORE INTO restaurant (id, name, shipping_cost, food_category_id, address_neighborhood, address_zip_code, address_street_name, address_street_number, address_city_id, created_at, updated_at) VALUES ('f1b460c9-dcc0-4ec3-bb72-deec95803e99', 'Thai Delivery', 9.50, 'c516dda8-ff4b-4464-92b6-7fa38bf533e9', 'Saraiva', '38408250', 'Rua Goitacazes', 850, 2, '2026-08-14 17:36:26', NOW());
-INSERT IGNORE INTO restaurant (id, name, shipping_cost, food_category_id, address_neighborhood, address_zip_code, address_street_name, address_street_number, address_city_id, created_at, updated_at) VALUES ('ec3b02ea-6240-4a56-9da3-199f2bdda03d', 'Thai Gourmet', 10, 'c516dda8-ff4b-4464-92b6-7fa38bf533e9', 'Centro', '38400100', 'Avenida Getúlio Vargas', 1500, 1, '2026-08-14 16:36:26', NOW());
-INSERT IGNORE INTO restaurant (id, name, shipping_cost, food_category_id, address_neighborhood, address_zip_code, address_street_name, address_street_number, address_city_id, created_at, updated_at) VALUES ('b7a08d8d-95cd-11f1-9aa3-564fb7a4cb2a', 'Tuk Tuk Comida Indiana', 15, 'cd1b20d6-ed7a-43d7-aa3c-ea910006ceb0', 'Consolação', '01301100', 'Avenida Paulista', 2000, 3, '2026-08-10 17:36:26', NOW());
+INSERT IGNORE INTO restaurant (id, name, is_active, shipping_cost, food_category_id, address_neighborhood, address_zip_code, address_street_name, address_street_number, address_city_id, created_at, updated_at) VALUES ('f1b460c9-dcc0-4ec3-bb72-deec95803e99', 'Thai Delivery', true, 9.50, 'c516dda8-ff4b-4464-92b6-7fa38bf533e9', 'Saraiva', '38408250', 'Rua Goitacazes', 850, 2, '2026-08-14 17:36:26', NOW());
+INSERT IGNORE INTO restaurant (id, name, is_active, shipping_cost, food_category_id, address_neighborhood, address_zip_code, address_street_name, address_street_number, address_city_id, created_at, updated_at) VALUES ('ec3b02ea-6240-4a56-9da3-199f2bdda03d', 'Thai Gourmet', true, 10, 'c516dda8-ff4b-4464-92b6-7fa38bf533e9', 'Centro', '38400100', 'Avenida Getúlio Vargas', 1500, 1, '2026-08-14 16:36:26', NOW());
+INSERT IGNORE INTO restaurant (id, name, is_active, shipping_cost, food_category_id, address_neighborhood, address_zip_code, address_street_name, address_street_number, address_city_id, created_at, updated_at) VALUES ('b7a08d8d-95cd-11f1-9aa3-564fb7a4cb2a', 'Tuk Tuk Comida Indiana', true, 15, 'cd1b20d6-ed7a-43d7-aa3c-ea910006ceb0', 'Consolação', '01301100', 'Avenida Paulista', 2000, 3, '2026-08-10 17:36:26', NOW());
 
 INSERT IGNORE INTO payment_method (id, description) VALUES ('d53d294e-9b40-11f1-b8aa-a2d63dc49d10', 'Cartão de crédito');
 INSERT IGNORE INTO payment_method (id, description) VALUES ('9d5e46bf-89c5-427f-b535-4f497a7e131a', 'Cartão de débito');

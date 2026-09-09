@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS `user_user_group` (
     user_id VARCHAR(36) NOT NULL,
     user_group_id VARCHAR(36) NOT NULL,
 
+    PRIMARY KEY (user_id, user_group_id),
     FOREIGN KEY (user_id) REFERENCES `user`(id),
     FOREIGN KEY (user_group_id) REFERENCES `user_group`(id)
 
@@ -49,6 +50,7 @@ CREATE TABLE IF NOT EXISTS `user_group_permission` (
     user_group_id VARCHAR(36) NOT NULL,
     permission_id VARCHAR(36) NOT NULL,
 
+    PRIMARY KEY (user_group_id, permission_id),
     FOREIGN KEY (user_group_id) REFERENCES `user_group`(id),
     FOREIGN KEY (permission_id) REFERENCES permission(id)
 
@@ -89,9 +91,10 @@ CREATE TABLE IF NOT EXISTS restaurant (
 )engine=InnoDB default charset=utf8;
 
 CREATE TABLE IF NOT EXISTS `restaurant_payment_method` (
-                                                           restaurant_id VARCHAR(36) NOT NULL,
+    restaurant_id VARCHAR(36) NOT NULL,
     payment_method_id VARCHAR(36) NOT NULL,
 
+    PRIMARY KEY (restaurant_id, payment_method_id),
     FOREIGN KEY (restaurant_id) REFERENCES restaurant(id),
     FOREIGN KEY (payment_method_id) REFERENCES payment_method(id)
 

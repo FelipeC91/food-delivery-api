@@ -1,6 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
 
 
@@ -8,6 +9,8 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.bean_validation
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import jakarta.validation.groups.ConvertGroup;
+import jakarta.validation.groups.Default;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -26,23 +30,25 @@ import java.util.List;
 @NoArgsConstructor
 public class Restaurant extends DomainEntityUUID {
 
-    @Pattern(regexp = "^[^0-9]*$", message = "Numeric characters are not allowed", groups = ValidationGroups.Restaurant.class)
-    @NotBlank(groups = ValidationGroups.Restaurant.class)
+    @NotBlank
     @Column(nullable = false)
     @Setter
     private String name;
 
-    @PositiveOrZero(message = "Taxa deve ser maior ou igual a 0", groups = ValidationGroups.Restaurant.class)
+    @PositiveOrZero
     @Column(name = "shipping_cost", nullable = false)
+    @Setter
     private BigDecimal shippingCost;
 
     @Valid
-    @ManyToOne
+    @ConvertGroup(from = Default.class, to = ValidationGroups.RestaurantRegistration.class)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "food_category_id", nullable = false)
+    @Setter
     private FoodCategory foodCategory;
 
-    @JsonIgnore
     @Embedded
+    @Setter
     private Address address;
 
     @ManyToMany
@@ -61,8 +67,20 @@ public class Restaurant extends DomainEntityUUID {
     private OffsetDateTime updatedAt;
 
 
-    @JsonIgnore
     @OneToMany(mappedBy = "restaurant", fetch =  FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
+
+
+    @Column(name = "is_active")
+    @Setter
+    private Boolean active = Boolean.TRUE;
+
+    public boolean isActive() {
+        return (
+                this.active &&
+                Objects.nonNull( this.getAddress() ) &&
+                !this.getPaymentMethods().isEmpty()
+        );
+    }
 
 }

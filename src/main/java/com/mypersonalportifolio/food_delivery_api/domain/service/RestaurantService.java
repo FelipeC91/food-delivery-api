@@ -2,18 +2,18 @@ package com.mypersonalportifolio.food_delivery_api.domain.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.FailOnValidateEntityPropertiesException;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.RestaurantPendingRegistrationException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpInputMessage;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 
 import java.util.*;
 
@@ -23,8 +23,12 @@ public class RestaurantService {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
+    @Autowired
+    private SmartValidator validator;
+
+    @Transactional
     public void mergeProperties(Map<String, Object> restaurantFieldsSourceProperties,
-                                                Restaurant restaurantTarget) {
+                                                Restaurant restaurantTarget)  {
         if (restaurantFieldsSourceProperties == null || restaurantFieldsSourceProperties.isEmpty())
             throw new CandidateEntityInvalidException(Restaurant.class, null) ;
 
@@ -36,6 +40,14 @@ public class RestaurantService {
         var restaurantSource = objectMapper.convertValue(restaurantFieldsSourceProperties, Restaurant.class);
 
         BeanUtils.copyProperties(restaurantSource, restaurantTarget, filterNullPropertyNames(restaurantSource));
+
+        var entityName = "restaurant";
+        var bindingResult = new BeanPropertyBindingResult(restaurantTarget, entityName);
+
+        validator.validate(restaurantTarget, bindingResult);
+
+        if (bindingResult.hasErrors())
+            throw new FailOnValidateEntityPropertiesException(bindingResult, entityName);
 
     }
 
@@ -61,5 +73,18 @@ public class RestaurantService {
         BeanUtils.copyProperties(restaurantSource, restaurantTarget, "id");
 
         return restaurantRepository.save(restaurantTarget);
+    }
+
+    @Transactional
+    public void activate(Restaurant validRestaurant) {
+        validRestaurant.setActive(true);
+
+        if ( !validRestaurant.isActive()  )
+            throw new RestaurantPendingRegistrationException();
+    }
+
+    @Transactional
+    public void deActivate(Restaurant validRestaurant) {
+        validRestaurant.setActive(false);
     }
 }
