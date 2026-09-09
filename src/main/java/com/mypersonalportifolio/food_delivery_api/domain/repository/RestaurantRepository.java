@@ -2,7 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.domain.repository;
 
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.domain.model.dto.RestaurantBasicInfoDTO;
+import com.mypersonalportifolio.food_delivery_api.domain.model.dto.RestaurantOutputDTO;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,9 +34,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, UUID>,
     List<Restaurant> findAllWithGraph();
 
 
-    default List<RestaurantBasicInfoDTO> findAllReturningBasicInfo() {
+    default List<RestaurantOutputDTO> findAllReturningBasicInfo() {
         return findAllWithGraph().stream()
-                .map(RestaurantBasicInfoDTO::new)
+                .map(RestaurantOutputDTO::new)
                 .toList();
     }
 

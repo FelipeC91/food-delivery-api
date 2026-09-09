@@ -7,15 +7,24 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-public record RestaurantBasicInfoDTO(UUID id, String name, BigDecimal shippingCost, UUID foodCategoryId, String foodCategoryName, List<PaymentMethod> paymentMethods) {
+public record RestaurantOutputDTO(
+        UUID id,
+        String name,
+        AddressOutputDTO address,
+        BigDecimal shippingCost,
+        UUID foodCategoryId,
+        boolean active,
+        List<PaymentMethod> paymentMethods
 
-    public RestaurantBasicInfoDTO(Restaurant r) {
+) {
+    public RestaurantOutputDTO(Restaurant r) {
         this(
                 r.getId(),
                 r.getName(),
+                new AddressOutputDTO(r.getAddress()),
                 r.getShippingCost(),
                 r.getFoodCategory().getId(),
-                r.getFoodCategory().getName(),
+                r.isActive(),
                 List.copyOf(r.getPaymentMethods())
         );
     }
