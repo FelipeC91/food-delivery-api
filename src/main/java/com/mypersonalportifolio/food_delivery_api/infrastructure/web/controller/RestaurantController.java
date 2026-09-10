@@ -2,9 +2,10 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
+import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.domain.model.dto.RestaurantInputDTO;
-import com.mypersonalportifolio.food_delivery_api.domain.model.dto.RestaurantOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.domain.model.dto.input.RestaurantInputDTO;
+import com.mypersonalportifolio.food_delivery_api.domain.model.dto.output.RestaurantOutputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.FoodCategoryRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
@@ -59,8 +60,8 @@ public class RestaurantController {
         try {
             var restaurantCandidate = restaurantMapper.dtoToRestaurant(restaurantInputDTO);
 
-
-            var savedRestaurant = restaurantRepository.save(restaurantCandidate);
+            var validRestaurant = restaurantService.validateNewRestaurant(restaurantCandidate);
+            var savedRestaurant = restaurantRepository.save(validRestaurant);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(savedRestaurant);
 
@@ -72,34 +73,36 @@ public class RestaurantController {
 
     @PutMapping("/{restaurantId}")
     public ResponseEntity<?> updateResource(@PathVariable("restaurantId") UUID restaurantTargetId,
-                                            @RequestBody Restaurant restaurantSource) {
+                                            @RequestBody @Valid RestaurantInputDTO restaurantInputDTOSource) {
         var restaurantTarget = restaurantRepository.findById(restaurantTargetId)
                 .orElseThrow( () -> new EntityNotFoundException(Restaurant.class, restaurantTargetId.toString()));
 
-        var savedRestaurant = restaurantService.updateProperties(restaurantTarget, restaurantSource);
+        var restaurantSource = restaurantMapper.dtoToRestaurant(restaurantInputDTOSource);
 
-        return ResponseEntity.ok(savedRestaurant);
+        var savedRestaurant = restaurantService.updateProperties(restaurantSource, restaurantTarget);
+
+        return ResponseEntity.ok(restaurantMapper.restaurantToOutputDTO(savedRestaurant));
     }
 
-    @PatchMapping("/{restaurantId}")
-    public ResponseEntity<?> updatePartiallyResource(@PathVariable("restaurantId") UUID restaurantTargetId,
-                                                        @RequestBody Map<String, Object> restaurantFieldsSourceProperties,
-                                                        HttpInputMessage inputMessage) {
-        var restaurantTarget = restaurantRepository.findById(restaurantTargetId)
-                                                        .orElseThrow(()  -> new EntityNotFoundException(Restaurant.class, restaurantTargetId.toString() ));
-
-        try {
-            restaurantService.mergeProperties(restaurantFieldsSourceProperties, restaurantTarget);
-
-        } catch (IllegalArgumentException e) {
-            var rootCause = ExceptionUtils.getRootCause(e);
-
-            throw new HttpMessageNotReadableException(e.getMessage(), rootCause, inputMessage);
-        }
-
-
-        return updateResource(restaurantTargetId, restaurantTarget);
-    }
+//    @PatchMapping("/{restaurantId}")
+//    public ResponseEntity<?> updatePartiallyResource(@PathVariable("restaurantId") UUID restaurantTargetId,
+//                                                        @RequestBody Map<String, Object> restaurantFieldsSourceProperties,
+//                                                        HttpInputMessage inputMessage) {
+//        var restaurantTarget = restaurantRepository.findById(restaurantTargetId)
+//                                                        .orElseThrow(()  -> new EntityNotFoundException(Restaurant.class, restaurantTargetId.toString() ));
+//
+//        try {
+//            restaurantService.mergeProperties(restaurantFieldsSourceProperties, restaurantTarget);
+//
+//        } catch (IllegalArgumentException e) {
+//            var rootCause = ExceptionUtils.getRootCause(e);
+//
+//            throw new HttpMessageNotReadableException(e.getMessage(), rootCause, inputMessage);
+//        }
+//
+//
+//        return updateResource(restaurantTargetId, restaurantTarget);
+//    }
 
     @PutMapping("/{restaurantTargetId}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)

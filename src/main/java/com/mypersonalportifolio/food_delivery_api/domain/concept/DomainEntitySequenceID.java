@@ -7,17 +7,18 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
 @MappedSuperclass
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class DomainEntitySequenceID {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @EqualsAndHashCode.Include
     private Long id;
 
     @Override
@@ -25,5 +26,10 @@ public class DomainEntitySequenceID {
         if (o == null || getClass() != o.getClass()) return false;
         DomainEntitySequenceID that = (DomainEntitySequenceID) o;
         return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

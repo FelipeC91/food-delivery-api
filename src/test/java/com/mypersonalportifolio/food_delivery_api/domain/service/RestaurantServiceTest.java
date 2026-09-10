@@ -2,8 +2,11 @@ package com.mypersonalportifolio.food_delivery_api.domain.service;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.FailOnValidateEntityPropertiesException;
+import com.mypersonalportifolio.food_delivery_api.domain.model.Address;
+import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.domain.model.FoodCategory;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
+import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -30,6 +34,9 @@ class RestaurantServiceTest {
 
     @Mock
     private RestaurantRepository restaurantRepository;
+
+    @Mock
+    private CityRepository cityRepository;
 
     @Mock
     private SmartValidator validator;
@@ -134,6 +141,24 @@ class RestaurantServiceTest {
         verify(restaurantRepository).save(restaurantTarget);
     }
 
+    @Test
+    void shouldReplaceTransientCityWithPersistedCityBeforeSaving() {
+        var cityId = 1L;
+        var transientCity = org.mockito.Mockito.mock(City.class);
+        var persistedCity = org.mockito.Mockito.mock(City.class);
+        var source = restaurant("Updated Restaurant", new BigDecimal("8.99"), foodCategory);
+        source.setAddress(new Address("Neighborhood", "12345678", "Street", 10, transientCity));
+
+        when(transientCity.getId()).thenReturn(cityId);
+        when(cityRepository.findById(cityId)).thenReturn(Optional.of(persistedCity));
+        when(restaurantRepository.save(restaurantTarget)).thenReturn(restaurantTarget);
+
+        restaurantService.updateProperties(source, restaurantTarget);
+
+        assertSame(persistedCity, restaurantTarget.getAddress().getCity());
+        verify(cityRepository).findById(cityId);
+    }
+
     private Restaurant restaurant(String name, BigDecimal shippingCost, FoodCategory category) {
         return new Restaurant(
                 name,
@@ -143,7 +168,8 @@ class RestaurantServiceTest {
                 new ArrayList<>(),
                 null,
                 null,
-                new ArrayList<>()
+                new ArrayList<>(),
+                true
         );
     }
 }

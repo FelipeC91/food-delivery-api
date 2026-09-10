@@ -2,9 +2,12 @@ package com.mypersonalportifolio.food_delivery_api.domain.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.FailOnValidateEntityPropertiesException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.RestaurantPendingRegistrationException;
+import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
+import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import org.springframework.beans.BeanUtils;
@@ -22,6 +25,9 @@ public class RestaurantService {
 
     @Autowired
     private RestaurantRepository restaurantRepository;
+
+    @Autowired
+    private CityRepository cityRepository;
 
     @Autowired
     private SmartValidator validator;
@@ -69,10 +75,28 @@ public class RestaurantService {
     }
 
 
+    @Transactional
     public Restaurant updateProperties(Restaurant restaurantSource, Restaurant restaurantTarget) {
+
+        restaurantSource = validateCity(restaurantSource);
+
         BeanUtils.copyProperties(restaurantSource, restaurantTarget, "id");
 
         return restaurantRepository.save(restaurantTarget);
+    }
+
+    private Restaurant validateCity(Restaurant restaurantSource) {
+        if (Objects.isNull( restaurantSource.getAddress() ) && restaurantSource.getAddress().getStreetName().isEmpty()) {
+            throw new EntityNotFoundException(City.class, null);
+        }
+        var cityName = restaurantSource.getAddress().getCity().getName();
+
+        var city = cityRepository.findByName(cityName)
+                .orElseThrow(() -> new EntityNotFoundException(City.class, cityName));
+
+        restaurantSource.getAddress().setCity(city);
+
+        return restaurantSource;
     }
 
     @Transactional
@@ -86,5 +110,9 @@ public class RestaurantService {
     @Transactional
     public void deActivate(Restaurant validRestaurant) {
         validRestaurant.setActive(false);
+    }
+
+    public Restaurant validateNewRestaurant(Restaurant restaurantCandidate) {
+        return  validateCity(restaurantCandidate);
     }
 }

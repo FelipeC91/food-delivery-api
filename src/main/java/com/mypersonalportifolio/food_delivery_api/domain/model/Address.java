@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Embeddable
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,9 +25,8 @@ public class Address {
     @Column(name = "address_street_number")
     private Integer streetNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "address_city_id",  nullable = false)
-    @Setter
     private City city;
 }
 

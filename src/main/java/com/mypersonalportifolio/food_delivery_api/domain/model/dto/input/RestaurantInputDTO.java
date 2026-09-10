@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.domain.model.dto;
+package com.mypersonalportifolio.food_delivery_api.domain.model.dto.input;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.FoodCategory;
 import jakarta.validation.Valid;
@@ -11,7 +11,6 @@ public record RestaurantInputDTO(
         String name,
 
         @Valid
-        @NotNull
         AddressInputDTO address,
 
         @PositiveOrZero
@@ -35,11 +34,12 @@ public record RestaurantInputDTO(
                 Integer streetNumber,
 
                 @NotNull
-                CityInputDTO cityId
+                CityInputDTO city
         ) {}
 
         public record CityInputDTO(
-                Long id
+
+                String name
         ){}
 
 }

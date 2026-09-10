@@ -5,6 +5,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.repository.FoodCategory
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FoodCategoryService {
@@ -12,6 +13,7 @@ public class FoodCategoryService {
     @Autowired
     private FoodCategoryRepository foodCategoryRepository;
 
+    @Transactional
     public FoodCategory updateProperties(FoodCategory foodCategoryTarget, FoodCategory foodCategorySource) {
 
         BeanUtils.copyProperties(foodCategorySource,foodCategoryTarget, "id");

@@ -2,9 +2,9 @@ package com.mypersonalportifolio.food_delivery_api.domain.exception;
 
 import org.jspecify.annotations.Nullable;
 
-public class NonExistentEntityException extends RuntimeException {
+public class EntityIntegrityViolationException extends RuntimeException {
 
-    public NonExistentEntityException(Class entityClass, @Nullable String triedStateReference) {
-        super( String.format("%s referenciado (%s) não existe.", entityClass.getName(), triedStateReference));
+    public EntityIntegrityViolationException(Class entityClass, @Nullable String triedStateReference) {
+        super( String.format("%s referenciado possui associação com outras entidades.", entityClass.getName(), triedStateReference));
     }
 }
