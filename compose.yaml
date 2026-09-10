@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: 'mysql:latest'
+    image: 'mysql:9.4'
     environment:
       MYSQL_DATABASE: food-delivery-api-db
       MYSQL_ROOT_PASSWORD: verysecret

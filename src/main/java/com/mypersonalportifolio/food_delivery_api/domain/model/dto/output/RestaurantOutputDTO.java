@@ -2,6 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.domain.model.dto;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.PaymentMethod;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
+import com.mypersonalportifolio.food_delivery_api.domain.model.dto.output.AddressOutputDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
