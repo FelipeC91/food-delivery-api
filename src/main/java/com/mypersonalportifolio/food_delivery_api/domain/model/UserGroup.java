@@ -1,5 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -7,32 +9,40 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Entity(name = "user_group")
-@Getter
+
 public class UserGroup extends DomainEntityUUID {
 
     @NotBlank
     @Column(nullable = false)
+    @Getter
+    @Setter
     private String name;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "user_group_permission",
             joinColumns = @JoinColumn (name = "user_group_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
-    private List<Permission> permissions = new ArrayList<>();
+    private Set<Permission> permissions = new HashSet<>();
 
-    public List<Permission> getPermissions() {
-        return Collections.unmodifiableList(this.permissions);
+    public Set<Permission> getPermissions() {
+        return Collections.unmodifiableSet(permissions);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public boolean attachPermission(Permission permission) {
+        return permissions.add(permission);
     }
+
+    public boolean detachPermission(Permission permission) {
+        return permissions.remove(permission);
+    }
+
 }
