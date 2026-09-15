@@ -2,19 +2,18 @@ package com.mypersonalportifolio.food_delivery_api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 
-@Entity(name = "order_item")
+@Embeddable
+//@Entity(name = "order_item")
 @Getter
-public class OrderItem extends DomainEntityUUID {
-
+public class OrderItem //extends DomainEntityUUID {
+{
     @ManyToOne
+    @JoinColumn(name = "product_id")
     private Product product;
 
     private Integer quantity;
@@ -25,9 +24,9 @@ public class OrderItem extends DomainEntityUUID {
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 
-    private String observation;
+    private String note;
 
-    @JsonIgnore
-    @ManyToOne
-    private Order order;
+//    @JsonIgnore
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Order order;
 }

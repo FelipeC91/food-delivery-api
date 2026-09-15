@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.domain.model.dto.output;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Address;
 
