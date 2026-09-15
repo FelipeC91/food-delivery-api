@@ -1,4 +1,4 @@
-ALTER TABLE restaurant ADD COLUMN is_active BIT(1) NOT NULL;
+ALTER TABLE restaurant ADD COLUMN is_active BIT(1) NOT NULL DEFAULT false;
 
 SET SQL_SAFE_UPDATES = 0;
 

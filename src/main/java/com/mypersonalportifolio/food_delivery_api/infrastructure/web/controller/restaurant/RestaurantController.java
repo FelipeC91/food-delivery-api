@@ -1,26 +1,21 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller.restaurant;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
-import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.domain.model.dto.input.RestaurantInputDTO;
-import com.mypersonalportifolio.food_delivery_api.domain.model.dto.output.RestaurantOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input.RestaurantInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.RestaurantOutputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.FoodCategoryRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.mapstruct.RestaurantMapper;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.mapstruct.RestaurantMapper;
 import jakarta.validation.Valid;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -119,6 +114,18 @@ public class RestaurantController {
         var restaurantTarget = restaurantRepository.findById(restaurantTargetId)
                 .orElseThrow(()  -> new EntityNotFoundException(Restaurant.class, restaurantTargetId.toString() ));
 
-        restaurantService.deActivate(restaurantTarget);
+        restaurantService.deactivate(restaurantTarget);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/active-batch")
+    public void activateResourceBatch(@RequestBody List<UUID> restaurantsTargetIdBatch) {
+        restaurantService.activateAll(restaurantsTargetIdBatch);
+    }
+
+    @DeleteMapping("/inactive-batch")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deactivateResourceBatch(@RequestBody List<UUID> restaurantsTargetIdBatch) {
+        restaurantService.deactivateAll(restaurantsTargetIdBatch);
     }
 }
