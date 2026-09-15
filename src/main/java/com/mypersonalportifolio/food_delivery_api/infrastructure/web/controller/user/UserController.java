@@ -1,11 +1,11 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller.user;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityIntegrityViolationException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.User;
-import com.mypersonalportifolio.food_delivery_api.domain.model.dto.input.UserPasswordInputDTO;
-import com.mypersonalportifolio.food_delivery_api.domain.model.dto.output.UserOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input.UserPasswordInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.UserOutputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.UserService;
 import jakarta.validation.Valid;

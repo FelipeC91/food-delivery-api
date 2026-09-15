@@ -2,19 +2,26 @@ package com.mypersonalportifolio.food_delivery_api.domain.service;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.BusinessConstraintsViolationException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.User;
-import com.mypersonalportifolio.food_delivery_api.domain.model.dto.input.UserPasswordInputDTO;
+import com.mypersonalportifolio.food_delivery_api.domain.model.UserGroup;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input.UserPasswordInputDTO;
+import com.mypersonalportifolio.food_delivery_api.domain.repository.GroupRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GroupRepository groupRepository;
 
     @Transactional
     public User updateProperties(User userTarget, User userSource) {
@@ -46,5 +53,28 @@ public class UserService {
             throw new BusinessConstraintsViolationException("Email já associado a outro usuário");
 
         return userRepository.save(userCandidate);
+    }
+
+    @Transactional
+    public void joinValidGroup(UUID groupId, User validUser) {
+        var group = findValidGroup(groupId);
+
+        validUser.joinGroup(group);
+
+        userRepository.flush();
+    }
+
+    @Transactional
+    public void leaveGroup(User validUser, UUID groupId) {
+        var group = findValidGroup(groupId);
+
+        validUser.leaveGroup(group);
+
+        userRepository.flush();
+    }
+
+    private UserGroup findValidGroup(UUID groupId) {
+        return groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException(UserGroup.class, groupId.toString()));
     }
 }
