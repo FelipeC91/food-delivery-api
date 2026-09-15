@@ -1,15 +1,17 @@
 package com.mypersonalportifolio.food_delivery_api.domain.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
-import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
-import com.mypersonalportifolio.food_delivery_api.domain.exception.FailOnValidateEntityPropertiesException;
-import com.mypersonalportifolio.food_delivery_api.domain.exception.RestaurantPendingRegistrationException;
-import com.mypersonalportifolio.food_delivery_api.domain.model.City;
-import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.*;
+import com.mypersonalportifolio.food_delivery_api.domain.model.City;
+import com.mypersonalportifolio.food_delivery_api.domain.model.PaymentMethod;
+import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
+import com.mypersonalportifolio.food_delivery_api.domain.model.User;
+import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
+import com.mypersonalportifolio.food_delivery_api.domain.repository.PaymentMethodRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
+import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,11 @@ public class RestaurantService {
 
     @Autowired
     private SmartValidator validator;
+
+    @Autowired
+    private PaymentMethodRepository paymentMethodRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Transactional
     public void mergeProperties(Map<String, Object> restaurantFieldsSourceProperties,
@@ -71,9 +78,7 @@ public class RestaurantService {
                         });
 
         return nullPropertiesList.toArray(new String[nullPropertiesList.size()]);
-
     }
-
 
     @Transactional
     public Restaurant updateProperties(Restaurant restaurantSource, Restaurant restaurantTarget) {
@@ -107,12 +112,82 @@ public class RestaurantService {
             throw new RestaurantPendingRegistrationException();
     }
 
+
     @Transactional
-    public void deActivate(Restaurant validRestaurant) {
+    public void deactivate(Restaurant validRestaurant) {
         validRestaurant.setActive(false);
+    }
+    @Transactional
+    public void activateAll(List<UUID> restaurantIdBatch) {
+        restaurantRepository.findAllById(restaurantIdBatch)
+                .forEach(this::activate);
+    }
+
+    @Transactional
+    public void deactivateAll(List<UUID> restaurantIdBatch) {
+        restaurantRepository.findAllById(restaurantIdBatch)
+                .forEach(this::deactivate);
     }
 
     public Restaurant validateNewRestaurant(Restaurant restaurantCandidate) {
         return  validateCity(restaurantCandidate);
+    }
+
+    //handle Address
+
+
+    //handle PaymentMethods
+    @Transactional
+    public void handleDelete(UUID restaurantTargetId, UUID paymentMethodId) {
+        var restaurantTarget = findValidrestaurant(restaurantTargetId);
+
+        var validPaymentMethod =paymentMethodRepository.findById(paymentMethodId)
+                        .orElseThrow(() -> new EntityNotFoundException(PaymentMethod.class, paymentMethodId.toString()));
+
+        restaurantTarget.detachAllowedPaymentMethod(validPaymentMethod);
+    }
+
+    @Transactional
+    public void addPaymentMethod(UUID restaurantTargetId, UUID paymentMethodId) {
+        var restaurantTarget = findValidrestaurant(restaurantTargetId);
+
+        var paymentMethod = paymentMethodRepository.findById(paymentMethodId)
+                .orElseThrow(()-> new EntityNotFoundException(PaymentMethod.class, paymentMethodId.toString()));
+
+
+        var isAlreadyAttached = ! restaurantTarget.attachAllowedPaymentMethod(paymentMethod);
+
+        if (isAlreadyAttached)
+            throw new BusinessConstraintsViolationException("Forma de pagamento já consta associada ");
+
+        restaurantRepository.flush();
+    }
+
+    public Restaurant findValidrestaurant(UUID restaurantTargetId) {
+        return restaurantRepository.findById(restaurantTargetId)
+                .orElseThrow(()-> new EntityNotFoundException(Restaurant.class, restaurantTargetId.toString()));
+    }
+
+    //handle Users
+    @Transactional
+    public void addManager(Restaurant restaurantTarget, UUID userId) {
+        var validUser = userRepository.findById(userId)
+                .orElseThrow(()-> new EntityNotFoundException(User.class, userId.toString()));
+
+        var isAlreadyAdded  = !restaurantTarget.addManager(validUser);
+
+        if (isAlreadyAdded)
+            throw new BusinessConstraintsViolationException("Forma de pagamento já consta associada");
+    }
+
+    @Transactional
+    public void removeManager(Restaurant restaurantTarget, UUID paymentMethodId) {
+        var validUser = userRepository.findById(paymentMethodId)
+                .orElseThrow(()-> new EntityNotFoundException(User.class, paymentMethodId.toString()));
+
+        var isAlreadyAdded  =restaurantTarget.removeManager(validUser);
+
+        if (isAlreadyAdded)
+            throw new BusinessConstraintsViolationException("Forma de pagamento já consta associada");
     }
 }
