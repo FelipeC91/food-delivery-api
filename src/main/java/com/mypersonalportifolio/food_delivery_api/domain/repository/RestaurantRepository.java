@@ -2,7 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.domain.repository;
 
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.domain.model.dto.output.RestaurantOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.RestaurantOutputDTO;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;

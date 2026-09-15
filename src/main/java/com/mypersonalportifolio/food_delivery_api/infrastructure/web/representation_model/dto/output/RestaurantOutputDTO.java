@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.domain.model.dto.output;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.PaymentMethod;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
@@ -25,7 +25,7 @@ public record RestaurantOutputDTO(
                 r.getShippingCost(),
                 r.getFoodCategory().getId(),
                 r.isActive(),
-                List.copyOf(r.getPaymentMethods())
+                List.copyOf(r.getAllowedPaymentMethods())
         );
     }
 }
