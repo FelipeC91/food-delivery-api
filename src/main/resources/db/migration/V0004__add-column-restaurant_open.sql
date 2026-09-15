@@ -1,0 +1,7 @@
+ALTER TABLE restaurant ADD COLUMN is_open BIT(1) NOT NULL DEFAULT false;
+
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE restaurant SET is_open = FALSE;
+
+SET SQL_SAFE_UPDATES = 1;

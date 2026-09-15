@@ -1,7 +1,5 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
 
 
@@ -11,18 +9,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Getter
@@ -42,7 +35,7 @@ public class Restaurant extends DomainEntityUUID {
 
     @Valid
     @ConvertGroup(from = Default.class, to = ValidationGroups.RestaurantRegistration.class)
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "food_category_id", nullable = false)
     @Setter
     private FoodCategory foodCategory;
@@ -51,12 +44,13 @@ public class Restaurant extends DomainEntityUUID {
     @Setter
     private Address address;
 
+    @Getter(AccessLevel.NONE)
     @ManyToMany
     @JoinTable(name = "restaurant_payment_method",
-                joinColumns = @JoinColumn(name = "restaurant_id"),
-                inverseJoinColumns = @JoinColumn( name = "payment_method_id")
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "payment_method_id")
     )
-    private List<PaymentMethod> paymentMethods = new ArrayList<>();
+    private Set<PaymentMethod> paymentMethods = new HashSet<PaymentMethod>();
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
@@ -67,20 +61,66 @@ public class Restaurant extends DomainEntityUUID {
     private OffsetDateTime updatedAt;
 
 
-    @OneToMany(mappedBy = "restaurant", fetch =  FetchType.LAZY)
-    private List<Product> products = new ArrayList<>();
+    @Getter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    private Set<Product> products = new HashSet<Product>();
 
 
     @Column(name = "is_active")
     @Setter
     private Boolean active = Boolean.TRUE;
 
+
+    @Column(name = "is_open")
+    private Boolean open = Boolean.FALSE;
+
     public boolean isActive() {
         return (
                 this.active &&
-                Objects.nonNull( this.getAddress() ) &&
-                !this.getPaymentMethods().isEmpty()
+                        Objects.nonNull(this.getAddress()) &&
+                        !this.getAllowedPaymentMethods().isEmpty()
         );
     }
 
+    @ManyToMany
+    @JoinTable(name = "restaurant_user",
+                joinColumns = @JoinColumn(name = "restaurant_id"),
+                inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> managers = new HashSet<>();
+
+    public Set<User> getManagers() {
+        return Collections.unmodifiableSet(managers);
+    }
+
+    public boolean addManager(User user) {
+        return managers.add(user);
+    }
+
+    public boolean removeManager(User user) {
+        return managers.remove(user);
+    }
+
+    public boolean isOpen() {
+        return this.open;
+    }
+
+    public Set<PaymentMethod> getAllowedPaymentMethods() {
+        return Collections.unmodifiableSet(this.paymentMethods);
+    }
+
+    public boolean attachAllowedPaymentMethod(PaymentMethod paymentMethod) {
+        return this.paymentMethods.add(paymentMethod);
+    }
+
+    public void detachAllowedPaymentMethod(PaymentMethod paymentMethod) {
+
+        this.paymentMethods.remove(paymentMethod);
+    }
+
+    public Set<Product> getProductCatalog() {
+        return Collections.unmodifiableSet(this.products);
+    }
+
 }
+
