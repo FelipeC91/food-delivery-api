@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS order_model (
 
 CREATE TABLE IF NOT EXISTS order_item (
 --     id VARCHAR(36) PRIMARY KEY NOT NULL,
-    order_id VARCHAR(36) NOT NULL  PRIMARY KEY,
+    order_id VARCHAR(36) NOT NULL,
     product_id VARCHAR(36) NOT NULL,
     quantity INTEGER NOT NULL,
     unit_price DECIMAL(38,2) NOT NULL,

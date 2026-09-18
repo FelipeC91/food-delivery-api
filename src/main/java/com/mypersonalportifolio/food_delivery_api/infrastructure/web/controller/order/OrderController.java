@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller.order;
 
 import com.mypersonalportifolio.food_delivery_api.domain.repository.OrderRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.OrderService;
@@ -31,7 +31,9 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<OrderBasicInfoOutputDTO> getAllResources() {
-        return orderRepository.findAll().stream().map(orderMapper::toOrderBasicInfoOutputDTO).collect(Collectors.toList());
+        return orderRepository.findAll().stream()
+                                        .map(orderMapper::toOrderBasicInfoOutputDTO)
+                                        .collect(Collectors.toList());
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -44,5 +46,6 @@ public class OrderController {
     @PostMapping
     public OrderOutputDTO createResource(@RequestBody OrderInputDTO orderInputDTO) {
         return orderService.acceptNewOrder(orderInputDTO);
+
     }
 }
