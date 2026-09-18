@@ -30,8 +30,7 @@ public class CityController {
 
     @GetMapping("/{cityId}")
     public ResponseEntity<City> findOneResource(@PathVariable Long cityId) {
-        var city = cityRepository.findById(cityId)
-                                        .orElseThrow( () -> new EntityNotFoundException(City.class, cityId.toString()) );
+        var city = cityService.findValidCity(cityId);
 
         return ResponseEntity.ok(city);
     }

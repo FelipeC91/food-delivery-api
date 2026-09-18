@@ -6,6 +6,7 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representat
 import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.AddressOutputDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
@@ -15,8 +16,10 @@ public interface AddressMapper {
 
     @Mapping(source = "city.name", target = "cityName")
     @Mapping(source = "city.state.name", target = "stateName")
-    AddressOutputDTO addressToAddressOutputDTO(Address address);
+    AddressOutputDTO toAddressOutputDTO(Address address);
 
-    City dtoToCity(AddressInputDTO.CityInputDTO cityInputDTO);
+
+    Address toAddress(AddressInputDTO addressInputDTO);
+
 
 }

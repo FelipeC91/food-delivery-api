@@ -1,5 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -18,11 +19,12 @@ public record AddressInputDTO(
         @Positive
         Integer streetNumber,
 
-        @NotNull
+        @Valid
         CityInputDTO city
 ) {
 
     public record CityInputDTO(
+            @NotNull
             String name
     ) {
     }

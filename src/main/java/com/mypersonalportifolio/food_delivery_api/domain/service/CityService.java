@@ -5,6 +5,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.domain.model.State;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.StateRepository;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,5 +46,15 @@ public class CityService {
 
         return stateRepository.findById(stateId)
                 .orElseThrow( () -> new EntityNotFoundException(State.class, stateId.toString()));
+    }
+
+    public City findValidCity(Long cityId) {
+        return cityRepository.findById(cityId)
+                .orElseThrow( () -> new EntityNotFoundException(City.class, cityId.toString()) );
+    }
+
+    public City findValidCityByName(@NotBlank String name) {
+        return cityRepository.findByName(name)
+                .orElseThrow( () -> new EntityNotFoundException(City.class, name) );
     }
 }

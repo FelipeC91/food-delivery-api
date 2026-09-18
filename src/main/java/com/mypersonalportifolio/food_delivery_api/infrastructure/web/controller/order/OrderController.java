@@ -31,14 +31,15 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<OrderBasicInfoOutputDTO> getAllResources() {
-        return orderRepository.findAll().stream().map(orderMapper::orderToOrderBasicInfoOutputDTO).collect(Collectors.toList());
+        return orderRepository.findAll().stream().map(orderMapper::toOrderBasicInfoOutputDTO).collect(Collectors.toList());
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{orderId}")
     public OrderOutputDTO getResource(@PathVariable UUID orderId) {
-        return orderMapper.orderToOrderOutputDTO(orderService.findValidOrder(orderId));
+        return orderMapper.toOrderOutputDTO(orderService.findValidOrder(orderId));
     }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public OrderOutputDTO createResource(@RequestBody OrderInputDTO orderInputDTO) {
