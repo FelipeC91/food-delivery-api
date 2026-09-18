@@ -39,8 +39,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserOutputDTO> findOneResource(@PathVariable UUID userId) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(User.class, userId.toString()));
+        var user = userService.findVerifiedUser(userId);
 
         return ResponseEntity.ok(new UserOutputDTO(user));
     }
@@ -59,8 +58,7 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<UserOutputDTO> updateResource(@PathVariable UUID userId,
                                                         @RequestBody @Valid User userSource) {
-        var userTarget = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(User.class, userId.toString()));
+        var userTarget = userService.findVerifiedUser(userId);
 
         var updatedUser = userService.updateProperties(userTarget, userSource);
 
@@ -70,8 +68,7 @@ public class UserController {
     @PutMapping("/{userId}/password")
     public ResponseEntity<UserOutputDTO> updatePassword(@PathVariable UUID userId,
                                                         @RequestBody @Valid UserPasswordInputDTO passwordSource) {
-        var userTarget = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(User.class, userId.toString()));
+        var userTarget = userService.findVerifiedUser(userId);
 
         var updatedUser = userService.updatePassword(userTarget, passwordSource);
 

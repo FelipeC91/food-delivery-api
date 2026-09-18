@@ -77,4 +77,10 @@ public class UserService {
         return groupRepository.findById(groupId)
                 .orElseThrow(() -> new EntityNotFoundException(UserGroup.class, groupId.toString()));
     }
+
+    public User findVerifiedUser(UUID userId) {
+        return  userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(User.class, userId.toString()));
+
+    }
 }
