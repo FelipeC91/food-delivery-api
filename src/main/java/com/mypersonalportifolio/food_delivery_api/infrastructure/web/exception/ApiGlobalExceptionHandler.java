@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
+import com.mypersonalportifolio.food_delivery_api.domain.exception.BusinessConstraintsViolationException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityAlreadyExistsException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 
@@ -36,6 +37,21 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Autowired
     private MessageSource errorMessageSource;
+
+    @ExceptionHandler(BusinessConstraintsViolationException.class)
+    public ResponseEntity<?> handleBusinessConstraintsViolationException(BusinessConstraintsViolationException exception, WebRequest request) {
+        var defaultHttpStatusCode = HttpStatus.BAD_REQUEST;
+
+        var problemDetails = ApiProblemDetails.builder()
+                .title(defaultHttpStatusCode.getReasonPhrase())
+                .detail(exception.getMessage())
+                .httpStatusCode(defaultHttpStatusCode.value())
+                .timestamp(OffsetDateTime.now())
+                .build();
+
+        return super.handleExceptionInternal(exception, problemDetails, HttpHeaders.EMPTY, defaultHttpStatusCode, request);
+
+    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException exception, WebRequest request) {
@@ -70,6 +86,10 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected @Nullable ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode httpStatusCode, WebRequest request) {
         var rootCause = ExceptionUtils.getRootCause(ex);
+
+        System.out.println("----------------------------------");
+        System.out.println(rootCause.getCause());
+        System.out.println("----------------------------------");
 
         if (rootCause instanceof InvalidFormatException)
             return handleInvalidFormatException((InvalidFormatException) rootCause, HttpHeaders.EMPTY, httpStatusCode, request);
@@ -208,12 +228,13 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
                     .timestamp(OffsetDateTime.now())
                     .build();
 
-        } else if ( body instanceof String ) {
+        } else if (body instanceof String ) {
             body = ApiProblemDetails.builder()
                     .title( (String) body)
                     .httpStatusCode(statusCode.value())
                     .build();
         }
+
         return super.handleExceptionInternal(ex, body, HttpHeaders.EMPTY, statusCode, request);
     }
 }
