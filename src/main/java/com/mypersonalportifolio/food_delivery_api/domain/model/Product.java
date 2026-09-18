@@ -6,14 +6,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor
 public class Product extends DomainEntityUUID {
 
@@ -45,4 +45,8 @@ public class Product extends DomainEntityUUID {
     @Setter
     private Restaurant restaurant;
 
+
+    public Product(UUID id) {
+        super(id);
+    }
 }

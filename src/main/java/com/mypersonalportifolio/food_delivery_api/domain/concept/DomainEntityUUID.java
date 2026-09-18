@@ -1,10 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.domain.concept;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
@@ -14,7 +11,7 @@ import java.util.UUID;
 
 @MappedSuperclass
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public abstract class DomainEntityUUID {
 
@@ -36,4 +33,5 @@ public abstract class DomainEntityUUID {
     public int hashCode() {
          return Objects.hashCode(id);
  }
+
 }
