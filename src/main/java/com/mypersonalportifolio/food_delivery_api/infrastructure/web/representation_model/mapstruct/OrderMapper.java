@@ -15,16 +15,17 @@ public interface OrderMapper {
     OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
 
     @Mapping(source = "customer.name", target = "customerName")
-    OrderOutputDTO orderToOrderOutputDTO(Order order);
+    OrderOutputDTO toOrderOutputDTO(Order order);
 
     @Mapping(source = "customer.name", target = "customerName")
-    OrderBasicInfoOutputDTO orderToOrderBasicInfoOutputDTO(Order order);
+    OrderBasicInfoOutputDTO toOrderBasicInfoOutputDTO(Order order);
 
     @Mapping(source = "product.id", target = "productId")
     @Mapping(source = "product.name", target = "productName")
     @Mapping(source = "product.price", target = "productPrice")
-    OrderOutputDTO.OrderItemOutputDTO orderItemToOrderItemOutputDTO(OrderItem orderItem);
+    OrderOutputDTO.OrderItemOutputDTO toOrderItemOutputDTO(OrderItem orderItem);
 
 
-    Order orderToOrderInputDTO(OrderInputDTO order);
+    Order toOrder(OrderInputDTO order);
+
 }

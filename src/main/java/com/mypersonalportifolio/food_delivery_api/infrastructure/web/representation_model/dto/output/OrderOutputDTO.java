@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.UUID;
 
 public record OrderOutputDTO(
+        UUID id,
         RestaurantBasicInfoOutputDTO restaurant,
         PaymentMethod paymentMethod,
         OffsetDateTime confirmedAt,
-        OrderStatus orderStatus,
+        OrderStatus status,
         String customerName,
         AddressOutputDTO shippingAddress,
         BigDecimal shippingCost,

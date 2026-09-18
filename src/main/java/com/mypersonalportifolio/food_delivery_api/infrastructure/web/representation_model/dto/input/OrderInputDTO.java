@@ -1,8 +1,10 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +21,7 @@ public record OrderInputDTO(
         AddressInputDTO shippingAddress,
 
         @Valid
-        @NotNull
+        @Size(min = 1)
         List<OrderItemInputDTO> items
 ) {
 
@@ -31,6 +33,13 @@ public record OrderInputDTO(
             Integer quantity,
 
             String note
-    ) { }
+    ) {
+
+
+    }
+
+
+
+
 
 }

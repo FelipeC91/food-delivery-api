@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 public class ProductService {
 
@@ -39,5 +41,10 @@ public class ProductService {
         BeanUtils.copyProperties(productTarget, productSource, "id", "restaurant");
 
         return productRepository.saveAndFlush(productTarget);
+    }
+
+    public Product findValidProduct(UUID productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException(Product.class, "Produto"));
     }
 }
