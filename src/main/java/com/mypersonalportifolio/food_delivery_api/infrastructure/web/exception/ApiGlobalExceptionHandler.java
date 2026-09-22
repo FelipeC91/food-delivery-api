@@ -19,7 +19,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -138,7 +137,6 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
         System.out.println(ex.getPath());
         System.out.println("----------------------------------");
 
-        var invalidProperty = concatPath(ex.getPath());
         var details = String.format("A propriedade %s recebeu valor %s, que é de tipo inválido. Informe um valor compatível com %s",
                                                 propertyPath, ex.getValue(), ex.getTargetType().getSimpleName());
 
