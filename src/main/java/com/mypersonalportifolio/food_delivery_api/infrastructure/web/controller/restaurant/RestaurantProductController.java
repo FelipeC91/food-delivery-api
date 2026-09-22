@@ -8,16 +8,19 @@ import com.mypersonalportifolio.food_delivery_api.domain.repository.ProductRepos
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/restaurant/{restaurantId}/products")
+@RequestMapping("/restaurants/{restaurantId}/products")
 public class RestaurantProductController {
 
     @Autowired
@@ -30,11 +33,15 @@ public class RestaurantProductController {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<Set<Product>> listResources(@PathVariable UUID restaurantId) {
+    public ResponseEntity<Set<Product>> listResources(@PathVariable UUID restaurantId, @RequestParam(value = "only-active", required = false) boolean onlyActive) {
         var restaurantTarget = findRestaurant(restaurantId);
 
         var productSet = restaurantTarget.getProductCatalog();
 
+        if (onlyActive) {
+            var activeSet = productSet.stream().filter(Product::isActive).collect(Collectors.toSet());
+            return ResponseEntity.ok(activeSet);
+        }
         return ResponseEntity.ok(productSet);
 
     }
@@ -73,6 +80,7 @@ public class RestaurantProductController {
             throw new CandidateEntityInvalidException(Product.class, productCandidate.getName());
         }
     }
+
 
 
     private Restaurant findRestaurant(UUID restaurantId) {
