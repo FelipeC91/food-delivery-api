@@ -4,6 +4,8 @@ package com.mypersonalportifolio.food_delivery_api.domain.repository;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.RestaurantOutputDTO;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -31,13 +33,12 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, UUID>,
 
     @EntityGraph(attributePaths = {"foodCategory", "paymentMethods"})
     @Query("SELECT r FROM Restaurant AS r")
-    List<Restaurant> findAllWithGraph();
+    Page<Restaurant> findAllWithGraph(Pageable pageable);
 
 
-    default List<RestaurantOutputDTO> findAllReturningBasicInfo() {
-        return findAllWithGraph().stream()
-                .map(RestaurantOutputDTO::new)
-                .toList();
+    default Page<RestaurantOutputDTO> findAllReturningBasicInfo(Pageable pageable) {
+         return findAllWithGraph(pageable)
+                .map(RestaurantOutputDTO::new);
     }
 
     Optional<Restaurant> findFirstRestaurantByNameContaining(String name);
