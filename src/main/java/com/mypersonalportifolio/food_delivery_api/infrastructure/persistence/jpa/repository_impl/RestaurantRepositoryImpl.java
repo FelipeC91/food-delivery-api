@@ -36,7 +36,7 @@ public class RestaurantRepositoryImpl implements CustomRestaurantRepository {
         var fromRestaurant = criteriaQuery.from(Restaurant.class);
 
 
-        var predicates = setUpCriteriaPredicatesByNameLikeAndShippingCostBetween(criteriaBuilder, fromRestaurant, filterDTO);
+        var predicates = processCriteriaPredicatesByNameLikeAndShippingCostBetween(criteriaBuilder, fromRestaurant, filterDTO);
 
         criteriaQuery.where(predicates);
 
@@ -45,7 +45,7 @@ public class RestaurantRepositoryImpl implements CustomRestaurantRepository {
     }
 
 
-    private Predicate[] setUpCriteriaPredicatesByNameLikeAndShippingCostBetween(CriteriaBuilder criteriaBuilder, Root<Restaurant> fromRestaurant, ByNameLikeAndShippingCostBetweenFilterDTO filterDTO) {
+    private Predicate[] processCriteriaPredicatesByNameLikeAndShippingCostBetween(CriteriaBuilder criteriaBuilder, Root<Restaurant> fromRestaurant, ByNameLikeAndShippingCostBetweenFilterDTO filterDTO) {
         var predicates = new ArrayList<Predicate>();
 
         if (StringUtils.hasText( filterDTO.name() ) && !filterDTO.name().isBlank())
