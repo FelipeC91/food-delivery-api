@@ -11,6 +11,8 @@ import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantServi
 import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.mapstruct.RestaurantMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +38,8 @@ public class RestaurantController {
     RestaurantMapper restaurantMapper;
 
     @GetMapping
-    public List<RestaurantOutputDTO> listAllResources() {
-        return restaurantRepository.findAllReturningBasicInfo();
+    public Page<RestaurantOutputDTO> listAllResources(Pageable pageable) {
+        return restaurantRepository.findAllReturningBasicInfo(pageable);
     }
 
     @GetMapping("/{restaurantId}")
