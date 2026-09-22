@@ -34,7 +34,6 @@ public class Product extends DomainEntityUUID {
     private BigDecimal price;
 
 
-    @JsonIgnore
     @Column(name = "is_active", nullable = false)
     @Setter
     private boolean active;
