@@ -1,0 +1,66 @@
+<!-- Created with Jaspersoft Studio version 7.0.8.final using JasperReports Library version 7.0.8-6f896111  -->
+<jasperReport name="daily-sales" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cadcc82e-5d21-4d1c-a4ac-b6073bed36de">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="434"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="552"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="creationDate" class="java.util.Date"/>
+	<field name="totalSales" class="java.lang.Long"/>
+	<field name="totalBilled" class="java.math.BigDecimal"/>
+	<background splitType="Stretch"/>
+	<title height="79" splitType="Stretch">
+		<element kind="staticText" uuid="a6f62fea-d36b-4c82-b26f-c0eac694f22e" x="0" y="0" width="555" height="79" forecolor="#030303" backcolor="#CCC8C8" mode="Opaque" markup="none" fontSize="25.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Vendas Diárias]]></text>
+		</element>
+	</title>
+	<pageHeader height="50" splitType="Stretch">
+		<element kind="staticText" uuid="d9bdfa04-4e5f-4065-963b-e0690f0b386c" x="0" y="0" width="100" height="50" markup="none" fontSize="13.0" bold="false" hTextAlign="Center" vTextAlign="Middle">
+			<box rightPadding="0">
+				<pen lineWidth="1.0" lineStyle="Solid"/>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+			<text><![CDATA[Data]]></text>
+		</element>
+		<element kind="staticText" uuid="8e629a30-37a2-4229-ae99-30993f26b428" x="120" y="0" width="100" height="50" markup="none" fontSize="13.0" bold="false" hTextAlign="Center" vTextAlign="Middle">
+			<box rightPadding="0">
+				<pen lineWidth="1.0" lineStyle="Solid"/>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+			<text><![CDATA[Qtd. de Vendas]]></text>
+		</element>
+		<element kind="staticText" uuid="9192b53f-4dfc-415b-ac82-8b9f28916856" x="240" y="0" width="100" height="50" markup="none" fontSize="13.0" bold="false" hTextAlign="Center" vTextAlign="Middle">
+			<box rightPadding="0">
+				<pen lineWidth="1.0" lineStyle="Solid"/>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+			<text><![CDATA[Total Faturado]]></text>
+		</element>
+	</pageHeader>
+	<columnHeader height="70" splitType="Stretch">
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<element kind="textField" uuid="2773eca2-406e-4057-93b1-483e8a5e00a4" x="0" y="0" width="100" height="30" markup="none" evaluationTime="Report" linkType="None" linkTarget="Self" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{creationDate})]]></expression>
+			</element>
+			<element kind="textField" uuid="6f9b733b-e215-48d1-ae23-699a828bac68" x="120" y="0" width="100" height="30" markup="none" pattern="#,##0.###;(#,##0.###-)" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{totalSales}]]></expression>
+			</element>
+			<element kind="textField" uuid="04668359-98ff-4eb2-9700-80529027e8e3" x="240" y="0" width="100" height="30" markup="none" pattern="¤#,##0.##;¤-#,##0.00" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{totalBilled}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch"/>
+	<pageFooter height="54" splitType="Stretch"/>
+	<summary height="42" splitType="Stretch"/>
+</jasperReport>
