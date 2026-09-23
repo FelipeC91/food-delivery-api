@@ -14,8 +14,8 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -50,16 +50,20 @@ public class DailySalesQueryProjectionImpl implements DailySalesQueryProjection 
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
-    private Expression<LocalDate> processCreationDateExpression(CriteriaBuilder criteriaBuilder, Root<Order> fromOrder, FilterDTO filter) {
+    private Expression<Date> processCreationDateExpression(CriteriaBuilder criteriaBuilder, Root<Order> fromOrder, FilterDTO filter) {
+        if (filter.offsetTimeZone().equals(DEFAULT_TIME_ZONE_OFFSET)) {
+            return criteriaBuilder.function("DATE", Date.class, fromOrder.get(Order_.CREATED_AT));
+        }
+
         var convertedDateTime = criteriaBuilder.function(
                 "CONVERT_TZ",
-                LocalDate.class,
+                Date.class,
                 fromOrder.get(Order_.CREATED_AT),
                 criteriaBuilder.literal(DEFAULT_TIME_ZONE_OFFSET),
                 criteriaBuilder.literal(filter.offsetTimeZone())
         );
 
-        return criteriaBuilder.function("DATE", LocalDate.class, convertedDateTime);
+        return criteriaBuilder.function("DATE", Date.class, convertedDateTime);
     }
 
     private List<Predicate> processPredicates(CriteriaBuilder criteriaBuilder, Root<Order> fromOrder, FilterDTO filter) {
