@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.application.use_case.statistics;
+package com.mypersonalportifolio.food_delivery_api.domain.exception.statistics;
 
 import java.util.List;
 
