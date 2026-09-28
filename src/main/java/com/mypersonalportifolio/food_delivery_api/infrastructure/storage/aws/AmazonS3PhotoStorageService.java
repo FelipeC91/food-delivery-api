@@ -5,6 +5,7 @@ import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoToSto
 import com.mypersonalportifolio.food_delivery_api.application.storage.fileDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -12,7 +13,8 @@ import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
 
-//@Component("S3StorageService")
+@Primary
+@Component("S3StorageService")
 public class AmazonS3PhotoStorageService implements PhotoStorageService {
 
     private final S3Client s3Client;
