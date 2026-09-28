@@ -1,6 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.domain.repository;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Product;
+import com.mypersonalportifolio.food_delivery_api.domain.model.ProductPhoto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

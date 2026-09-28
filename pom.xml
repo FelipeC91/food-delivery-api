@@ -73,6 +73,14 @@
 			<version>13.3.0</version>
 			<scope>compile</scope>
 		</dependency>
+		<!-- CLOUD-->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.55.3</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- UTILS-->
 
 		<dependency>

@@ -8,7 +8,6 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Embeddable
-//@Entity(name = "order_item")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

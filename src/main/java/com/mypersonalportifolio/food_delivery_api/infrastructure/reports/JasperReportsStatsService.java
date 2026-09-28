@@ -1,7 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.reports;
 
-import com.mypersonalportifolio.food_delivery_api.application.use_case.statistics.DailySalesProjectionDTO;
-import com.mypersonalportifolio.food_delivery_api.application.use_case.statistics.ReportStatsService;
+import com.mypersonalportifolio.food_delivery_api.application.statistic.DailySalesProjectionDTO;
+import com.mypersonalportifolio.food_delivery_api.application.statistic.ReportStatsService;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -28,11 +28,7 @@ public class JasperReportsStatsService implements ReportStatsService {
     public byte[] generateDailySalesReportPdf(List<DailySalesProjectionDTO> dailySalesProjectionSource) {
         try {
             var parameters = new HashMap<String,Object>();
-            parameters.put("REPORT_LOCALE", Locale.of("pt", "BR"));
 
-            System.out.println("---------------------------------");
-            System.out.println(dailySalesProjectionSource.size());
-            System.out.println("---------------------------------");
             var datasource = new JRBeanCollectionDataSource(dailySalesProjectionSource);
 
             var jasperPrint = JasperFillManager.fillReport(loadDailySalesReportTemplate().getInputStream(), parameters, datasource);

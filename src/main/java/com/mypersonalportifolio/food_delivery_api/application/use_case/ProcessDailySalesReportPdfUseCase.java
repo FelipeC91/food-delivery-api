@@ -1,8 +1,8 @@
 package com.mypersonalportifolio.food_delivery_api.application.use_case;
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.UseCase;
-import com.mypersonalportifolio.food_delivery_api.application.use_case.statistics.DailySalesQueryProjection;
-import com.mypersonalportifolio.food_delivery_api.application.use_case.statistics.ReportStatsService;
+import com.mypersonalportifolio.food_delivery_api.application.statistic.DailySalesQueryProjection;
+import com.mypersonalportifolio.food_delivery_api.application.statistic.ReportStatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

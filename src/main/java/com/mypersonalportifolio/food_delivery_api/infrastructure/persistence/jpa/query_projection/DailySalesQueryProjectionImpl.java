@@ -1,7 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.persistence.jpa.query_projection;
 
-import com.mypersonalportifolio.food_delivery_api.application.use_case.statistics.DailySalesProjectionDTO;
-import com.mypersonalportifolio.food_delivery_api.application.use_case.statistics.DailySalesQueryProjection;
+import com.mypersonalportifolio.food_delivery_api.application.statistic.DailySalesProjectionDTO;
+import com.mypersonalportifolio.food_delivery_api.application.statistic.DailySalesQueryProjection;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Order;
 import com.mypersonalportifolio.food_delivery_api.domain.model.OrderStatus;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Order_;

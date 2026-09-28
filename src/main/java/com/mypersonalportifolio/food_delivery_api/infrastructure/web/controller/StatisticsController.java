@@ -2,9 +2,8 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.ProcessDailySalesReportPdfUseCase;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.ProcessDailySalesStatsUseCase;
-import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.UseCase;
-import com.mypersonalportifolio.food_delivery_api.application.use_case.statistics.DailySalesProjectionDTO;
-import com.mypersonalportifolio.food_delivery_api.application.use_case.statistics.DailySalesQueryProjection;
+import com.mypersonalportifolio.food_delivery_api.application.statistic.DailySalesProjectionDTO;
+import com.mypersonalportifolio.food_delivery_api.application.statistic.DailySalesQueryProjection;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream:src/main/java/com/mypersonalportifolio/food_delivery_api/application/use_case/statistics/DailySalesQueryProjection.java
 package com.mypersonalportifolio.food_delivery_api.application.use_case.statistics;
+=======
+package com.mypersonalportifolio.food_delivery_api.application.statistic;
+>>>>>>> Stashed changes:src/main/java/com/mypersonalportifolio/food_delivery_api/application/statistic/DailySalesQueryProjection.java
 
 import org.springframework.format.annotation.DateTimeFormat;
 
