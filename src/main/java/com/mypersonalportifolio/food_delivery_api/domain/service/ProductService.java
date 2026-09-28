@@ -8,16 +8,19 @@ import com.mypersonalportifolio.food_delivery_api.domain.repository.ProductRepos
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
 
     @Autowired
-    private RestaurantRepository restaurantRepository;
+    private RestaurantService  restaurantService;
 
     @Autowired
     private ProductRepository productRepository;
@@ -46,5 +49,16 @@ public class ProductService {
     public Product findValidProduct(UUID productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException(Product.class, "Produto"));
+    }
+
+    public Set<Product> retrieveRestaurantCatalog(UUID restaurantId, boolean onlyActive) {
+        var restaurantTarget = restaurantService.findValidrestaurant(restaurantId);
+
+        var productSet = restaurantTarget.getProductCatalog();
+
+        if (onlyActive)
+            return productSet.stream().filter(Product::isActive).collect(Collectors.toSet());
+        else
+            return productSet;
     }
 }

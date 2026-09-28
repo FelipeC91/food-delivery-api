@@ -1,10 +1,9 @@
-package com.mypersonalportifolio.food_delivery_api.domain.exception.statistics;
+package com.mypersonalportifolio.food_delivery_api.application.statistic;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Date;
 
 

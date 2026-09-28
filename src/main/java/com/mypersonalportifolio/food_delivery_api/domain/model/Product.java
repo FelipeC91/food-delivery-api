@@ -12,6 +12,10 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
+@SecondaryTable(
+        name = "product_photo",
+        pkJoinColumns = @PrimaryKeyJoinColumn(name = "product_id")
+)
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,6 +41,10 @@ public class Product extends DomainEntityUUID {
     @Column(name = "is_active", nullable = false)
     @Setter
     private boolean active;
+
+    @Setter
+    @Embedded
+    private ProductPhoto photoMetaData;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

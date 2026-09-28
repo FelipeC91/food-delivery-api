@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller.restaurant;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
@@ -7,14 +7,13 @@ import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.ProductRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
+import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,42 +26,34 @@ public class RestaurantProductController {
     private ProductRepository productRepository;
 
     @Autowired
-    private RestaurantRepository restaurantRepository;
+    RestaurantService restaurantService;
 
     @Autowired
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<Set<Product>> listResources(@PathVariable UUID restaurantId, @RequestParam(value = "only-active", required = false) boolean onlyActive) {
-        var restaurantTarget = findRestaurant(restaurantId);
+    public ResponseEntity<Set<Product>> listResources(@PathVariable UUID restaurantId,
+                                                      @RequestParam(value = "only-active", required = false) boolean onlyActive) {
+        var productSet =  productService.retrieveRestaurantCatalog(restaurantId, onlyActive);
 
-        var productSet = restaurantTarget.getProductCatalog();
-
-        if (onlyActive) {
-            var activeSet = productSet.stream().filter(Product::isActive).collect(Collectors.toSet());
-            return ResponseEntity.ok(activeSet);
-        }
         return ResponseEntity.ok(productSet);
 
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> findOneResource(@PathVariable UUID restaurantId,
-                                                   @PathVariable UUID productId) {
-
-        var product = productRepository.findByIdAndRestaurantId(productId, restaurantId)
-                .orElseThrow(() -> new EntityNotFoundException(Product.class, productId.toString()));
+    public ResponseEntity<Product> findOneResource(@PathVariable UUID productId) {
+        var product = productService.findValidProduct(productId);
 
         return ResponseEntity.ok(product);
     }
 
     @PostMapping
-    public ResponseEntity<Product> createResource(@PathVariable UUID restaurantId, @Valid @RequestBody Product productCandate) {
-        var restaurant = findRestaurant(restaurantId);
+    public ResponseEntity<Product> createResource(@PathVariable UUID restaurantId, @Valid @RequestBody Product productCandidate) {
+        var restaurant = restaurantService.findValidrestaurant(restaurantId);
 
-        productCandate.setRestaurant(restaurant);
+        productCandidate.setRestaurant(restaurant);
 
-        var product = productRepository.save(productCandate);
+        var product = productRepository.save(productCandidate);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
@@ -70,23 +61,17 @@ public class RestaurantProductController {
     @PutMapping
     public ResponseEntity<Product> associateResource(@PathVariable UUID restaurantId,
                                                    @RequestBody @Valid Product productCandidate) {
-        var restaurant = findRestaurant(restaurantId);
+        var restaurant = restaurantService.findValidrestaurant(restaurantId);
 
         try {
-            productService.associateRestaurant(productCandidate, restaurant);
+            var product = productService.associateRestaurant(productCandidate, restaurant);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(productCandidate);
+            return ResponseEntity.status(HttpStatus.CREATED).body(product);
         } catch (IllegalArgumentException e) {
             throw new CandidateEntityInvalidException(Product.class, productCandidate.getName());
         }
     }
 
-
-
-    private Restaurant findRestaurant(UUID restaurantId) {
-        return restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new EntityNotFoundException(Restaurant.class, restaurantId.toString()));
-    }
 
 
 }
