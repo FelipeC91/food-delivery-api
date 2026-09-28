@@ -28,7 +28,7 @@ public class UploadProductPhotoUseCase implements UseCase<ProductPhotoInputDTO, 
 
     @Autowired
     public UploadProductPhotoUseCase(ProductService productService, ProductRepository productRepository,
-                                     @Qualifier("S3StorageService") PhotoStorageService photoStorageService,
+                                     PhotoStorageService photoStorageService,
                                      ProductPhotoMapper productPhotoMapper) {
         this.productService = productService;
         this.productRepository = productRepository;

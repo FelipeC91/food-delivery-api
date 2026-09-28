@@ -3,7 +3,7 @@ package com.mypersonalportifolio.food_delivery_api.application.use_case;
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoStorageService;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.UseCase;
 import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +15,9 @@ public class RemoveProductPhotoUseCase implements UseCase<UUID, Void> {
     private final ProductService productService;
     private final PhotoStorageService photoStorageService;
 
+    @Autowired
     public RemoveProductPhotoUseCase(ProductService productService,
-                                     @Qualifier("S3StorageService") PhotoStorageService photoStorageService) {
+                                     PhotoStorageService photoStorageService) {
         this.productService = productService;
         this.photoStorageService = photoStorageService;
     }

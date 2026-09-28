@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-@Component("localStorageService")
+//@Component("localStorageService")
 public class LocalPhotoStorageService implements PhotoStorageService {
 
     private final String LOCAL_PHOTO_STORAGE_BASE_PATH;

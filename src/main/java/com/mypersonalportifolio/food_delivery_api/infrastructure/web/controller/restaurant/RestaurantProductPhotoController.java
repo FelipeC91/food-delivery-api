@@ -31,7 +31,8 @@ public class RestaurantProductPhotoController {
     private final RemoveProductPhotoUseCase removeProductPhotoUseCase;
 
     @Autowired
-    public RestaurantProductPhotoController(UploadProductPhotoUseCase uploadProductPhotoUseCase, RetrieveProductPhotoUseCase retrieveProductPhotoUseCase, RemoveProductPhotoUseCase removeProductPhotoUseCase) {
+    public RestaurantProductPhotoController(UploadProductPhotoUseCase uploadProductPhotoUseCase,
+                                            RetrieveProductPhotoUseCase retrieveProductPhotoUseCase, RemoveProductPhotoUseCase removeProductPhotoUseCase) {
         this.uploadProductPhotoUseCase = uploadProductPhotoUseCase;
         this.retrieveProductPhotoUseCase = retrieveProductPhotoUseCase;
         this.removeProductPhotoUseCase = removeProductPhotoUseCase;

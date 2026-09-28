@@ -6,7 +6,6 @@ import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.ProductPhotoOutputDTO;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.mapstruct.ProductPhotoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -21,7 +20,7 @@ public class RetrieveProductPhotoUseCase implements UseCase<UUID, ProductPhotoOu
 
     @Autowired
     public RetrieveProductPhotoUseCase(ProductService productService,
-                                       @Qualifier("S3StorageService") PhotoStorageService photoStorageService,
+                                       PhotoStorageService photoStorageService,
                                        ProductPhotoMapper productPhotoMapper) {
         this.productService = productService;
         this.photoStorageService = photoStorageService;

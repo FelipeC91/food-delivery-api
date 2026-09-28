@@ -12,7 +12,7 @@ import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
 
-@Component("S3StorageService")
+//@Component("S3StorageService")
 public class AmazonS3PhotoStorageService implements PhotoStorageService {
 
     private final S3Client s3Client;
