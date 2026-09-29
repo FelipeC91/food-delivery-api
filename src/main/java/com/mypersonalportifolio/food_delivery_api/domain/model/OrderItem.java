@@ -1,9 +1,13 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -11,8 +15,8 @@ import java.math.BigDecimal;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItem //extends DomainEntityUUID {
-{
+public class OrderItem {
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     @Setter
@@ -29,9 +33,5 @@ public class OrderItem //extends DomainEntityUUID {
     private BigDecimal totalPrice;
 
     private String note;
-
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Order order;
 
 }
