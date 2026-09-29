@@ -1,12 +1,12 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
 import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
+import com.mypersonalportifolio.food_delivery_api.domain.event.OrderCancelledEvent;
+import com.mypersonalportifolio.food_delivery_api.domain.event.OrderConfirmedEvent;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.BusinessConstraintsViolationException;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input.OrderInputDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.http.server.DelegatingServerHttpResponse;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -16,7 +16,7 @@ import java.util.*;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class Order extends DomainEntityUUID {
+public class Order extends  DomainEntityUUID {
 
     @ManyToOne
     private Restaurant restaurant;
@@ -108,7 +108,11 @@ public class Order extends DomainEntityUUID {
         setStatus(OrderStatus.CONFIRMADO, OrderStatus.CRIADO);
         this.confirmedAt = OffsetDateTime.now();
 
-    }    public void completeDelivery() {
+        super.registerEvent(new OrderConfirmedEvent(this));
+
+    }
+
+    public void completeDelivery() {
         setStatus(OrderStatus.ENTREGUE, OrderStatus.CONFIRMADO);
         this.confirmedAt = OffsetDateTime.now();
 
@@ -118,6 +122,8 @@ public class Order extends DomainEntityUUID {
     public void cancel() {
         setStatus(OrderStatus.CANCELADO, OrderStatus.CRIADO);
         this.cancelledAt = OffsetDateTime.now();
+
+        super.registerEvent(new OrderCancelledEvent(this));
     }
 
 

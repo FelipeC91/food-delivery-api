@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public abstract class DomainEntityUUID {
+public abstract class DomainEntityUUID extends AbstractAggregateRoot<DomainEntityUUID> {
 
 
     @Id
