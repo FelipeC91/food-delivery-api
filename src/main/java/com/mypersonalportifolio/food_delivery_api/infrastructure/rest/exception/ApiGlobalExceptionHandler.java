@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.exception;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.exception;
 
 
 import com.fasterxml.jackson.databind.JsonMappingException;

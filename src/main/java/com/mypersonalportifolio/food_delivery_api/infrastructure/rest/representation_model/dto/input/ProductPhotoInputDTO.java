@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input;
 
 import com.mypersonalportifolio.food_delivery_api.infrastructure.bean_validation.FileExtension;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.bean_validation.FileMaxSize;

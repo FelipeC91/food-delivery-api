@@ -1,7 +1,7 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.mapstruct;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.OrderItem;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input.OrderInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.OrderInputDTO;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

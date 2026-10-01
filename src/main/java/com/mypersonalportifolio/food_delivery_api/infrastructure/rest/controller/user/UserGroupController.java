@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller.user;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.user;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.User;

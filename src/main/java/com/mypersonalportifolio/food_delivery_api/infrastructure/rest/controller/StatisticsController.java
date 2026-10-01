@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller;
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.ProcessDailySalesReportPdfUseCase;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.ProcessDailySalesStatsUseCase;

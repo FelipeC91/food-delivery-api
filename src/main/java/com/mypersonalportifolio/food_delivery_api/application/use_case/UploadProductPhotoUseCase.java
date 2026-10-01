@@ -7,10 +7,9 @@ import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.U
 import com.mypersonalportifolio.food_delivery_api.domain.model.ProductPhoto;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.ProductRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input.ProductPhotoInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.mapstruct.ProductPhotoMapper;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.ProductPhotoInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct.ProductPhotoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

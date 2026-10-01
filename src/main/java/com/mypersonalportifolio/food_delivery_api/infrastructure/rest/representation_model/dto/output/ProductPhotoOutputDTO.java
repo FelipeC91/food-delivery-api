@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output;
 
 import com.mypersonalportifolio.food_delivery_api.application.storage.fileDetailsDTO;
 import lombok.Getter;

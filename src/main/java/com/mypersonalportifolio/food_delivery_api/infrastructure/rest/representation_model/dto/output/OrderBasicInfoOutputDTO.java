@@ -1,9 +1,7 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.OrderStatus;
 import com.mypersonalportifolio.food_delivery_api.domain.model.PaymentMethod;
-import jdk.jfr.DataAmount;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;

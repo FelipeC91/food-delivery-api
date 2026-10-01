@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityIntegrityViolationException;
@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

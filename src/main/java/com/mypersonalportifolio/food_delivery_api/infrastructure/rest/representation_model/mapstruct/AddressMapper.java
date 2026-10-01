@@ -1,12 +1,10 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.mapstruct;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Address;
-import com.mypersonalportifolio.food_delivery_api.domain.model.City;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input.AddressInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.AddressOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.AddressInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.AddressOutputDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")

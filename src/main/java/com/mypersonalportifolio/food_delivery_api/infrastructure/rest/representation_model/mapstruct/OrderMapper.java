@@ -1,10 +1,10 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.mapstruct;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Order;
 import com.mypersonalportifolio.food_delivery_api.domain.model.OrderItem;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input.OrderInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.OrderBasicInfoOutputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.OrderOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.OrderInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.OrderBasicInfoOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.OrderOutputDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

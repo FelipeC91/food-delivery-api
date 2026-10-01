@@ -1,11 +1,11 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller.restaurant;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.restaurant;
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.RemoveProductPhotoUseCase;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.RetrieveProductPhotoUseCase;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.UploadProductPhotoUseCase;
 import com.mypersonalportifolio.food_delivery_api.domain.model.ProductPhoto;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input.ProductPhotoInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.ProductPhotoOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.ProductPhotoInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.ProductPhotoOutputDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

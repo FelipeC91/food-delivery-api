@@ -1,11 +1,8 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
-import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Product;
-import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.ProductRepository;
-import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
 import jakarta.validation.Valid;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/restaurants/{restaurantId}/products")

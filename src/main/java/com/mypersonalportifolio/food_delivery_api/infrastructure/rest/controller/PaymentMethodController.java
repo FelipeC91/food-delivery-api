@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityIntegrityViolationException;

@@ -1,14 +1,14 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller.restaurant;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.restaurant;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input.RestaurantInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.RestaurantOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.RestaurantInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.RestaurantOutputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.FoodCategoryRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.mapstruct.RestaurantMapper;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct.RestaurantMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,8 +44,7 @@ public class RestaurantController {
 
     @GetMapping("/{restaurantId}")
     public ResponseEntity<RestaurantOutputDTO> findResource(@PathVariable UUID restaurantId) {
-        var restaurantTarget = restaurantRepository.findById(restaurantId)
-                .orElseThrow( () -> new EntityNotFoundException(Restaurant.class, restaurantId.toString()));
+        var restaurantTarget = restaurantService.findValidrestaurant(restaurantId);
 
         var restaurantDTO = restaurantMapper.restaurantToOutputDTO(restaurantTarget);
         return ResponseEntity.ok(restaurantDTO);
@@ -70,11 +69,10 @@ public class RestaurantController {
 
     @PutMapping("/{restaurantId}")
     public ResponseEntity<?> updateResource(@PathVariable("restaurantId") UUID restaurantTargetId,
-                                            @RequestBody @Valid RestaurantInputDTO restaurantInputDTOSource) {
-        var restaurantTarget = restaurantRepository.findById(restaurantTargetId)
-                .orElseThrow( () -> new EntityNotFoundException(Restaurant.class, restaurantTargetId.toString()));
+                                            @RequestBody @Valid RestaurantInputDTO restaurantInput) {
+        var restaurantTarget = restaurantService.findValidrestaurant(restaurantTargetId);
 
-        var restaurantSource = restaurantMapper.dtoToRestaurant(restaurantInputDTOSource);
+        var restaurantSource = restaurantMapper.dtoToRestaurant(restaurantInput);
 
         var savedRestaurant = restaurantService.updateProperties(restaurantSource, restaurantTarget);
 

@@ -5,7 +5,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEnti
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.User;
 import com.mypersonalportifolio.food_delivery_api.domain.model.UserGroup;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.input.UserPasswordInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.UserPasswordInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.GroupRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
 import jakarta.validation.Valid;

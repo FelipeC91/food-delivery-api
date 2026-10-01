@@ -1,8 +1,8 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller.restaurant;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.restaurant;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.web.representation_model.dto.output.UserOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.UserOutputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;

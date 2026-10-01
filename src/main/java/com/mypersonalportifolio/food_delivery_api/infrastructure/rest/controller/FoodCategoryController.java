@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web.controller;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityIntegrityViolationException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.FoodCategory;
@@ -7,13 +7,11 @@ import com.mypersonalportifolio.food_delivery_api.domain.service.FoodCategorySer
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 
-import com.mypersonalportifolio.food_delivery_api.infrastructure.bean_validation.ValidationGroups;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
