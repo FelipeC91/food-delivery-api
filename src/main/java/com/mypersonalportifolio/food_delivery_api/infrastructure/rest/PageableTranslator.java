@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.web;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
