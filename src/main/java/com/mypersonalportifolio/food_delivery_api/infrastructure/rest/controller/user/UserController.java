@@ -4,75 +4,79 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEnti
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityIntegrityViolationException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.User;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.UserRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.UserPasswordInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.UserOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.UserRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping({"/users", "/user"})
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    private final UserRepresentationModelAssembler assembler;
+
+    public UserController(UserRepository userRepository,
+                          UserService userService, UserRepresentationModelAssembler assembler) {
+        this.userRepository = userRepository;
+        this.userService = userService;
+        this.assembler = assembler;
+    }
 
     @GetMapping
-    public List<UserOutputDTO> listAllResources() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserOutputDTO::new)
-                .collect(Collectors.toList());
+    public CollectionModel<UserRepresentationModel> listAllResources() {
+        return assembler.toCollectionModel(userRepository.findAll());
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserOutputDTO> findOneResource(@PathVariable UUID userId) {
+    public ResponseEntity<UserRepresentationModel> findOneResource(@PathVariable UUID userId) {
         var user = userService.findVerifiedUser(userId);
 
-        return ResponseEntity.ok(new UserOutputDTO(user));
+        return ResponseEntity.ok(assembler.toModel(user));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserOutputDTO createResource(@RequestBody @Valid User userCandidate) {
+    public UserRepresentationModel createResource(@RequestBody @Valid User userCandidate) {
         try {
             var savedUser = userService.registerNewUser(userCandidate);
-            return new UserOutputDTO(savedUser);
+            return assembler.toModel(savedUser);
+
         } catch (IllegalArgumentException e) {
             throw new CandidateEntityInvalidException(User.class, userCandidate.getEmail());
         }
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserOutputDTO> updateResource(@PathVariable UUID userId,
-                                                        @RequestBody @Valid User userSource) {
+    public ResponseEntity<UserRepresentationModel> updateResource(@PathVariable UUID userId,
+                                                                  @RequestBody @Valid User userSource) {
         var userTarget = userService.findVerifiedUser(userId);
 
         var updatedUser = userService.updateProperties(userTarget, userSource);
 
-        return ResponseEntity.ok(new UserOutputDTO(updatedUser));
+        return ResponseEntity.ok(assembler.toModel(updatedUser));
     }
 
     @PutMapping("/{userId}/password")
-    public ResponseEntity<UserOutputDTO> updatePassword(@PathVariable UUID userId,
-                                                        @RequestBody @Valid UserPasswordInputDTO passwordSource) {
+    public ResponseEntity<UserRepresentationModel> updatePassword(@PathVariable UUID userId,
+                                                                  @RequestBody @Valid UserPasswordInputDTO passwordSource) {
         var userTarget = userService.findVerifiedUser(userId);
 
         var updatedUser = userService.updatePassword(userTarget, passwordSource);
 
-        return ResponseEntity.ok(new UserOutputDTO(updatedUser));
+        return ResponseEntity.ok(assembler.toModel(updatedUser));
     }
 
     @DeleteMapping("/{userId}")

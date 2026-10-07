@@ -1,7 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.RestaurantBasicInfoOutputDTO;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.RestaurantInputDTO;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.RestaurantOutputDTO;
 import org.mapstruct.Mapper;
@@ -18,9 +17,6 @@ public interface RestaurantMapper {
 
     @Mapping(source = "foodCategory.id", target = "foodCategoryId")
     RestaurantOutputDTO restaurantToOutputDTO(Restaurant restaurant);
-
-
-    RestaurantBasicInfoOutputDTO restaurantToBasicInfoDTO(Restaurant restaurant);
 
 
 

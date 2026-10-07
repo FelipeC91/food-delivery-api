@@ -51,7 +51,7 @@ class FoodCategoryControllerTest {
         when(foodCategoryRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class,
-                () -> foodCategoryController.findOneResource(id));
+                () -> foodCategoryController.findOneResource(id, id));
     }
 
     @Test

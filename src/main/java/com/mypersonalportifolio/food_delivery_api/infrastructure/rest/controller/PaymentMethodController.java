@@ -32,7 +32,7 @@ public class PaymentMethodController {
     }
 
     @GetMapping("/{paymentMethodId}")
-    public ResponseEntity<PaymentMethod> findOneResource(@PathVariable UUID paymentMethodId) {
+    public ResponseEntity<PaymentMethod> findSingleResource(@PathVariable UUID paymentMethodId) {
         var paymentMethod = paymentMethodService.findValidPaymentMethod(paymentMethodId);
 
         return ResponseEntity.ok(paymentMethod);

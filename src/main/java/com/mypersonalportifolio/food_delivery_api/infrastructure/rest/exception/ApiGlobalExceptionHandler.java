@@ -87,6 +87,7 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
         var rootCause = ExceptionUtils.getRootCause(ex);
 
         System.out.println("----------------------------------");
+        System.out.println("root cause:");
         System.out.println(rootCause.getCause());
         System.out.println("----------------------------------");
 

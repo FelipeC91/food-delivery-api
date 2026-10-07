@@ -32,9 +32,6 @@ public class RestaurantController {
     private RestaurantService restaurantService;
 
     @Autowired
-    private FoodCategoryRepository foodCategoryRepository;
-
-    @Autowired
     RestaurantMapper restaurantMapper;
 
     @GetMapping
@@ -43,7 +40,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/{restaurantId}")
-    public ResponseEntity<RestaurantOutputDTO> findResource(@PathVariable UUID restaurantId) {
+    public ResponseEntity<RestaurantOutputDTO> findSingleResource(@PathVariable UUID restaurantId) {
         var restaurantTarget = restaurantService.findValidrestaurant(restaurantId);
 
         var restaurantDTO = restaurantMapper.restaurantToOutputDTO(restaurantTarget);

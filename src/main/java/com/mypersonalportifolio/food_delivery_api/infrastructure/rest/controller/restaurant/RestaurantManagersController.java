@@ -2,10 +2,10 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.UserOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.UserRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.UserRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +18,26 @@ import java.util.stream.Collectors;
 @RequestMapping("restaurant/{restaurantId}/managers")
 @RestController
 public class RestaurantManagersController {
-    @Autowired
-    private RestaurantRepository restaurantRepository;
 
-    @Autowired
-    private RestaurantService restaurantService;
+    private final RestaurantRepository restaurantRepository;
+
+    private final RestaurantService restaurantService;
+
+    private final UserRepresentationModelAssembler userAssembler;
+
+    public RestaurantManagersController(RestaurantRepository restaurantRepository, RestaurantService restaurantService, UserRepresentationModelAssembler userAssembler) {
+        this.restaurantRepository = restaurantRepository;
+        this.restaurantService = restaurantService;
+        this.userAssembler = userAssembler;
+    }
+
 
     @GetMapping
-    public ResponseEntity<Set<UserOutputDTO>> getResourceId(@PathVariable UUID restaurantId) {
+    public ResponseEntity<Set<UserRepresentationModel>> getResourceId(@PathVariable UUID restaurantId) {
         var restaurantTarget = findValidRestaurant(restaurantId);
 
         var managers = restaurantTarget.getManagers().stream()
-                .map(UserOutputDTO::new)
+                .map(userAssembler::toModel)
                 .collect(Collectors.toSet());
 
         return ResponseEntity.ok(managers);

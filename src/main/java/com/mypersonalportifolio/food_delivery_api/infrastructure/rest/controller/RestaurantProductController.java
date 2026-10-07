@@ -37,7 +37,9 @@ public class RestaurantProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> findOneResource(@PathVariable UUID productId) {
+    public ResponseEntity<Product> findOneResource(
+            @PathVariable UUID restaurantId,
+            @PathVariable UUID productId) {
         var product = productService.findValidProduct(productId);
 
         return ResponseEntity.ok(product);

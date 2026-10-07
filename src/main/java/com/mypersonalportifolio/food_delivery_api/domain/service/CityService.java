@@ -5,8 +5,9 @@ import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.domain.model.State;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.StateRepository;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.CityInputDTO;
+import jakarta.persistence.EntityExistsException;
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,29 +22,26 @@ public class CityService {
     private StateRepository stateRepository;
 
     @Transactional
-    public City create(City city) {
-        var validState = validateState(city);
+    public City create(CityInputDTO cityCandidate) {
+        var validState = validateState(cityCandidate.stateId());
 
-        city.setState(validState);
+        if (cityRepository.existsByName(cityCandidate.name()))
+            throw new EntityExistsException("City with name " + cityCandidate.name() + " already exists");
 
-        return cityRepository.save(city);
+        var cityTarget = new City(cityCandidate.name(), validState);
+        return cityRepository.save(cityTarget);
 
     }
 
     @Transactional
-    public City updateProperties(City citySource, City cityTarget) {
-        BeanUtils.copyProperties(citySource, cityTarget, "id");
-
-        var validState = validateState(citySource);
-
-        cityTarget.setState(validState);
+    public City updateProperties(CityInputDTO citySource, City cityTarget) {
+        cityTarget.setName(citySource.name());
+        cityTarget.setState(validateState(citySource.stateId()));
 
         return cityRepository.save(cityTarget);
     }
 
-    private State validateState(City city) {
-        var stateId = city.getState().getId();
-
+    private State validateState(Long stateId) {
         return stateRepository.findById(stateId)
                 .orElseThrow( () -> new EntityNotFoundException(State.class, stateId.toString()));
     }

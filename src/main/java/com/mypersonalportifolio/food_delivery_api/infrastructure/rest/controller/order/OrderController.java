@@ -4,15 +4,16 @@ import com.mypersonalportifolio.food_delivery_api.domain.repository.OrderReposit
 import com.mypersonalportifolio.food_delivery_api.domain.repository.filter.OrderSearchFilterDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.service.OrderService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.persistence.jpa.query_specification.OrderQueryPredicatesFactory;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.PageableTranslator;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.pagination.PageableTranslator;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.pagination.PagerWrapper;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.OrderRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.OrderSimplifiedRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.OrderRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.OrderSimplifiedRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.OrderInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.OrderBasicInfoOutputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.OrderOutputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct.OrderMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,43 +24,50 @@ import java.util.UUID;
 @RestController
 public class OrderController {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+    private final OrderService orderService;
+    private final OrderRepresentationModelAssembler assembler;
+    private final OrderSimplifiedRepresentationModelAssembler simplifiedAssembler;
 
-    @Autowired
-    private OrderService orderService;
-
-    @Autowired
-    private OrderMapper orderMapper;
-
+    public OrderController(OrderRepository orderRepository,
+                           OrderService orderService,
+                           OrderRepresentationModelAssembler assembler, OrderSimplifiedRepresentationModelAssembler simplifiedAssembler) {
+        this.orderRepository = orderRepository;
+        this.orderService = orderService;
+        this.assembler = assembler;
+        this.simplifiedAssembler = simplifiedAssembler;
+    }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public Page<OrderBasicInfoOutputDTO> getAllResources(OrderSearchFilterDTO filter, @PageableDefault(size = 10) Pageable pageable) {
+    public CollectionModel<OrderSimplifiedRepresentationModel> getAllResources(OrderSearchFilterDTO filter,
+                                                                               @PageableDefault(size = 10) Pageable pageable) {
         var translatedPageable = translatePageable(pageable);
 
+        var ordersPage = orderRepository.findAll( OrderQueryPredicatesFactory.buildOrderSpecification(filter), translatedPageable );
 
-        return orderRepository.findAll( OrderQueryPredicatesFactory.buildOrderSpecification(filter), translatedPageable )
-                                        .map(orderMapper::toOrderBasicInfoOutputDTO);
+        ordersPage = new PagerWrapper<>(ordersPage.getContent(), pageable);
+
+        return simplifiedAssembler.toCollectionModel(ordersPage);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{orderId}")
-    public OrderOutputDTO getResource(@PathVariable UUID orderId) {
-        return orderMapper.toOrderOutputDTO(orderService.findValidOrder(orderId));
+    public OrderRepresentationModel getResource(@PathVariable UUID orderId) {
+        return assembler.toModel(orderService.findValidOrder(orderId));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public OrderOutputDTO createResource(@RequestBody OrderInputDTO orderInputDTO) {
-        return orderService.acceptNewOrder(orderInputDTO);
+    public OrderRepresentationModel createResource(@RequestBody OrderInputDTO orderInputDTO) {
+        return assembler.toModel( orderService.acceptNewOrder(orderInputDTO) );
 
     }
 
     private Pageable translatePageable(Pageable pageableSource) {
-        var sortingMap = Map.of("nomecliente", "customer.name",
-                                                    "nomeRestaurante", "restaurant.name",
-                                                        "customerName", "customer.name",
+        var sortingMap = Map.of("customer.name", "customer.name",
+                                                    "customerName", "customer.name",
+                                                    "restaurant.name", "restaurant.name",
                                                         "totalPrice", "totalPrice"
                                                             );
         return PageableTranslator.translate(pageableSource, sortingMap);

@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS order_item (
     total_price DECIMAL(38,2) NOT NULL,
     note VARCHAR(255),
 
-
+    PRIMARY KEY(order_id),
     FOREIGN KEY (product_id) REFERENCES product(id),
     FOREIGN KEY (order_id) REFERENCES order_model(id)
 

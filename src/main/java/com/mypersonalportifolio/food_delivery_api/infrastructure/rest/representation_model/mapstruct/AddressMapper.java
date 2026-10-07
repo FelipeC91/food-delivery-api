@@ -12,10 +12,6 @@ public interface AddressMapper {
 
     AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
 
-    @Mapping(source = "city.name", target = "cityName")
-    @Mapping(source = "city.state.name", target = "stateName")
-    AddressOutputDTO toAddressOutputDTO(Address address);
-
 
     Address toAddress(AddressInputDTO addressInputDTO);
 

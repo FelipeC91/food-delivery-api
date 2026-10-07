@@ -20,10 +20,10 @@ public record AddressInputDTO(
         Integer streetNumber,
 
         @Valid
-        CityInputDTO city
+        AddressInputDTO.AddressCityInputDTO city
 ) {
 
-    public record CityInputDTO(
+    public record AddressCityInputDTO(
             @NotNull
             String name
     ) {

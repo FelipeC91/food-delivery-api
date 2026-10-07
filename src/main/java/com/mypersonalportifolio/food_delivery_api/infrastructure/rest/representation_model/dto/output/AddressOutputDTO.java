@@ -1,6 +1,12 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Address;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
+import java.util.UUID;
 
 public record AddressOutputDTO(
         String neighborhood,

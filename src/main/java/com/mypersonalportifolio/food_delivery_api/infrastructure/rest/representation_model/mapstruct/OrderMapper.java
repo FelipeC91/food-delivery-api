@@ -2,9 +2,10 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.represent
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Order;
 import com.mypersonalportifolio.food_delivery_api.domain.model.OrderItem;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.OrderItemRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.OrderRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.OrderSimplifiedRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.OrderInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.OrderBasicInfoOutputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.OrderOutputDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -15,15 +16,16 @@ public interface OrderMapper {
     OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
 
     @Mapping(source = "customer.name", target = "customerName")
-    OrderOutputDTO toOrderOutputDTO(Order order);
-
-    @Mapping(source = "customer.name", target = "customerName")
-    OrderBasicInfoOutputDTO toOrderBasicInfoOutputDTO(Order order);
+    OrderSimplifiedRepresentationModel toSimplifiedRepresentationModel(Order order);
 
     @Mapping(source = "product.id", target = "productId")
     @Mapping(source = "product.name", target = "productName")
     @Mapping(source = "product.price", target = "productPrice")
-    OrderOutputDTO.OrderItemOutputDTO toOrderItemOutputDTO(OrderItem orderItem);
+    OrderItemRepresentationModel toOrderItemRepresentationalModel(OrderItem orderItem);
+
+    OrderRepresentationModel toRepresentationModel(Order order);
+
+
 
 
     Order toOrder(OrderInputDTO order);

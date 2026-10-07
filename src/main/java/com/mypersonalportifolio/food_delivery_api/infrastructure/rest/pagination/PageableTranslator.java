@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.rest;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.pagination;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +14,9 @@ public class PageableTranslator {
                                 .map( order -> new Sort.Order(order.getDirection(),
                                         translationReference.get( order.getProperty()) ) )
                                 .toList();
+        System.out.println("---------------------------------------");
         System.out.println(orderList);
+        System.out.println("---------------------------------------");
 
         return PageRequest.of(pageableSource.getPageNumber(),  pageableSource.getPageSize(), Sort.by(orderList));
     }

@@ -8,10 +8,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.model.OrderItem;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.OrderRepository;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.AddressInputDTO;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.OrderInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.OrderOutputDTO;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct.AddressMapper;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct.OrderMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,32 +20,39 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
 
-    @Autowired
-    private PaymentMethodService paymentMethodService;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private RestaurantService restaurantService;
+    private final PaymentMethodService paymentMethodService;
 
-    @Autowired
-    private UserService userService;
+    private final RestaurantService restaurantService;
 
-    @Autowired
-    private CityService  cityService;
+    private final UserService userService;
 
-    @Autowired
-    private AddressMapper addressMapper;
+    private final CityService  cityService;
 
-    @Autowired
-    private OrderMapper orderMapper;
+    private final AddressMapper addressMapper;
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+
+    public OrderService(OrderRepository orderRepository,
+                        PaymentMethodService paymentMethodService,
+                        RestaurantService restaurantService,
+                        UserService userService,
+                        CityService cityService,
+                        AddressMapper addressMapper,
+                        ProductService productService) {
+        this.orderRepository = orderRepository;
+        this.paymentMethodService = paymentMethodService;
+        this.restaurantService = restaurantService;
+        this.userService = userService;
+        this.cityService = cityService;
+        this.addressMapper = addressMapper;
+        this.productService = productService;
+    }
 
     @Transactional
-    public OrderOutputDTO acceptNewOrder(OrderInputDTO orderCandidate) {
+    public Order acceptNewOrder(OrderInputDTO orderCandidate) {
         var restaurantTarget = restaurantService.findValidrestaurant(orderCandidate.restaurantId());
 
         var paymentMethodTarget = paymentMethodService.findValidPaymentMethod(orderCandidate.paymentMethodId());
@@ -66,12 +70,10 @@ public class OrderService {
         var orderItemSet = processItems(orderCandidate);
 
 
-
         var validOrder = Order.confirmNewOrder(restaurantTarget, paymentMethodTarget, customer, shippingAddress, orderItemSet);
 
-        validOrder =  orderRepository.save(validOrder);
+       return   orderRepository.save(validOrder);
 
-        return orderMapper.toOrderOutputDTO(validOrder);
     }
 
 
