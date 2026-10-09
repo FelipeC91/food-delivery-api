@@ -31,13 +31,13 @@ public class GroupService {
 
     @Transactional(readOnly = true)
     public Set<Permission> findPermissions(UUID userGroupId) {
-        var userGroup = findUserGroup(userGroupId);
+        var userGroup = findValidUserGroup(userGroupId);
         return userGroup.getPermissions();
     }
 
     @Transactional
-    public Permission addPermission(UUID userGroupId, UUID permissionId) {
-        var userGroup = findUserGroup(userGroupId);
+    public Permission grantPermission(UUID userGroupId, UUID permissionId) {
+        var userGroup = findValidUserGroup(userGroupId);
         var permission = findPermission(permissionId);
 
         if (!userGroup.attachPermission(permission)) {
@@ -51,8 +51,8 @@ public class GroupService {
     }
 
     @Transactional
-    public void removePermission(UUID userGroupId, UUID permissionId) {
-        var userGroup = findUserGroup(userGroupId);
+    public void revokePermission(UUID userGroupId, UUID permissionId) {
+        var userGroup = findValidUserGroup(userGroupId);
 
         var permission = findPermission(permissionId);
 
@@ -60,12 +60,12 @@ public class GroupService {
         groupRepository.saveAndFlush(userGroup);
     }
 
-    private UserGroup findUserGroup(UUID userGroupId) {
+    public UserGroup findValidUserGroup(UUID userGroupId) {
         return groupRepository.findById(userGroupId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        UserGroup.class,
-                        userGroupId.toString()
-                ));
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                        UserGroup.class,
+                                        userGroupId.toString()
+                                ));
     }
 
     private Permission findPermission(UUID permissionId) {

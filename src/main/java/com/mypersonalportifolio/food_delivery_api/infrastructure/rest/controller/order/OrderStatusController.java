@@ -5,6 +5,7 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representa
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -13,14 +14,19 @@ import java.util.UUID;
 @RestController
 public class OrderStatusController {
 
-    @Autowired
-    UpdateOrderStatusUseCase updateOrderStatusUseCase;
+    private final UpdateOrderStatusUseCase updateOrderStatusUseCase;
+
+    public OrderStatusController(UpdateOrderStatusUseCase updateOrderStatusUseCase) {
+        this.updateOrderStatusUseCase = updateOrderStatusUseCase;
+    }
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping
-    public void updateResourceProperty(@PathVariable UUID orderId, @Valid @RequestBody OrderStatusInputDTO orderStatusInputDTO) {
+    public ResponseEntity<Void> updateResourceProperty(@PathVariable UUID orderId, @Valid @RequestBody OrderStatusInputDTO orderStatusInputDTO) {
 
         orderStatusInputDTO.setOrderId(orderId);
         updateOrderStatusUseCase.execute(orderStatusInputDTO);
+
+        return ResponseEntity.noContent().build();
     }
 }

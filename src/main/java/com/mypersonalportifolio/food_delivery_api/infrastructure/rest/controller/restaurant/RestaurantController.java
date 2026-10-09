@@ -1,23 +1,22 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.restaurant;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
-import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.RestaurantInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.RestaurantOutputDTO;
-import com.mypersonalportifolio.food_delivery_api.domain.repository.FoodCategoryRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.RestaurantRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.RestaurantSimplifiedRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.RestaurantRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.RestaurantSimplifiedRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.RestaurantInputDTO;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct.RestaurantMapper;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin
@@ -25,38 +24,46 @@ import java.util.UUID;
 @RestController
 public class RestaurantController {
 
-    @Autowired
-    private RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final RestaurantService restaurantService;
+    private final RestaurantMapper restaurantMapper;
+    private final RestaurantRepresentationModelAssembler assembler;
+    private final RestaurantSimplifiedRepresentationModelAssembler simplifiedAssembler;
 
-    @Autowired
-    private RestaurantService restaurantService;
 
-    @Autowired
-    RestaurantMapper restaurantMapper;
+    public RestaurantController(RestaurantRepository restaurantRepository,
+                                RestaurantService restaurantService,
+                                RestaurantMapper restaurantMapper,
+                                RestaurantRepresentationModelAssembler assembler,
+                                RestaurantSimplifiedRepresentationModelAssembler simplifiedAssembler) {
+        this.restaurantRepository = restaurantRepository;
+        this.restaurantService = restaurantService;
+        this.restaurantMapper = restaurantMapper;
+        this.assembler = assembler;
+        this.simplifiedAssembler = simplifiedAssembler;
+    }
 
     @GetMapping
-    public Page<RestaurantOutputDTO> listAllResources(Pageable pageable) {
-        return restaurantRepository.findAllReturningBasicInfo(pageable);
+    public CollectionModel<RestaurantSimplifiedRepresentationModel> listAllResources(Pageable pageable) {
+        return simplifiedAssembler.toCollectionModel(restaurantRepository.findAll(pageable));
     }
 
     @GetMapping("/{restaurantId}")
-    public ResponseEntity<RestaurantOutputDTO> findSingleResource(@PathVariable UUID restaurantId) {
-        var restaurantTarget = restaurantService.findValidrestaurant(restaurantId);
+    public ResponseEntity<RestaurantRepresentationModel> findSingleResource(@PathVariable UUID restaurantId) {
+        var restaurantTarget = restaurantService.findValidRestaurant(restaurantId);
 
-        var restaurantDTO = restaurantMapper.restaurantToOutputDTO(restaurantTarget);
-        return ResponseEntity.ok(restaurantDTO);
-
+        return ResponseEntity.ok(assembler.toModel(restaurantTarget));
     }
 
     @PostMapping
-    private ResponseEntity<?> createResource(@RequestBody @Valid RestaurantInputDTO restaurantInputDTO) {
+    private ResponseEntity<RestaurantRepresentationModel> createResource(@RequestBody @Valid RestaurantInputDTO restaurantInputDTO) {
         try {
             var restaurantCandidate = restaurantMapper.dtoToRestaurant(restaurantInputDTO);
 
             var validRestaurant = restaurantService.validateNewRestaurant(restaurantCandidate);
             var savedRestaurant = restaurantRepository.save(validRestaurant);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedRestaurant);
+            return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(savedRestaurant));
 
         } catch (IllegalArgumentException e) {
             throw new CandidateEntityInvalidException(Restaurant.class, restaurantInputDTO.name());
@@ -67,13 +74,13 @@ public class RestaurantController {
     @PutMapping("/{restaurantId}")
     public ResponseEntity<?> updateResource(@PathVariable("restaurantId") UUID restaurantTargetId,
                                             @RequestBody @Valid RestaurantInputDTO restaurantInput) {
-        var restaurantTarget = restaurantService.findValidrestaurant(restaurantTargetId);
+        var restaurantTarget = restaurantService.findValidRestaurant(restaurantTargetId);
 
         var restaurantSource = restaurantMapper.dtoToRestaurant(restaurantInput);
 
         var savedRestaurant = restaurantService.updateProperties(restaurantSource, restaurantTarget);
 
-        return ResponseEntity.ok(restaurantMapper.restaurantToOutputDTO(savedRestaurant));
+        return ResponseEntity.ok(assembler.toModel(savedRestaurant));
     }
 
 //    @PatchMapping("/{restaurantId}")
@@ -96,33 +103,5 @@ public class RestaurantController {
 //        return updateResource(restaurantTargetId, restaurantTarget);
 //    }
 
-    @PutMapping("/{restaurantTargetId}/active")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void activateResource(@PathVariable UUID restaurantTargetId) {
-        var restaurantTarget = restaurantRepository.findById(restaurantTargetId)
-                .orElseThrow(()  -> new EntityNotFoundException(Restaurant.class, restaurantTargetId.toString() ));
 
-        restaurantService.activate(restaurantTarget);
-    }
-
-    @PutMapping("/{restaurantTargetId}/inactive")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deactivateResource(@PathVariable UUID restaurantTargetId) {
-        var restaurantTarget = restaurantRepository.findById(restaurantTargetId)
-                .orElseThrow(()  -> new EntityNotFoundException(Restaurant.class, restaurantTargetId.toString() ));
-
-        restaurantService.deactivate(restaurantTarget);
-    }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping("/active-batch")
-    public void activateResourceBatch(@RequestBody List<UUID> restaurantsTargetIdBatch) {
-        restaurantService.activateAll(restaurantsTargetIdBatch);
-    }
-
-    @DeleteMapping("/inactive-batch")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deactivateResourceBatch(@RequestBody List<UUID> restaurantsTargetIdBatch) {
-        restaurantService.deactivateAll(restaurantsTargetIdBatch);
-    }
 }

@@ -5,7 +5,7 @@ import com.mypersonalportifolio.food_delivery_api.application.use_case.RetrieveP
 import com.mypersonalportifolio.food_delivery_api.application.use_case.UploadProductPhotoUseCase;
 import com.mypersonalportifolio.food_delivery_api.domain.model.ProductPhoto;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.ProductPhotoInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.ProductPhotoOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.ProductPhotoMetaDataRepresentationModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -53,7 +53,7 @@ public class RestaurantProductPhotoController {
     public ResponseEntity<?> getResource(@PathVariable UUID restaurantId,
                                                            @PathVariable UUID productId,
                                                            @RequestHeader("Accept") String requestAccepts) throws HttpMediaTypeNotAcceptableException {
-        ProductPhotoOutputDTO storedPhoto;
+        ProductPhotoMetaDataRepresentationModel storedPhoto;
         try {
             storedPhoto = retrieveProductPhotoUseCase.execute(productId);
 

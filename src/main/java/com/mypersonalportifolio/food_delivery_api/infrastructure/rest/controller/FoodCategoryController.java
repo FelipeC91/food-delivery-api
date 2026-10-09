@@ -25,11 +25,8 @@ import java.util.UUID;
 public class FoodCategoryController {
 
     private final FoodCategoryRepository foodCategoryRepository;
-
     private final FoodCategoryService foodCategoryService;
-
     private final FoodCategoryRepresentationModelAssembler assembler;
-
     private final PagedResourcesAssembler<FoodCategory> pagedResourcesAssembler;
 
     public FoodCategoryController(FoodCategoryRepository foodCategoryRepository,

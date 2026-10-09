@@ -3,7 +3,7 @@ package com.mypersonalportifolio.food_delivery_api.application.use_case;
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoStorageService;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.UseCase;
 import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.ProductPhotoOutputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.ProductPhotoMetaDataRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct.ProductPhotoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
-public class RetrieveProductPhotoUseCase implements UseCase<UUID, ProductPhotoOutputDTO> {
+public class RetrieveProductPhotoUseCase implements UseCase<UUID, ProductPhotoMetaDataRepresentationModel> {
 
     private final ProductService productService;
     private final PhotoStorageService photoStorageService;
@@ -28,7 +28,7 @@ public class RetrieveProductPhotoUseCase implements UseCase<UUID, ProductPhotoOu
     }
 
     @Override
-    public ProductPhotoOutputDTO execute(UUID productId) {
+    public ProductPhotoMetaDataRepresentationModel execute(UUID productId) {
         var productTarget = productService.findValidProduct(productId);
 
         if (Objects.isNull(productTarget.getPhotoMetaData()))

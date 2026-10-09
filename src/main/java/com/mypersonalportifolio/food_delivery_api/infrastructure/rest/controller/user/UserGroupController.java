@@ -4,9 +4,14 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoun
 import com.mypersonalportifolio.food_delivery_api.domain.model.User;
 import com.mypersonalportifolio.food_delivery_api.domain.model.UserGroup;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
+import com.mypersonalportifolio.food_delivery_api.domain.service.GroupService;
 import com.mypersonalportifolio.food_delivery_api.domain.service.UserService;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.UserGroupRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.UserGroupRepresentationModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -16,36 +21,45 @@ import java.util.UUID;
 @RequestMapping("/users/{userId}/groups")
 public class UserGroupController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final UserGroupRepresentationModelAssembler assembler;
 
-    @Autowired
-    private UserService userService;
+    public UserGroupController(UserRepository userRepository,
+                               UserService userService, UserGroupRepresentationModelAssembler assembler) {
+        this.userRepository = userRepository;
+        this.userService = userService;
+        this.assembler = assembler;
+    }
 
     @GetMapping
-    public Set<UserGroup> getUserGroups(@PathVariable("userId") UUID userId) {
+    public CollectionModel<UserGroupRepresentationModel> getUserGroups(@PathVariable("userId") UUID userId) {
         var validUser = findValidUser(userId);
 
-        return validUser.getUserGroups();
+        return assembler.toCollectionModel(validUser.getUserGroups());
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{groupId}")
-    public void attachResource(@PathVariable("userId") UUID userId,
+    public ResponseEntity<Void> attachResource(@PathVariable("userId") UUID userId,
                                @PathVariable("groupId") UUID groupId) {
         var validUser = findValidUser(userId);
 
         userService.joinValidGroup(groupId, validUser);
 
+        return ResponseEntity.noContent().build();
+
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping
-    public void detachResource(@PathVariable("userId") UUID userId,
-                               @PathVariable("groupId") UUID groupId) {
+    public ResponseEntity<Void> detachResource(@PathVariable("userId") UUID userId,
+                                         @PathVariable("groupId") UUID groupId) {
         var validUser = findValidUser(userId);
 
         userService.leaveGroup(validUser, groupId);
+
+        return ResponseEntity.noContent().build();
     }
 
 

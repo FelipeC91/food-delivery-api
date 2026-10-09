@@ -13,4 +13,5 @@ public class RestaurantSimplifiedRepresentationModel extends RepresentationModel
     private UUID id;
     private String name;
     private BigDecimal shippingCost;
+    private String foodCategoryName;
 }

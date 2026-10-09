@@ -3,18 +3,10 @@ package com.mypersonalportifolio.food_delivery_api.domain.service;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.*;
-import com.mypersonalportifolio.food_delivery_api.domain.model.City;
-import com.mypersonalportifolio.food_delivery_api.domain.model.PaymentMethod;
-import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.domain.model.User;
-import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
-import com.mypersonalportifolio.food_delivery_api.domain.repository.PaymentMethodRepository;
-import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
-import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
-import org.hibernate.engine.jdbc.batch.spi.Batch;
+import com.mypersonalportifolio.food_delivery_api.domain.model.*;
+import com.mypersonalportifolio.food_delivery_api.domain.repository.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -25,19 +17,25 @@ import java.util.*;
 @Service
 public class RestaurantService {
 
-    @Autowired
-    private RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final CityRepository cityRepository;
+    private final SmartValidator validator;
+    private final PaymentMethodRepository paymentMethodRepository;
+    private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private CityRepository cityRepository;
-
-    @Autowired
-    private SmartValidator validator;
-
-    @Autowired
-    private PaymentMethodRepository paymentMethodRepository;
-    @Autowired
-    private UserRepository userRepository;
+    public RestaurantService(RestaurantRepository restaurantRepository,
+                             CityRepository cityRepository,
+                             SmartValidator validator,
+                             PaymentMethodRepository paymentMethodRepository,
+                             UserRepository userRepository, OrderRepository orderRepository) {
+        this.restaurantRepository = restaurantRepository;
+        this.cityRepository = cityRepository;
+        this.validator = validator;
+        this.paymentMethodRepository = paymentMethodRepository;
+        this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+    }
 
     @Transactional
     public void mergeProperties(Map<String, Object> restaurantFieldsSourceProperties,
@@ -81,8 +79,8 @@ public class RestaurantService {
     }
 
     @Transactional
-    public Restaurant updateProperties(Restaurant restaurantSource, Restaurant restaurantTarget) {
-
+    public Restaurant updateProperties(Restaurant restaurantSource,
+                                       Restaurant restaurantTarget) {
         restaurantSource = validateCity(restaurantSource);
 
         BeanUtils.copyProperties(restaurantSource, restaurantTarget, "id");
@@ -117,6 +115,7 @@ public class RestaurantService {
     public void deactivate(Restaurant validRestaurant) {
         validRestaurant.setActive(false);
     }
+
     @Transactional
     public void activateAll(List<UUID> restaurantIdBatch) {
         restaurantRepository.findAllById(restaurantIdBatch)
@@ -133,13 +132,12 @@ public class RestaurantService {
         return  validateCity(restaurantCandidate);
     }
 
-    //handle Address
 
 
-    //handle PaymentMethods
+    //handle
     @Transactional
     public void handleDelete(UUID restaurantTargetId, UUID paymentMethodId) {
-        var restaurantTarget = findValidrestaurant(restaurantTargetId);
+        var restaurantTarget = findValidRestaurant(restaurantTargetId);
 
         var validPaymentMethod =paymentMethodRepository.findById(paymentMethodId)
                         .orElseThrow(() -> new EntityNotFoundException(PaymentMethod.class, paymentMethodId.toString()));
@@ -149,7 +147,7 @@ public class RestaurantService {
 
     @Transactional
     public void addPaymentMethod(UUID restaurantTargetId, UUID paymentMethodId) {
-        var restaurantTarget = findValidrestaurant(restaurantTargetId);
+        var restaurantTarget = findValidRestaurant(restaurantTargetId);
 
         var paymentMethod = paymentMethodRepository.findById(paymentMethodId)
                 .orElseThrow(()-> new EntityNotFoundException(PaymentMethod.class, paymentMethodId.toString()));
@@ -163,7 +161,7 @@ public class RestaurantService {
         restaurantRepository.flush();
     }
 
-    public Restaurant findValidrestaurant(UUID restaurantTargetId) {
+    public Restaurant findValidRestaurant(UUID restaurantTargetId) {
         return restaurantRepository.findById(restaurantTargetId)
                 .orElseThrow(()-> new EntityNotFoundException(Restaurant.class, restaurantTargetId.toString()));
     }
@@ -189,5 +187,11 @@ public class RestaurantService {
 
         if (isAlreadyAdded)
             throw new BusinessConstraintsViolationException("Forma de pagamento já consta associada");
+    }
+
+    public boolean isRestaurantIReadyToDeactivateOrClose(Restaurant restaurantTarget) {
+        var safeConditions = List.of(OrderStatus.ENTREGUE, OrderStatus.CANCELADO);
+
+        return orderRepository.existsByRestaurantAndOrderStatusNotIn(restaurantTarget.getId(), safeConditions);
     }
 }

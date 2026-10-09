@@ -53,7 +53,7 @@ public class OrderService {
 
     @Transactional
     public Order acceptNewOrder(OrderInputDTO orderCandidate) {
-        var restaurantTarget = restaurantService.findValidrestaurant(orderCandidate.restaurantId());
+        var restaurantTarget = restaurantService.findValidRestaurant(orderCandidate.restaurantId());
 
         var paymentMethodTarget = paymentMethodService.findValidPaymentMethod(orderCandidate.paymentMethodId());
 

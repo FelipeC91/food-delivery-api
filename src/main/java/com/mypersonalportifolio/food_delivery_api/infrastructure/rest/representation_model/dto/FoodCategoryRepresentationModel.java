@@ -11,7 +11,6 @@ import java.util.UUID;
 
 @Relation(collectionRelation = "foodCategories")
 @Getter
-@AllArgsConstructor
 public class FoodCategoryRepresentationModel extends RepresentationModel<FoodCategoryRepresentationModel> {
     private UUID id;
 

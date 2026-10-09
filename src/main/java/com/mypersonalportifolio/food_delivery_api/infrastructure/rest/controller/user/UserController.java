@@ -23,9 +23,7 @@ import java.util.UUID;
 public class UserController {
 
     private final UserRepository userRepository;
-
     private final UserService userService;
-
     private final UserRepresentationModelAssembler assembler;
 
     public UserController(UserRepository userRepository,

@@ -6,9 +6,12 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoun
 import com.mypersonalportifolio.food_delivery_api.domain.model.PaymentMethod;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.PaymentMethodRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.PaymentMethodService;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.PaymentMethodRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.PaymentMethodRepresentationModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,29 +23,34 @@ import java.util.UUID;
 @RequestMapping("/payment-methods")
 public class PaymentMethodController {
 
-    @Autowired
-    private PaymentMethodRepository paymentMethodRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
+    private final PaymentMethodService paymentMethodService;
+    private final PaymentMethodRepresentationModelAssembler assembler;
 
-    @Autowired
-    private PaymentMethodService paymentMethodService;
+    public PaymentMethodController(PaymentMethodRepository paymentMethodRepository, PaymentMethodService paymentMethodService, PaymentMethodRepresentationModelAssembler assembler) {
+        this.paymentMethodRepository = paymentMethodRepository;
+        this.paymentMethodService = paymentMethodService;
+        this.assembler = assembler;
+    }
 
     @GetMapping
-    public List<PaymentMethod> listAllResources() {
-        return paymentMethodRepository.findAll();
+    public CollectionModel<PaymentMethodRepresentationModel> listAllResources() {
+        return assembler.toCollectionModel(paymentMethodRepository.findAll());
     }
 
     @GetMapping("/{paymentMethodId}")
-    public ResponseEntity<PaymentMethod> findSingleResource(@PathVariable UUID paymentMethodId) {
-        var paymentMethod = paymentMethodService.findValidPaymentMethod(paymentMethodId);
+    public ResponseEntity<PaymentMethodRepresentationModel> findSingleResource(@PathVariable UUID paymentMethodId) {
+        var paymentMethod = assembler.toModel(paymentMethodService.findValidPaymentMethod(paymentMethodId));
 
         return ResponseEntity.ok(paymentMethod);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PaymentMethod createResource(@RequestBody @Valid PaymentMethod paymentMethodCandidate) {
+    public PaymentMethodRepresentationModel createResource(@RequestBody @Valid PaymentMethod paymentMethodCandidate) {
         try {
-            return paymentMethodRepository.save(paymentMethodCandidate);
+            return assembler.toModel(paymentMethodRepository.save(paymentMethodCandidate));
+
         } catch (IllegalArgumentException e) {
             throw new CandidateEntityInvalidException(
                     PaymentMethod.class,
@@ -52,10 +60,10 @@ public class PaymentMethodController {
     }
 
     @PutMapping("/{paymentMethodId}")
-    public ResponseEntity<PaymentMethod> updateResource(@PathVariable UUID paymentMethodId,
+    public ResponseEntity<PaymentMethodRepresentationModel> updateResource(@PathVariable UUID paymentMethodId,
                                                         @RequestBody @Valid PaymentMethod paymentMethodSource) {
 
-        var updatedPaymentMethod = paymentMethodService.updateProperties(paymentMethodId, paymentMethodSource);
+        var updatedPaymentMethod = assembler.toModel(paymentMethodService.updateProperties(paymentMethodId, paymentMethodSource));
 
         return ResponseEntity.ok(updatedPaymentMethod);
     }
@@ -65,6 +73,7 @@ public class PaymentMethodController {
         try {
             paymentMethodRepository.deleteById(paymentMethodId);
             return ResponseEntity.noContent().build();
+
         } catch (IllegalArgumentException e) {
             throw new EntityNotFoundException(PaymentMethod.class, paymentMethodId.toString());
         } catch (DataIntegrityViolationException e) {

@@ -48,39 +48,10 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .timestamp(OffsetDateTime.now())
                 .build();
 
-        return super.handleExceptionInternal(exception, problemDetails, HttpHeaders.EMPTY, defaultHttpStatusCode, request);
-
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException exception, WebRequest request) {
-        var defaultMessage = "Recurso não encontrado";
-        var defaultHttpStatusCode = HttpStatus.NOT_FOUND;
-
-        var problemDetails = ApiProblemDetails.builder()
-                .title(defaultMessage)
-                .detail(exception.getMessage())
-                .httpStatusCode(defaultHttpStatusCode.value())
-                .timestamp(OffsetDateTime.now())
-                .build();
-
         return this.handleExceptionInternal(exception, problemDetails, HttpHeaders.EMPTY, defaultHttpStatusCode, request);
 
     }
-    @ExceptionHandler(EntityAlreadyExistsException.class)
-    public ResponseEntity<?> handleCandidateEntityInvalidException(EntityAlreadyExistsException exception, WebRequest request) {
-        var defaultMessage = "Recurso submetido possui propriedades inconsistentes";
-        var defaultHttpStatusCode = HttpStatus.BAD_REQUEST;
 
-        var problemDetails = ApiProblemDetails.builder()
-                .title(defaultMessage)
-                .detail(exception.getMessage())
-                .httpStatusCode(defaultHttpStatusCode.value())
-                .timestamp(OffsetDateTime.now())
-                .build();
-
-        return this.handleExceptionInternal(exception, problemDetails, HttpHeaders.EMPTY, defaultHttpStatusCode, request);
-    }
 
     @Override
     protected @Nullable ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode httpStatusCode, WebRequest request) {
@@ -219,7 +190,9 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected @Nullable ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body,
                                                                        HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
         var IntegerHttpStatusCode = statusCode.value();
-
+        System.out.println("---------------------------------------------------");
+        System.out.println(ex.getMessage());
+        System.out.println("---------------------------------------------------");
         if ( Objects.isNull(body) ) {
             body = ApiProblemDetails.builder()
                     .title(HttpStatus.resolve(IntegerHttpStatusCode).getReasonPhrase())

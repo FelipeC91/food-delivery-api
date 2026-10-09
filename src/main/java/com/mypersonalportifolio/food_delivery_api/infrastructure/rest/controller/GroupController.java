@@ -6,6 +6,9 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoun
 import com.mypersonalportifolio.food_delivery_api.domain.model.UserGroup;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.GroupRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.GroupService;
+import com.mypersonalportifolio.food_delivery_api.domain.service.UserService;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.UserGroupRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.UserGroupRepresentationModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,11 +23,15 @@ import java.util.UUID;
 @RequestMapping("/groups")
 public class GroupController {
 
-    @Autowired
-    private GroupRepository groupRepository;
+    private final GroupRepository groupRepository;
+    private final GroupService userGroupService;
+    private final UserGroupRepresentationModelAssembler assembler;
 
-    @Autowired
-    private GroupService userGroupService;
+    public GroupController(GroupRepository groupRepository, GroupService userGroupService, UserGroupRepresentationModelAssembler assembler) {
+        this.groupRepository = groupRepository;
+        this.userGroupService = userGroupService;
+        this.assembler = assembler;
+    }
 
     @GetMapping
     public List<UserGroup> listAllResources() {
@@ -32,32 +39,29 @@ public class GroupController {
     }
 
     @GetMapping("/{userGroupId}")
-    public ResponseEntity<UserGroup> findOneResource(@PathVariable UUID userGroupId) {
-        var userGroup = groupRepository.findById(userGroupId)
-                .orElseThrow(() -> new EntityNotFoundException(UserGroup.class, userGroupId.toString()));
-
+    public ResponseEntity<UserGroupRepresentationModel> findOneResource(@PathVariable UUID userGroupId) {
+        var userGroup = assembler.toModel(userGroupService.findValidUserGroup(userGroupId));
         return ResponseEntity.ok(userGroup);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserGroup createResource(@RequestBody @Valid UserGroup userGroupCandidate) {
+    public UserGroupRepresentationModel createResource(@RequestBody @Valid UserGroup userGroupCandidate) {
         try {
-            return groupRepository.save(userGroupCandidate);
+            return assembler.toModel(groupRepository.save(userGroupCandidate));
         } catch (IllegalArgumentException e) {
             throw new CandidateEntityInvalidException(UserGroup.class, userGroupCandidate.getName());
         }
     }
 
     @PutMapping("/{userGroupId}")
-    public ResponseEntity<UserGroup> updateResource(@PathVariable UUID userGroupId,
+    public ResponseEntity<UserGroupRepresentationModel> updateResource(@PathVariable UUID userGroupId,
                                                      @RequestBody @Valid UserGroup userGroupSource) {
-        var userGroupTarget = groupRepository.findById(userGroupId)
-                .orElseThrow(() -> new EntityNotFoundException(UserGroup.class, userGroupId.toString()));
+        var userGroupTarget = userGroupService.findValidUserGroup(userGroupId);
 
         var updatedUserGroup = userGroupService.updateProperties(userGroupTarget, userGroupSource);
 
-        return ResponseEntity.ok(updatedUserGroup);
+        return ResponseEntity.ok(assembler.toModel(updatedUserGroup));
     }
 
     @DeleteMapping("/{userGroupId}")
@@ -65,6 +69,7 @@ public class GroupController {
         try {
             groupRepository.deleteById(userGroupId);
             return ResponseEntity.noContent().build();
+
         } catch (IllegalArgumentException e) {
             throw new EntityNotFoundException(UserGroup.class, userGroupId.toString());
         } catch (DataIntegrityViolationException e) {

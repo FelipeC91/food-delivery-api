@@ -44,7 +44,6 @@ public class Restaurant extends DomainEntityUUID {
     @Setter
     private Address address;
 
-    @Getter(AccessLevel.NONE)
     @ManyToMany
     @JoinTable(name = "restaurant_payment_method",
             joinColumns = @JoinColumn(name = "restaurant_id"),
@@ -70,7 +69,7 @@ public class Restaurant extends DomainEntityUUID {
     @Setter
     private Boolean active = Boolean.TRUE;
 
-
+    @Setter
     @Column(name = "is_open")
     private Boolean open = Boolean.FALSE;
 
@@ -81,7 +80,7 @@ public class Restaurant extends DomainEntityUUID {
                         !this.getAllowedPaymentMethods().isEmpty()
         );
     }
-
+    @Getter(AccessLevel.NONE)
     @ManyToMany
     @JoinTable(name = "restaurant_user",
                 joinColumns = @JoinColumn(name = "restaurant_id"),

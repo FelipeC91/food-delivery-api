@@ -5,10 +5,8 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoun
 import com.mypersonalportifolio.food_delivery_api.domain.model.Product;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.ProductRepository;
-import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +50,7 @@ public class ProductService {
     }
 
     public Set<Product> retrieveRestaurantCatalog(UUID restaurantId, boolean onlyActive) {
-        var restaurantTarget = restaurantService.findValidrestaurant(restaurantId);
+        var restaurantTarget = restaurantService.findValidRestaurant(restaurantId);
 
         var productSet = restaurantTarget.getProductCatalog();
 

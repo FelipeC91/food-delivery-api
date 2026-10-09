@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS restaurant_user (
-                                               restaurant_id VARCHAR(36) NOT NULL,
+    restaurant_id VARCHAR(36) NOT NULL,
     user_id VARCHAR(36) NOT NULL,
 
     PRIMARY KEY (restaurant_id, user_id),

@@ -2,14 +2,8 @@ package com.mypersonalportifolio.food_delivery_api.domain.repository;
 
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.output.RestaurantOutputDTO;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,15 +25,15 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, UUID>,
 //            """)
 //    List<RestaurantBasicInfoDTO> findAllReturningBasicInfo();
 
-    @EntityGraph(attributePaths = {"foodCategory", "paymentMethods"})
-    @Query("SELECT r FROM Restaurant AS r")
-    Page<Restaurant> findAllWithGraph(Pageable pageable);
-
-
-    default Page<RestaurantOutputDTO> findAllReturningBasicInfo(Pageable pageable) {
-         return findAllWithGraph(pageable)
-                .map(RestaurantOutputDTO::new);
-    }
+//    @EntityGraph(attributePaths = {"foodCategory", "paymentMethods"})
+//    @Query("SELECT r FROM Restaurant AS r")
+//    Page<Restaurant> findAllWithGraph(Pageable pageable);
+//
+//
+//    default Page<RestaurantOutputDTO> findAllReturningBasicInfo(Pageable pageable) {
+//         return findAllWithGraph(pageable)
+//                .map(RestaurantOutputDTO::new);
+//    }
 
     Optional<Restaurant> findFirstRestaurantByNameContaining(String name);
 
