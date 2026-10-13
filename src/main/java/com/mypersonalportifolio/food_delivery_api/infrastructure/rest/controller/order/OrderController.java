@@ -1,16 +1,17 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.order;
 
+import com.mypersonalportifolio.food_delivery_api.application.use_case.ProcessNewOrderUseCase;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.OrderRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.filter.OrderSearchFilterDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.service.OrderService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.persistence.jpa.query_specification.OrderQueryPredicatesFactory;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.pagination.PageableTranslator;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.pagination.PagerWrapper;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.OrderRepresentationModelAssembler;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.OrderSimplifiedRepresentationModelAssembler;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.OrderRepresentationModel;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.OrderSimplifiedRepresentationModel;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.OrderInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.OrderRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.OrderSimplifiedRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.OrderRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.OrderSimplifiedRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.OrderInputDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
@@ -26,14 +27,16 @@ public class OrderController {
 
     private final OrderRepository orderRepository;
     private final OrderService orderService;
+    private final ProcessNewOrderUseCase processNewOrderUseCase;
     private final OrderRepresentationModelAssembler assembler;
     private final OrderSimplifiedRepresentationModelAssembler simplifiedAssembler;
 
     public OrderController(OrderRepository orderRepository,
-                           OrderService orderService,
+                           OrderService orderService, ProcessNewOrderUseCase processNewOrderUseCase,
                            OrderRepresentationModelAssembler assembler, OrderSimplifiedRepresentationModelAssembler simplifiedAssembler) {
         this.orderRepository = orderRepository;
         this.orderService = orderService;
+        this.processNewOrderUseCase = processNewOrderUseCase;
         this.assembler = assembler;
         this.simplifiedAssembler = simplifiedAssembler;
     }
@@ -60,7 +63,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public OrderRepresentationModel createResource(@RequestBody OrderInputDTO orderInputDTO) {
-        return assembler.toModel( orderService.acceptNewOrder(orderInputDTO) );
+        return assembler.toModel( processNewOrderUseCase.execute(orderInputDTO) );
 
     }
 

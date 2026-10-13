@@ -1,6 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller;
 
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.hateoas_link.*;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.hateoas_link.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

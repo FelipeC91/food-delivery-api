@@ -10,6 +10,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityAlready
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.FailOnValidateEntityPropertiesException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import org.jspecify.annotations.Nullable;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -169,6 +171,8 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
         var defaultMessage = "Ocorreu um erro interno inesperado";
         var detail = "Erro internoente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
         var defaultHttpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        log.error(ex.getMessage(), ex);
 
         var problemDetails = ApiProblemDetails.builder()
                 .title(defaultMessage)

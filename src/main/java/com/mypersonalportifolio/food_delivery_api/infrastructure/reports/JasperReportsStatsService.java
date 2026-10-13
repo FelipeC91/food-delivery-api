@@ -1,7 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.reports;
 
-import com.mypersonalportifolio.food_delivery_api.application.statistic.DailySalesProjectionDTO;
-import com.mypersonalportifolio.food_delivery_api.application.statistic.ReportStatsService;
+import com.mypersonalportifolio.food_delivery_api.application.analytics.DailySalesProjectionDTO;
+import com.mypersonalportifolio.food_delivery_api.application.analytics.ReportStatsService;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 @Component
 public class JasperReportsStatsService implements ReportStatsService {

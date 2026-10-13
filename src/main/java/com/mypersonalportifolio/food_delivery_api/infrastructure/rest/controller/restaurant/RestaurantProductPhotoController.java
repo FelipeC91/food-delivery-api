@@ -4,8 +4,8 @@ import com.mypersonalportifolio.food_delivery_api.application.use_case.RemovePro
 import com.mypersonalportifolio.food_delivery_api.application.use_case.RetrieveProductPhotoUseCase;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.UploadProductPhotoUseCase;
 import com.mypersonalportifolio.food_delivery_api.domain.model.ProductPhoto;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.ProductPhotoInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.ProductPhotoMetaDataRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input.ProductPhotoInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.ProductPhotoMetaDataRepresentationModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;

@@ -4,7 +4,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.State;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.StateRepository;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.StateRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.StateRepresentationModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.web.bind.annotation.GetMapping;

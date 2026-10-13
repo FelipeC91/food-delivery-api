@@ -147,6 +147,13 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.logback-extensions</groupId>
+			<artifactId>logback-ext-loggly</artifactId>
+			<version>0.1.5</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!--PDF reports-->
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>

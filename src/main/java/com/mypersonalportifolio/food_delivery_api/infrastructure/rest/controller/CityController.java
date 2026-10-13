@@ -4,9 +4,9 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.CityService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.CityRepresentationModelAssembler;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.CityInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.CityRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.CityRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input.CityInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.CityRepresentationModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

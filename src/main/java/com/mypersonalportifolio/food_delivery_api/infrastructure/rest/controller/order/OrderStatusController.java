@@ -1,9 +1,8 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.order;
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.UpdateOrderStatusUseCase;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.input.OrderStatusInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input.OrderStatusInputDTO;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,0 +1,31 @@
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+
+public record AddressInputDTO(
+        @NotBlank
+        String neighborhood,
+
+        @Pattern(regexp = "^[0-9]{8}$")
+        String zipCode,
+
+        @NotBlank
+        String streetName,
+
+        @Positive
+        Integer streetNumber,
+
+        @Valid
+        AddressInputDTO.AddressCityInputDTO city
+) {
+
+    public record AddressCityInputDTO(
+            @NotNull
+            String name
+    ) {
+    }
+}

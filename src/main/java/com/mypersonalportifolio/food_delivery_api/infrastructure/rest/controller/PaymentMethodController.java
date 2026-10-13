@@ -6,17 +6,15 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoun
 import com.mypersonalportifolio.food_delivery_api.domain.model.PaymentMethod;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.PaymentMethodRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.PaymentMethodService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.PaymentMethodRepresentationModelAssembler;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.PaymentMethodRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.PaymentMethodRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.PaymentMethodRepresentationModel;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController

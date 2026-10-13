@@ -2,19 +2,15 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.User;
-import com.mypersonalportifolio.food_delivery_api.domain.model.UserGroup;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
-import com.mypersonalportifolio.food_delivery_api.domain.service.GroupService;
 import com.mypersonalportifolio.food_delivery_api.domain.service.UserService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.UserGroupRepresentationModelAssembler;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.UserGroupRepresentationModel;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.UserGroupRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.UserGroupRepresentationModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
 import java.util.UUID;
 
 @RestController

@@ -3,8 +3,8 @@ package com.mypersonalportifolio.food_delivery_api.application.use_case;
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoStorageService;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.UseCase;
 import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.dto.ProductPhotoMetaDataRepresentationModel;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.mapstruct.ProductPhotoMapper;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.ProductPhotoMetaDataRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.mapstruct.ProductPhotoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

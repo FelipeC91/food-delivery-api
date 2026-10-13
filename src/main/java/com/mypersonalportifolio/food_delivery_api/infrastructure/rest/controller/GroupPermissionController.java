@@ -1,16 +1,13 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller;
 
-import com.mypersonalportifolio.food_delivery_api.domain.model.Permission;
 import com.mypersonalportifolio.food_delivery_api.domain.service.GroupService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.PermissionRepresentationModel;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.PermissionRepresentationModelAssembler;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.representation_model.UserGroupRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.PermissionRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.PermissionRepresentationModelAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
 import java.util.UUID;
 
 @RestController
