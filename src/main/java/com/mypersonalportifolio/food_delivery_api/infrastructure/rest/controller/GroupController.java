@@ -6,8 +6,8 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoun
 import com.mypersonalportifolio.food_delivery_api.domain.model.UserGroup;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.GroupRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.GroupService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.UserGroupRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.UserGroupRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.UserGroupRepresentationModelAssembler;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;

@@ -2,7 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.storage.aws;
 
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoStorageService;
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoToStoreDTO;
-import com.mypersonalportifolio.food_delivery_api.application.storage.fileDetailsDTO;
+import com.mypersonalportifolio.food_delivery_api.application.storage.FileDetailsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -53,7 +53,7 @@ public class AmazonS3PhotoStorageService implements PhotoStorageService {
     }
 
     @Override
-    public fileDetailsDTO retrievePhoto(String fileName) {
+    public FileDetailsDTO retrievePhoto(String fileName) {
         var requestUrl = GetUrlRequest.builder()
                 .bucket(BUCKET_NAME).
                 key(BUCKET_DIRECTORY.concat(fileName))
@@ -67,7 +67,7 @@ public class AmazonS3PhotoStorageService implements PhotoStorageService {
 //
 //        var objectAsBytes = s3Client.getObjectAsBytes(objectRequest);
 
-        return new fileDetailsDTO(null, photoUrl);
+        return new FileDetailsDTO(null, photoUrl);
     }
 
     @Override

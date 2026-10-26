@@ -1,15 +1,15 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.restaurant;
 
+import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.RestaurantInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.RestaurantRepresentationModelAssembler;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.RestaurantSimplifiedRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.RestaurantRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.RestaurantSimplifiedRepresentationModel;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input.RestaurantInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.mapstruct.RestaurantMapper;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.RestaurantRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.RestaurantSimplifiedRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.mapstruct.RestaurantMapper;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;

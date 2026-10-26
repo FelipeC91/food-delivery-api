@@ -1,10 +1,10 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Order;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.order.OrderController;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.OrderSimplifiedRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.hateoas_link.OrdersLinkEngine;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.mapstruct.OrderMapper;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.mapstruct.OrderMapper;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;

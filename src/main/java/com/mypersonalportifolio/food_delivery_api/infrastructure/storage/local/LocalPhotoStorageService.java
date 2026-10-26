@@ -2,7 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.storage.local;
 
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoStorageService;
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoToStoreDTO;
-import com.mypersonalportifolio.food_delivery_api.application.storage.fileDetailsDTO;
+import com.mypersonalportifolio.food_delivery_api.application.storage.FileDetailsDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
@@ -45,11 +45,11 @@ public class LocalPhotoStorageService implements PhotoStorageService {
     }
 
     @Override
-    public fileDetailsDTO retrievePhoto(String fileName) {
+    public FileDetailsDTO retrievePhoto(String fileName) {
         try {
             var fileInputStream = Files.newInputStream(Paths.get(LOCAL_PHOTO_STORAGE_BASE_PATH, fileName), StandardOpenOption.READ);
 
-            return new fileDetailsDTO(fileInputStream, null);
+            return new FileDetailsDTO(fileInputStream, null);
         } catch (IOException e) {
             throw new FailOnHandleFileException("Erro ao recuperar arquivo", e);
         }

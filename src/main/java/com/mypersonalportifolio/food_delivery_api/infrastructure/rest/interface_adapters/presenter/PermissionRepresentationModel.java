@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Permission;
 import lombok.AllArgsConstructor;

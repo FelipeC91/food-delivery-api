@@ -1,7 +1,7 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.mapstruct;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.mapstruct;
 
+import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.ProductPhotoInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.model.ProductPhoto;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input.ProductPhotoInputDTO;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.ProductPhotoMetaDataRepresentationModel;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

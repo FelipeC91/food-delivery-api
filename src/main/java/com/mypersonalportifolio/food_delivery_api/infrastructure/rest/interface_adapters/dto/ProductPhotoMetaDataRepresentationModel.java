@@ -1,6 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto;
 
-import com.mypersonalportifolio.food_delivery_api.application.storage.fileDetailsDTO;
+import com.mypersonalportifolio.food_delivery_api.application.storage.FileDetailsDTO;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -20,6 +20,6 @@ public class ProductPhotoMetaDataRepresentationModel extends RepresentationModel
     private final Long fileSize;
 
     @Setter
-    private fileDetailsDTO fileDetails;
+    private FileDetailsDTO fileDetails;
 
 }

@@ -1,9 +1,9 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.CityController;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.CityRepresentationModel;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.mapstruct.CityMapper;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.mapstruct.CityMapper;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -14,7 +14,7 @@ public class CityRepresentationModelAssembler  extends RepresentationModelAssemb
 
     private final CityMapper cityMapper;
 
-    public CityRepresentationModelAssembler(CityMapper  cityMapper) {
+    public CityRepresentationModelAssembler(CityMapper cityMapper) {
         super(CityController.class, CityRepresentationModel.class);
         this.cityMapper = cityMapper;
     }

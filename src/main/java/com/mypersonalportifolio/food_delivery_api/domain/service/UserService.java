@@ -1,11 +1,11 @@
 package com.mypersonalportifolio.food_delivery_api.domain.service;
 
+import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.UserPasswordInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.BusinessConstraintsViolationException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.User;
 import com.mypersonalportifolio.food_delivery_api.domain.model.UserGroup;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input.UserPasswordInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.GroupRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
 import jakarta.validation.Valid;

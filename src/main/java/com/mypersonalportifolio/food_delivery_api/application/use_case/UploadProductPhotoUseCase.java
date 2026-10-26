@@ -1,14 +1,14 @@
 package com.mypersonalportifolio.food_delivery_api.application.use_case;
 
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoToStoreDTO;
+import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.ProductPhotoInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.mapstruct.ProductPhotoMapper;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.storage.local.FailOnHandleFileException;
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoStorageService;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.UseCase;
 import com.mypersonalportifolio.food_delivery_api.domain.model.ProductPhoto;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.ProductRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input.ProductPhotoInputDTO;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.mapstruct.ProductPhotoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

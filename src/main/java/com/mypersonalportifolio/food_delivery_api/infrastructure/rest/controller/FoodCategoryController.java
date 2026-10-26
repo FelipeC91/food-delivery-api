@@ -6,8 +6,8 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoun
 import com.mypersonalportifolio.food_delivery_api.domain.model.FoodCategory;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.FoodCategoryRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.FoodCategoryService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.FoodCategoryRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.FoodCategoryRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.FoodCategoryRepresentationModelAssembler;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;

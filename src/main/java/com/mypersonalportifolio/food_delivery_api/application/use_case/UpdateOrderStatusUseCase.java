@@ -1,9 +1,9 @@
 package com.mypersonalportifolio.food_delivery_api.application.use_case;
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.UseCase;
+import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.OrderStatusInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.OrderRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.OrderService;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input.OrderStatusInputDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

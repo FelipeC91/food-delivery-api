@@ -8,7 +8,7 @@ public interface PhotoStorageService {
 
     void removePhoto(String fileName);
 
-    fileDetailsDTO retrievePhoto(String fileName);
+    FileDetailsDTO retrievePhoto(String fileName);
 
     boolean exists(String fileName);
 

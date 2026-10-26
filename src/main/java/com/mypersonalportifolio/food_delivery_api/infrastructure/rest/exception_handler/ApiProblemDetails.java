@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.exception;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.exception_handler;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;

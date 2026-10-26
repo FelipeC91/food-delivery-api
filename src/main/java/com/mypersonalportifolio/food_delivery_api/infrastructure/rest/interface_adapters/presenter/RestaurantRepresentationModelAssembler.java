@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.restaurant.RestaurantController;
@@ -6,7 +6,7 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.hateoas_link.CitiesLinkEngine;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.hateoas_link.FoodCategoryLinkEngine;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.hateoas_link.RestaurantLinkEngine;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.mapstruct.RestaurantMapper;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.mapstruct.RestaurantMapper;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 

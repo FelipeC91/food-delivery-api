@@ -10,6 +10,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityAlready
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.FailOnValidateEntityPropertiesException;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.exception_handler.ApiProblemDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 

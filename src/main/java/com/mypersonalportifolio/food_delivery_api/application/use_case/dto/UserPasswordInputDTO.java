@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input;
+package com.mypersonalportifolio.food_delivery_api.application.use_case.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

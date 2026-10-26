@@ -1,7 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.order;
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.UpdateOrderStatusUseCase;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input.OrderStatusInputDTO;
+import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.OrderStatusInputDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

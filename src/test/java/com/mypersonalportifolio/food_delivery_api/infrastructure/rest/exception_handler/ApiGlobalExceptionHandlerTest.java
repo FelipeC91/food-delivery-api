@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.exception;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.exception_handler;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.BusinessConstraintsViolationException;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ class ApiGlobalExceptionHandlerTest {
 
     private final MockMvc mockMvc = MockMvcBuilders
             .standaloneSetup(new TestController())
-            .setControllerAdvice(new ApiGlobalExceptionHandler())
+            .setControllerAdvice(new com.mypersonalportifolio.food_delivery_api.infrastructure.rest.exception.ApiGlobalExceptionHandler())
             .build();
 
     @Test
