@@ -28,7 +28,6 @@ public class CityRepresentationModelAssembler  extends RepresentationModelAssemb
 
     private CityRepresentationModel assembleHateoasLinks(CityRepresentationModel cityOutput) {
         cityOutput.add( WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CityController.class).findOneResource(cityOutput.getId())).withSelfRel());
-        cityOutput.add( WebMvcLinkBuilder.linkTo(CityController.class).withRel("/cities") );
 
         return cityOutput;
     }

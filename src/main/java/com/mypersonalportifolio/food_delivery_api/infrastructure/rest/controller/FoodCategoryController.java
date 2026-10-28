@@ -41,7 +41,7 @@ public class FoodCategoryController {
 
     @GetMapping
     public PagedModel<FoodCategoryRepresentationModel> listAllResources(@PageableDefault(size = 10) Pageable pageable) {
-            var foodCategoryPage = foodCategoryRepository.findAll(pageable);
+        var foodCategoryPage = foodCategoryRepository.findAll(pageable);
         return pagedResourcesAssembler.toModel(foodCategoryPage, assembler);
     }
 

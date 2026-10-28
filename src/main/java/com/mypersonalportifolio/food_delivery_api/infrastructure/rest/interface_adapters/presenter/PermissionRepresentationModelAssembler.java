@@ -2,6 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Permission;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.PermissionController;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.PermissionRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.hateoas_link.GroupsLinkEngine;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.hateoas_link.PermissionsLinkEngine;
 import org.springframework.hateoas.CollectionModel;

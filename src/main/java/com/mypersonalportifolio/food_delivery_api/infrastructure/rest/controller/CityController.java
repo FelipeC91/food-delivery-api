@@ -3,6 +3,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.CityInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.model.City;
+import com.mypersonalportifolio.food_delivery_api.domain.model.Order;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.CityService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.CityRepresentationModel;
@@ -11,7 +12,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,27 +28,28 @@ import org.springframework.web.bind.annotation.*;
 public class CityController {
 
     private final CityRepository cityRepository;
-
     private final CityService cityService;
-
     private final CityRepresentationModelAssembler assembler;
+    private final PagedResourcesAssembler<City> pagedResourcesAssembler;
 
     public CityController(CityRepository cityRepository,
                           CityService cityService,
-                          CityRepresentationModelAssembler assembler) {
+                          CityRepresentationModelAssembler assembler, PagedResourcesAssembler<City> pagedResourcesAssembler) {
         this.cityRepository = cityRepository;
         this.cityService = cityService;
         this.assembler = assembler;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     @Operation(summary = "Get all city registration")
     @GetMapping
-    public CollectionModel<CityRepresentationModel> listAllResources() {
+    public PagedModel<CityRepresentationModel> listAllResources(@PageableDefault(size = 10) Pageable pageable) {
 //        return cityRepository.findAll().stream()
 //                            .map(cityMapper::toCityOutputDTO)
 //                            .peek(this::assembleHateoasLinks)
 //                            .collect( Collectors.collectingAndThen(Collectors.toList(), CollectionModel::of) );
-        return assembler.toCollectionModel( cityRepository.findAll());
+
+        return pagedResourcesAssembler.toModel( cityRepository.findAll(pageable),  assembler);
     }
 
     @Operation(summary = "Get a city by Id")

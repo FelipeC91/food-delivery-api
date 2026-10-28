@@ -1,8 +1,11 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.restaurant;
 
+import com.mypersonalportifolio.food_delivery_api.domain.model.Order;
+import com.mypersonalportifolio.food_delivery_api.domain.model.User;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.UserRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.UserRepresentationModelAssembler;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +20,14 @@ public class RestaurantManagersController {
 
     private final RestaurantService restaurantService;
     private final UserRepresentationModelAssembler userAssembler;
+    private final PagedResourcesAssembler<User> pagedResourcesAssembler;
+
 
     public RestaurantManagersController(RestaurantService restaurantService,
-                                        UserRepresentationModelAssembler userAssembler) {
+                                        UserRepresentationModelAssembler userAssembler, PagedResourcesAssembler<User> pagedResourcesAssembler) {
         this.restaurantService = restaurantService;
         this.userAssembler = userAssembler;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     @GetMapping

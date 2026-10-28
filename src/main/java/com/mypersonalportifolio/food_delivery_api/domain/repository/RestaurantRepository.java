@@ -4,6 +4,8 @@ package com.mypersonalportifolio.food_delivery_api.domain.repository;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -40,4 +42,10 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, UUID>,
     List<Restaurant> findTop2ByNameContaining(String name);
 
     Long countByFoodCategoryId(UUID foodCategory);
+
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM Restaurant r JOIN r.managers m " +
+            "WHERE r.id = :restaurantId AND m.id = :managerId")
+    boolean existsManagerByRestaurantIdAndManagerId(@Param("restaurantId") UUID restaurantId,
+                                                    @Param("managerId") UUID managerId);
 }

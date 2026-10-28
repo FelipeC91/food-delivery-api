@@ -2,6 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.ProcessNewOrderUseCase;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.OrderInputDTO;
+import com.mypersonalportifolio.food_delivery_api.domain.model.Order;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.OrderRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.filter.OrderSearchFilterDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.service.OrderService;
@@ -11,10 +12,10 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.OrderRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.OrderSimplifiedRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.pagination.PageableTranslator;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.pagination.PagerWrapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,28 +31,28 @@ public class OrderController {
     private final ProcessNewOrderUseCase processNewOrderUseCase;
     private final OrderRepresentationModelAssembler assembler;
     private final OrderSimplifiedRepresentationModelAssembler simplifiedAssembler;
+    private final PagedResourcesAssembler<Order> pagedResourcesAssembler;
 
     public OrderController(OrderRepository orderRepository,
                            OrderService orderService, ProcessNewOrderUseCase processNewOrderUseCase,
-                           OrderRepresentationModelAssembler assembler, OrderSimplifiedRepresentationModelAssembler simplifiedAssembler) {
+                           OrderRepresentationModelAssembler assembler, OrderSimplifiedRepresentationModelAssembler simplifiedAssembler, PagedResourcesAssembler<Order> pagedResourcesAssembler) {
         this.orderRepository = orderRepository;
         this.orderService = orderService;
         this.processNewOrderUseCase = processNewOrderUseCase;
         this.assembler = assembler;
         this.simplifiedAssembler = simplifiedAssembler;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public CollectionModel<OrderSimplifiedRepresentationModel> getAllResources(OrderSearchFilterDTO filter,
-                                                                               @PageableDefault(size = 10) Pageable pageable) {
+    public PagedModel<OrderSimplifiedRepresentationModel> getAllResources(OrderSearchFilterDTO filter,
+                                                                          @PageableDefault(size = 10) Pageable pageable) {
         var translatedPageable = translatePageable(pageable);
 
         var ordersPage = orderRepository.findAll( OrderQueryPredicatesFactory.buildOrderSpecification(filter), translatedPageable );
 
-        ordersPage = new PagerWrapper<>(ordersPage.getContent(), pageable);
-
-        return simplifiedAssembler.toCollectionModel(ordersPage);
+        return pagedResourcesAssembler.toModel(ordersPage, simplifiedAssembler);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -70,6 +71,7 @@ public class OrderController {
     private Pageable translatePageable(Pageable pageableSource) {
         var sortingMap = Map.of("customer.name", "customer.name",
                                                     "customerName", "customer.name",
+                                                    "restaurantName", "restaurant.name",
                                                     "restaurant.name", "restaurant.name",
                                                         "totalPrice", "totalPrice"
                                                             );

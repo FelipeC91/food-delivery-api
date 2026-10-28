@@ -15,4 +15,11 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecific
 
     @Query("SELECT COUNT(o) > 0 FROM order_model AS o WHERE o.restaurant.id = :restaurantId AND o.status NOT IN (:safeCondition)")
     Boolean existsByRestaurantAndOrderStatusNotIn(UUID restaurantId, List<OrderStatus> safeCondition);
+
+    boolean existsOrderByIdAndCustomerId(UUID orderId, UUID customerId);
+
+    @Query("SELECT COUNT(o) > 0 FROM order_model o WHERE o.id = ?1 AND o.restaurant.id = ?2")
+    boolean existsByIdAndRestaurantId(UUID orderId, UUID restaurantId);
+
+    List<Order> findByRestaurantId(UUID restaurantId);
 }

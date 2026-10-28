@@ -10,11 +10,14 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.UserGroupRepresentationModelAssembler;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,16 +27,18 @@ public class GroupController {
     private final GroupRepository groupRepository;
     private final GroupService userGroupService;
     private final UserGroupRepresentationModelAssembler assembler;
+    private final PagedResourcesAssembler<UserGroup> pagedResourcesAssembler;
 
-    public GroupController(GroupRepository groupRepository, GroupService userGroupService, UserGroupRepresentationModelAssembler assembler) {
+    public GroupController(GroupRepository groupRepository, GroupService userGroupService, UserGroupRepresentationModelAssembler assembler, PagedResourcesAssembler<UserGroup> pagedResourcesAssembler) {
         this.groupRepository = groupRepository;
         this.userGroupService = userGroupService;
         this.assembler = assembler;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     @GetMapping
-    public List<UserGroup> listAllResources() {
-        return groupRepository.findAll();
+    public PagedModel<UserGroupRepresentationModel> listAllResources(@PageableDefault(size = 10) Pageable pageable) {
+        return pagedResourcesAssembler.toModel(groupRepository.findAll(pageable), assembler);
     }
 
     @GetMapping("/{userGroupId}")

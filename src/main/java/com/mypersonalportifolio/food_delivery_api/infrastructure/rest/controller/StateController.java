@@ -8,10 +8,11 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/{states}")
+@RequestMapping("/states")
 @RestController
 public class StateController {
     private final StateRepository stateRepository;
@@ -26,7 +27,7 @@ public class StateController {
     }
 
     @GetMapping("/{stateId}")
-    public StateRepresentationModel getSingleResource(Long stateId) {
+    public StateRepresentationModel getSingleResource(@PathVariable Long stateId) {
         var state = stateRepository.findById(stateId)
                                         .orElseThrow( () -> new EntityNotFoundException(State.class, stateId.toString()));
 

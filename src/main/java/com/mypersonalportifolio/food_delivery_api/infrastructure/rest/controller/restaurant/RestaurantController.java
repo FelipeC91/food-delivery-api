@@ -12,7 +12,10 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.mapstruct.RestaurantMapper;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,23 +32,26 @@ public class RestaurantController {
     private final RestaurantMapper restaurantMapper;
     private final RestaurantRepresentationModelAssembler assembler;
     private final RestaurantSimplifiedRepresentationModelAssembler simplifiedAssembler;
+    private final PagedResourcesAssembler<Restaurant> pagedResourcesAssembler;
 
 
     public RestaurantController(RestaurantRepository restaurantRepository,
                                 RestaurantService restaurantService,
                                 RestaurantMapper restaurantMapper,
                                 RestaurantRepresentationModelAssembler assembler,
-                                RestaurantSimplifiedRepresentationModelAssembler simplifiedAssembler) {
+                                RestaurantSimplifiedRepresentationModelAssembler simplifiedAssembler, PagedResourcesAssembler<Restaurant> pagedResourcesAssembler) {
         this.restaurantRepository = restaurantRepository;
         this.restaurantService = restaurantService;
         this.restaurantMapper = restaurantMapper;
         this.assembler = assembler;
         this.simplifiedAssembler = simplifiedAssembler;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     @GetMapping
-    public CollectionModel<RestaurantSimplifiedRepresentationModel> listAllResources(Pageable pageable) {
-        return simplifiedAssembler.toCollectionModel(restaurantRepository.findAll(pageable));
+    public PagedModel<RestaurantSimplifiedRepresentationModel> listAllResources(@PageableDefault(size = 8) Pageable pageable) {
+        var page = restaurantRepository.findAll(pageable);
+        return pagedResourcesAssembler.toModel(page, simplifiedAssembler);
     }
 
     @GetMapping("/{restaurantId}")

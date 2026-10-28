@@ -21,7 +21,7 @@ public class RetrieveProductPhotoUseCase implements UseCase<UUID, ProductPhotoMe
     @Autowired
     public RetrieveProductPhotoUseCase(ProductService productService,
                                        PhotoStorageService photoStorageService,
-                                       ProductPhotoMapper productPhotoMapper) {
+                                        ProductPhotoMapper productPhotoMapper) {
         this.productService = productService;
         this.photoStorageService = photoStorageService;
         this.productPhotoMapper = productPhotoMapper;
