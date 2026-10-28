@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+    public static final String API_BASE_PATH = "/api/v{version}";
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -26,12 +27,14 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void configureApiVersioning(ApiVersionConfigurer configurer) {
         // Define que usará um segmento de caminho (PATH) para a versão no índice 0
-        configurer.usePathSegment(0);
+        configurer.usePathSegment(1)
+                //.addSupportedVersions("1", "2")
+                .setDefaultVersion("1");
     }
 
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.addPathPrefix("/api/v{version}", HandlerTypePredicate.forAnnotation(RestController.class));
+        configurer.addPathPrefix(API_BASE_PATH, HandlerTypePredicate.forAnnotation(RestController.class));
     }
 
 }
