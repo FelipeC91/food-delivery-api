@@ -1,10 +1,10 @@
 package com.mypersonalportifolio.food_delivery_api.domain.service;
 
+import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.CityInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.domain.model.State;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.StateRepository;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.input.CityInputDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

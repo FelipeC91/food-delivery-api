@@ -1,12 +1,16 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
                         restaurants: registering, managing their products' catalog, receiving orders, and processing them.
                         """,
                 version = "1.0.0",
-                contact = @Contact(name = "Felipe Campos", url = "github.com/FelipeC91")
+                contact = @Contact(name = "Felipe Campos", url = "https://github.com/FelipeC91")
         )
 )
 public class OpenApiConfig {
@@ -51,4 +55,22 @@ public class OpenApiConfig {
                         })
                 );
         }
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        final String securitySchemeName = "Bearer_Auth"; // Nome exato do vínculo
+
+        return new OpenAPI()
+                // 1. Tranca todos os endpoints globalmente (Cadeados fechados)
+                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+                // 2. Define o campo para inserção do token
+                .components(new Components()
+                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT") // Opcional: dica visual para o desenvolvedor
+                                .description("Insira o seu token JWT gerado (ex: obtido via Postman ou endpoint de login)")));
+    }
+
+
 }

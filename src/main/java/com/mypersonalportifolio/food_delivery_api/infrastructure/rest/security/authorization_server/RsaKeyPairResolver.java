@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_auth_server.infraestructure.config;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -6,7 +6,10 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.crypto.encrypt.KeyStoreKeyFactory;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import java.security.KeyPair;
@@ -16,19 +19,38 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
 
 @Configuration
+@EnableConfigurationProperties(RsaKeyProperties.class)
 public class RsaKeyPairResolver {
-    // 5. Provedor de chaves JWK para assinar os tokens JWT
+    // JWK keys provider to sign JWT - it only works when there will a single instance of authorization server
+    private final RsaKeyProperties  rsaKeyProperties;
+    private final ResourceLoader resourceLoader;
+
+    public RsaKeyPairResolver(RsaKeyProperties rsaKeyProperties, ResourceLoader resourceLoader) {
+        this.rsaKeyProperties = rsaKeyProperties;
+        this.resourceLoader = resourceLoader;
+    }
+
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
-        KeyPair keyPair = generateRsaKey();
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        RSAKey rsaKey = new RSAKey.Builder(publicKey)
-                .privateKey(privateKey)
+//        KeyPair keyPair = generateRsaKey();
+//        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+//        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+//        RSAKey rsaKey = new RSAKey.Builder(publicKey)
+//                .privateKey(privateKey)
+//                .keyID(UUID.randomUUID().toString())
+//                .build();
+//        JWKSet jwkSet = new JWKSet(rsaKey);
+
+        var jksResource = resourceLoader.getResource(rsaKeyProperties.jksFilePath());
+        var keyStoreFactory =  new KeyStoreKeyFactory(jksResource, rsaKeyProperties.keyStorePassword().toCharArray());
+        var rsaKeyPair =keyStoreFactory.getKeyPair(rsaKeyProperties.keyPairAlias());
+
+        var rsaKey = new RSAKey.Builder((RSAPublicKey) rsaKeyPair.getPublic())
+                .privateKey((RSAPrivateKey) rsaKeyPair.getPrivate())
                 .keyID(UUID.randomUUID().toString())
                 .build();
-        JWKSet jwkSet = new JWKSet(rsaKey);
-        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
+
+        return (jwkSelector, securityContext) -> jwkSelector.select(new JWKSet(rsaKey));
     }
 
     private static KeyPair generateRsaKey() {
@@ -43,7 +65,7 @@ public class RsaKeyPairResolver {
         return keyPair;
     }
 
-    // 6. Decodificador de JWT para validar assinaturas
+    // JWT decoder to validate signatures
     @Bean
     public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);

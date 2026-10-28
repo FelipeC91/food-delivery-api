@@ -1,30 +1,24 @@
-package com.mypersonalportifolio.food_delivery_auth_server.infraestructure.config;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server;
 
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server.jpa.JpaUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
-import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
-import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
@@ -32,21 +26,28 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
-import com.mypersonalportifolio.food_delivery_auth_server.infraestructure.jpa.JpaUserDetailsService;
-
-import java.time.Duration;
-import java.util.UUID;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Bean
+    @Order(0)
+    public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/swagger-ui.html", "/swagger-ui/**", "/webjars/**", "/v3/api-docs/**")
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
+
+        return http.build();
+    }
+
     // 1. Filter Chain para os endpoints do protocolo OAuth2 / OIDC
     @Bean
     @Order(1)
     public SecurityFilterChain authServerSecurityFilterChain(
             HttpSecurity http,
             SecurityContextRepository securityContextRepository,
-            OAuth2AuthorizationService authorizationService
+            OAuth2AuthorizationService authorizationService,
+            JwtAuthenticationConverter jwtAuthenticationConverter
     ) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
                 new OAuth2AuthorizationServerConfigurer();
@@ -59,7 +60,10 @@ public class SecurityConfig {
                         .authorizationService(authorizationService)
                         .oidc(Customizer.withDefaults()) // Ativa o OpenID Connect 1.0 por padrão
                 )
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
+                .authorizeHttpRequests(authorize -> authorize
+                        // The token endpoint performs OAuth client authentication itself.
+                        .requestMatchers("/oauth2/token").permitAll()
+                        .anyRequest().authenticated())
                 // 2. Redireciona para a página de login caso o usuário final não esteja autenticado
                 .exceptionHandling(exceptions -> exceptions
                         .defaultAuthenticationEntryPointFor(
@@ -68,25 +72,25 @@ public class SecurityConfig {
                         )
                 )
                 // 3. Permite validar tokens de acesso para os endpoints internos (ex: UserInfo)
-                .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
+                .oauth2ResourceServer(resourceServer -> resourceServer.jwt(jwt ->
+                        jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
         return http.build();
     }
 
     @Bean
-    @Order(2)
-    public SecurityFilterChain defaultSecurityFilterChain(
-            HttpSecurity http,
-            SecurityContextRepository securityContextRepository,
-            DaoAuthenticationProvider userAuthenticationProvider
-    ) throws Exception {
+    @Order(7)
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
+                                                            SecurityContextRepository securityContextRepository,
+                                                            DaoAuthenticationProvider userAuthenticationProvider) throws Exception {
         http
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                .authenticationProvider(userAuthenticationProvider)
-                .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
+                .authenticationProvider(userAuthenticationProvider);
 
         return http.build();
     }
@@ -105,67 +109,6 @@ public class SecurityConfig {
         return new JdbcRegisteredClientRepository(jdbcTemplate);
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-//        UserDetails userDetails = User.withUsername("user")
-//                .password(passwordEncoder.encode("password"))
-//                .roles("USER")
-//                .build();
-//        return new InMemoryUserDetailsManager(userDetails);
-//    }
-
-    // 4. Repositório de Clientes cadastrados (Aplicações que vão consumir as APIs)
-//    @Bean
-//    public RegisteredClientRepository registeredClientRepository() {
-//        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
-//                .clientId("food-delivery-customer")
-//                .clientSecret(this.passwordEncoder().encode("verysecret"))
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-    //                .tokenSettings(TokenSettings.builder()
-    //                        .accessTokenTimeToLive(Duration.ofMinutes(30))
-    //                        .refreshTokenTimeToLive(Duration.ofHours(12))
-    //                        .build()
-    //                )
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                .redirectUri("http://127.0.0.1:8080/")
-//       //         .postLogoutRedirectUri("http://127.0.0")
-//                .scope(OidcScopes.OPENID)
-//                .scope(OidcScopes.PROFILE)
-//                .scope("food-delivery-api")
-//                .clientSettings(ClientSettings.builder()
-//                        .requireAuthorizationConsent(true)
-//                        .requireProofKey(true)
-//                        .build())
-//                .build();
-//
-//        RegisteredClient oidcClient2 = RegisteredClient.withId(UUID.randomUUID().toString())
-//                .clientId("food-delivery-restaurant")
-//                .clientSecret(this.passwordEncoder().encode("verysecret"))
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-//                .tokenSettings(TokenSettings.builder()
-//                        .accessTokenTimeToLive(Duration.ofMinutes(30))
-//                        .refreshTokenTimeToLive(Duration.ofHours(12))
-//                        .build()
-//                )
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                .redirectUri("http://127.0.0.1:8080/")
-//                //         .postLogoutRedirectUri("http://127.0.0")
-//                .scope(OidcScopes.OPENID)
-//                .scope(OidcScopes.PROFILE)
-//                .scope("food-delivery-api")
-//                .clientSettings(ClientSettings.builder()
-//                        .requireAuthorizationConsent(true)
-//                        .requireProofKey(true)
-//                        .build())
-//                .build();
-//
-//        return new InMemoryRegisteredClientRepository(oidcClient, oidcClient2);
-//    }
-
     // 7. Configurações gerais do servidor de autorização (ex: endpoint do Issuer)
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
@@ -173,15 +116,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public DaoAuthenticationProvider userAuthenticationProvider(
-            JpaUserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder
-    ) {
+    public DaoAuthenticationProvider userAuthenticationProvider(JpaUserDetailsService userDetailsService,
+                                                            PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
         return provider;

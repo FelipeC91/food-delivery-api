@@ -1,13 +1,13 @@
-package com.mypersonalportifolio.food_delivery_auth_server.infraestructure.config;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server;
 
-import com.mypersonalportifolio.food_delivery_auth_server.infraestructure.jpa.CustomUserDetails;
-import com.mypersonalportifolio.food_delivery_auth_server.infraestructure.jpa.JpaUserDetailsService;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server.jpa.CustomUserDetails;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server.jpa.JpaUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientCredentialsAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;

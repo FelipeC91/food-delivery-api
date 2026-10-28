@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_auth_server.infraestructure.jpa;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server.jpa;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +13,7 @@ public class CustomUserDetails extends User {
     private final  UUID id;
     private final  String fullUsername;
 
-    public CustomUserDetails(com.mypersonalportifolio.food_delivery_auth_server.domain.model.User user,
+    public CustomUserDetails(com.mypersonalportifolio.food_delivery_api.domain.model.User user,
                              Collection<? extends GrantedAuthority> authorities) {
         super(user.getEmail(), user.getPassword(), authorities);
         this.id = user.getId();
