@@ -9,10 +9,9 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 public class AnalyticsLinkEngine {
     public static Link slashAnalytics() {
-        var link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AnalyticsController.class).getDailySales(null)).withRel("/daily-sales");
+        var link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AnalyticsController.class).getDailySales(null,null)).withRel("/daily-sales");
 
         var uriTemplate = UriTemplate.of(link.getHref()).with(new TemplateVariables(
-                new TemplateVariable("restaurantId", TemplateVariable.VariableType.REQUEST_PARAM),
                 new TemplateVariable("offsetTimeZone", TemplateVariable.VariableType.REQUEST_PARAM),
                 new TemplateVariable("createdSince", TemplateVariable.VariableType.REQUEST_PARAM),
                 new TemplateVariable("createdUntil", TemplateVariable.VariableType.REQUEST_PARAM))

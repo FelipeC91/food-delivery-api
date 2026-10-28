@@ -1,5 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.persistence.jpa.query_projection;
 
+import com.mypersonalportifolio.food_delivery_api.application.analytics.DailySalesFilterDTO;
 import com.mypersonalportifolio.food_delivery_api.application.analytics.DailySalesProjectionDTO;
 import com.mypersonalportifolio.food_delivery_api.application.analytics.DailySalesQueryProjection;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Order;
@@ -22,12 +23,14 @@ import java.util.List;
 public class DailySalesQueryProjectionImpl implements DailySalesQueryProjection {
 
     private static final String DEFAULT_TIME_ZONE_OFFSET = "00:00";
+    private final EntityManager entityManager;
 
-    @Autowired
-    private EntityManager entityManager;
+    public DailySalesQueryProjectionImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
-    public List<DailySalesProjectionDTO> retrieveDailySales(FilterDTO filter) {
+    public List<DailySalesProjectionDTO> retrieveDailySales(DailySalesFilterDTO filter) {
 
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(DailySalesProjectionDTO.class);
@@ -50,8 +53,8 @@ public class DailySalesQueryProjectionImpl implements DailySalesQueryProjection 
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
-    private Expression<Date> processCreationDateExpression(CriteriaBuilder criteriaBuilder, Root<Order> fromOrder, FilterDTO filter) {
-        if (filter.offsetTimeZone().equals(DEFAULT_TIME_ZONE_OFFSET)) {
+    private Expression<Date> processCreationDateExpression(CriteriaBuilder criteriaBuilder, Root<Order> fromOrder, DailySalesFilterDTO filter) {
+        if (filter.getOffsetTimeZone().equals(DEFAULT_TIME_ZONE_OFFSET)) {
             return criteriaBuilder.function("DATE", Date.class, fromOrder.get(Order_.CREATED_AT));
         }
 
@@ -60,27 +63,27 @@ public class DailySalesQueryProjectionImpl implements DailySalesQueryProjection 
                 Date.class,
                 fromOrder.get(Order_.CREATED_AT),
                 criteriaBuilder.literal(DEFAULT_TIME_ZONE_OFFSET),
-                criteriaBuilder.literal(filter.offsetTimeZone())
+                criteriaBuilder.literal(filter.getOffsetTimeZone())
         );
 
         return criteriaBuilder.function("DATE", Date.class, convertedDateTime);
     }
 
-    private List<Predicate> processPredicates(CriteriaBuilder criteriaBuilder, Root<Order> fromOrder, FilterDTO filter) {
+    private List<Predicate> processPredicates(CriteriaBuilder criteriaBuilder, Root<Order> fromOrder, DailySalesFilterDTO filter) {
         var predicates = new ArrayList<Predicate>();
 
         predicates.add(fromOrder.get(Order_.STATUS).in(OrderStatus.CONFIRMADO, OrderStatus.ENTREGUE));
 
-        if (filter.restaurantId() != null) {
-            predicates.add(criteriaBuilder.equal(fromOrder.get(Order_.RESTAURANT).get(Restaurant_.ID), filter.restaurantId()));
+        if (filter.getRestaurantId() != null) {
+            predicates.add(criteriaBuilder.equal(fromOrder.get(Order_.RESTAURANT).get(Restaurant_.ID), filter.getRestaurantId()));
         }
 
-        if (filter.createdSince() != null) {
-            predicates.add(criteriaBuilder.greaterThanOrEqualTo(fromOrder.get(Order_.CREATED_AT), filter.createdSince()));
+        if (filter.getCreatedSince() != null) {
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(fromOrder.get(Order_.CREATED_AT), filter.getCreatedSince()));
         }
 
-        if (filter.createdUntil() != null) {
-            predicates.add(criteriaBuilder.lessThanOrEqualTo(fromOrder.get(Order_.CREATED_AT), filter.createdUntil()));
+        if (filter.getCreatedUntil() != null) {
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(fromOrder.get(Order_.CREATED_AT), filter.getCreatedUntil()));
         }
 
         return predicates;
