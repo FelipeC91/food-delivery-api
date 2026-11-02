@@ -2,18 +2,23 @@ package com.mypersonalportifolio.food_delivery_api.application.use_case;
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.UseCase;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.PaymentMethodNotAcceptableException;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.PendingOrderAlreadyExistsException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Order;
+import com.mypersonalportifolio.food_delivery_api.domain.model.OrderStatus;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.OrderRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.OrderService;
 import com.mypersonalportifolio.food_delivery_api.domain.service.PaymentMethodService;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
 import com.mypersonalportifolio.food_delivery_api.domain.service.UserService;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.OrderInputDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class ProcessNewOrderUseCase implements UseCase<OrderInputDTO, Order> {
 
@@ -22,6 +27,8 @@ public class ProcessNewOrderUseCase implements UseCase<OrderInputDTO, Order> {
     private final RestaurantService restaurantService;
     private final PaymentMethodService paymentMethodService;
     private final UserService userService;
+
+    private final List<OrderStatus> NOT_PENDING_CONDITIONS = List.of( OrderStatus.ENTREGUE, OrderStatus.CANCELADO );
 
     public ProcessNewOrderUseCase(OrderService orderService,
                                   OrderRepository orderRepository,
@@ -38,25 +45,31 @@ public class ProcessNewOrderUseCase implements UseCase<OrderInputDTO, Order> {
     @Transactional
     @Override
     public Order execute(OrderInputDTO orderCandidate) {
-        var restaurantTarget = restaurantService.findValidRestaurant(orderCandidate.restaurantId());
+        var restaurantTarget = restaurantService.findValidRestaurant(orderCandidate.getRestaurantId());
 
-        var paymentMethodTarget = paymentMethodService.findValidPaymentMethod(orderCandidate.paymentMethodId());
+        var paymentMethodTarget = paymentMethodService.findValidPaymentMethod(orderCandidate.getPaymentMethodId());
 
         var isAllowedPaymentMethod = restaurantTarget.getAllowedPaymentMethods().contains(paymentMethodTarget);
 
         if (!isAllowedPaymentMethod)
             throw new PaymentMethodNotAcceptableException(paymentMethodTarget.getDescription(), restaurantTarget.getName());
 
-        //TODO: catch user from user token
-        var customer = userService.findVerifiedUser(UUID.fromString("55555555-6666-4777-8888-999999999999"));
+        var customer = userService.findVerifiedUser(orderCandidate.getCustomerId());
 
-        var shippingAddress = orderService.desassembleAddress(orderCandidate.shippingAddress());
+        if (orderRepository.existsByCustomerIdAndStatusNotIn(customer.getId(), NOT_PENDING_CONDITIONS))
+            throw new PendingOrderAlreadyExistsException();
+
+        var shippingAddress = orderService.desassembleAddress(orderCandidate.getShippingAddress());
 
         var orderItemSet = orderService.processItems(orderCandidate);
 
 
         var validOrder = Order.confirmNewOrder(restaurantTarget, paymentMethodTarget, customer, shippingAddress, orderItemSet);
 
-        return   orderRepository.save(validOrder);
+        var order =   orderRepository.save(validOrder);
+
+        log.info("Order has been saved successfully:\n {}",  order.toString());
+
+        return order;
     }
 }

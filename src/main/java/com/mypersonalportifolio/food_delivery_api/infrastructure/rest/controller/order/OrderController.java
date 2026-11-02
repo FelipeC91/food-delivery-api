@@ -11,12 +11,16 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.OrderSimplifiedRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.OrderRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.OrderSimplifiedRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.OrderControllerOpenApi;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.pagination.PageableTranslator;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.resource_server.JwtClaimKeys;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -24,7 +28,7 @@ import java.util.UUID;
 
 @RequestMapping("/orders")
 @RestController
-public class OrderController {
+public class OrderController implements OrderControllerOpenApi {
 
     private final OrderRepository orderRepository;
     private final OrderService orderService;
@@ -63,7 +67,11 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public OrderRepresentationModel createResource(@RequestBody OrderInputDTO orderInputDTO) {
+    public OrderRepresentationModel createResource(@RequestBody OrderInputDTO orderInputDTO,
+                                                    @AuthenticationPrincipal Jwt jwt) {
+        var customerId = UUID.fromString(jwt.getClaim(JwtClaimKeys.USER_ID.getKey()));
+        orderInputDTO.setCustomerId(customerId);
+
         return assembler.toModel( processNewOrderUseCase.execute(orderInputDTO) );
 
     }
