@@ -5,12 +5,14 @@ import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.U
 import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.ProductPhotoMetaDataRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.mapstruct.ProductPhotoMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class RetrieveProductPhotoUseCase implements UseCase<UUID, ProductPhotoMetaDataRepresentationModel> {
 
@@ -37,6 +39,8 @@ public class RetrieveProductPhotoUseCase implements UseCase<UUID, ProductPhotoMe
         var photoDataOutputDTO = productPhotoMapper.toOutputDTO(productTarget.getPhotoMetaData());
 
         photoDataOutputDTO.setFileDetails(photoStorageService.retrievePhoto(photoDataOutputDTO.getFileName()));
+
+        log.info("{} has been retrieved", photoDataOutputDTO.getFileName());
 
         return photoDataOutputDTO;
 

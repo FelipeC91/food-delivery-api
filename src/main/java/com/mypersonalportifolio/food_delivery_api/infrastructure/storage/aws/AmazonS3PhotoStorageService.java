@@ -3,6 +3,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.storage.aws;
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoStorageService;
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoToStoreDTO;
 import com.mypersonalportifolio.food_delivery_api.application.storage.FileDetailsDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -13,6 +14,7 @@ import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
 
+@Slf4j
 @Primary
 @Component("S3StorageService")
 public class AmazonS3PhotoStorageService implements PhotoStorageService {
@@ -40,6 +42,8 @@ public class AmazonS3PhotoStorageService implements PhotoStorageService {
                         .build();
 
         s3Client.putObject(objectRequest, RequestBody.fromBytes(newPhoto.getFileInputStream().readAllBytes()));
+
+        log.info("{} has been stored in bucket {}", newPhoto.getFileName(), BUCKET_NAME);
     }
 
     @Override
@@ -50,6 +54,9 @@ public class AmazonS3PhotoStorageService implements PhotoStorageService {
                                 .build();
 
         s3Client.deleteObject(objectRequest);
+
+        log.info("{} has been deleted in bucket {}", fileName, BUCKET_NAME);
+
     }
 
     @Override

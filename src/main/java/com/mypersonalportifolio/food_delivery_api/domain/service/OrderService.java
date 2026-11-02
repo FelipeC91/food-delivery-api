@@ -34,7 +34,8 @@ public class OrderService {
     }
 
     public Set<OrderItem> processItems(OrderInputDTO orderCandidate) {
-        return orderCandidate.items().stream().map( i -> {
+        return orderCandidate.getItems().stream()
+                                .map( i -> {
             var product = productService.findValidProduct(i.productId());
             var totalPrice = product.getPrice().multiply(BigDecimal.valueOf(i.quantity()));
 
@@ -45,7 +46,7 @@ public class OrderService {
     public Address desassembleAddress(AddressInputDTO addressInputDTO) {
         var address = addressMapper.toAddress(addressInputDTO);
 
-        var validCity = cityService.findValidCityByName(address.getCity().getName());
+        var validCity = cityService.findVerifiedCityByName(address.getCity().getName());
 
         address.setCity(validCity);
 

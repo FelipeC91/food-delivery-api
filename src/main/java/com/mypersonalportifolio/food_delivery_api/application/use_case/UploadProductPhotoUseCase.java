@@ -9,6 +9,7 @@ import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.U
 import com.mypersonalportifolio.food_delivery_api.domain.model.ProductPhoto;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.ProductRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.Objects;
 
+@Slf4j
 @Service
 public class UploadProductPhotoUseCase implements UseCase<ProductPhotoInputDTO, ProductPhoto> {
 
@@ -63,6 +65,7 @@ public class UploadProductPhotoUseCase implements UseCase<ProductPhotoInputDTO, 
 
             photoStorageService.storePhoto(toStore);
 
+            log.info("Product photo {} has been uploaded successfully.", savedProductPhotoPhoto.getPhotoMetaData().toString());
 
             return savedProductPhotoPhoto.getPhotoMetaData();
         } catch (IOException e) {

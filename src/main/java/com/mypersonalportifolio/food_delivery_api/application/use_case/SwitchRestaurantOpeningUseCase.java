@@ -4,9 +4,11 @@ import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.U
 import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.RestaurantOpeningStateInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.RestaurantCantBeClosedException;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class SwitchRestaurantOpeningUseCase implements UseCase<RestaurantOpeningStateInputDTO, Void> {
 
@@ -31,6 +33,7 @@ public class SwitchRestaurantOpeningUseCase implements UseCase<RestaurantOpening
             restaurantTarget.setOpen(Boolean.FALSE);
         }
 
+        log.info("{} oppening has been switched to {}", restaurantOpeningStateInput.getRestaurantId(), restaurantTarget.getOpen() ? "open" : "closed");
 
 
         return null;

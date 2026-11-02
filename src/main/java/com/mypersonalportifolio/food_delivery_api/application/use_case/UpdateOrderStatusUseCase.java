@@ -4,10 +4,12 @@ import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.U
 import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.OrderStatusInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.OrderRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class UpdateOrderStatusUseCase implements UseCase<OrderStatusInputDTO, Void> {
 
@@ -32,7 +34,9 @@ public class UpdateOrderStatusUseCase implements UseCase<OrderStatusInputDTO, Vo
 
                 orderRepository.save(orderTarget); //it only to fire a domain event
             }
-            case ENTREGUE -> orderTarget.completeDelivery();
+            case ENTREGUE -> {
+                orderTarget.completeDelivery();
+            }
 
             case CANCELADO -> {
                 orderTarget.cancel();
@@ -40,6 +44,8 @@ public class UpdateOrderStatusUseCase implements UseCase<OrderStatusInputDTO, Vo
                 orderRepository.save(orderTarget); //it only to fire a domain event
             }
         }
+
+        log.info("Order {} status has been changed to {}.", orderTarget.getId(), orderTarget.getStatus());
 
         return null;
     }

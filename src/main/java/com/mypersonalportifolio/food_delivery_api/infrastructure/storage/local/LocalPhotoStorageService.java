@@ -3,6 +3,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.storage.local;
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoStorageService;
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoToStoreDTO;
 import com.mypersonalportifolio.food_delivery_api.application.storage.FileDetailsDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
@@ -12,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+@Slf4j
 @Component("localStorageService")
 public class LocalPhotoStorageService implements PhotoStorageService {
 
@@ -29,6 +31,8 @@ public class LocalPhotoStorageService implements PhotoStorageService {
         try {
             FileCopyUtils.copy(newPhoto.getFileInputStream(), Files.newOutputStream(fileAbsolutePath));
 
+            log.info("{} has been stored in {}", newPhoto.getFileName(), LOCAL_PHOTO_STORAGE_BASE_PATH);
+
         } catch (IOException e) {
             throw new FailOnHandleFileException("Erro ao gravar arquivo", e);
         }
@@ -39,6 +43,9 @@ public class LocalPhotoStorageService implements PhotoStorageService {
         var fileAbsolutePath = Paths.get(LOCAL_PHOTO_STORAGE_BASE_PATH, fileName);
         try {
             Files.deleteIfExists(fileAbsolutePath);
+
+            log.info("{} has been deleted from {}", fileName, LOCAL_PHOTO_STORAGE_BASE_PATH);
+
         } catch (IOException e) {
             throw new FailOnHandleFileException("Erro ao remover arquivo", e);
         }

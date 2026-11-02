@@ -2,9 +2,12 @@ package com.mypersonalportifolio.food_delivery_api.domain.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.RestaurantInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.*;
 import com.mypersonalportifolio.food_delivery_api.domain.model.*;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.*;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import org.springframework.validation.SmartValidator;
 
 import java.util.*;
 
+@Slf4j
 @Service
 public class RestaurantService {
 
@@ -23,6 +27,8 @@ public class RestaurantService {
     private final PaymentMethodRepository paymentMethodRepository;
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
+
+    private final List<OrderStatus> SAFE_CONDITIONS = List.of(OrderStatus.ENTREGUE, OrderStatus.CANCELADO);
 
     public RestaurantService(RestaurantRepository restaurantRepository,
                              CityRepository cityRepository,
@@ -128,7 +134,7 @@ public class RestaurantService {
                 .forEach(this::deactivate);
     }
 
-    public Restaurant validateNewRestaurant(Restaurant restaurantCandidate) {
+    private Restaurant validateNewRestaurant(Restaurant restaurantCandidate) {
         return  validateCity(restaurantCandidate);
     }
 
@@ -190,8 +196,23 @@ public class RestaurantService {
     }
 
     public boolean isRestaurantIReadyToDeactivateOrClose(Restaurant restaurantTarget) {
-        var safeConditions = List.of(OrderStatus.ENTREGUE, OrderStatus.CANCELADO);
 
-        return orderRepository.existsByRestaurantAndOrderStatusNotIn(restaurantTarget.getId(), safeConditions);
+        return orderRepository.existsByRestaurantIdAndOrderStatusNotIn(restaurantTarget.getId(), SAFE_CONDITIONS);
+    }
+
+    public Restaurant validateAndSave(Restaurant restaurantCandidate) {
+        try {
+
+            var validRestaurant = validateNewRestaurant(restaurantCandidate);
+            var savedRestaurant = restaurantRepository.save(validRestaurant);
+
+            log.info("Restaurant {} save successful", restaurantCandidate.toString());
+
+            return savedRestaurant;
+
+        } catch (IllegalArgumentException e) {
+            throw new CandidateEntityInvalidException(Restaurant.class, restaurantCandidate.getName());
+
+        }
     }
 }
