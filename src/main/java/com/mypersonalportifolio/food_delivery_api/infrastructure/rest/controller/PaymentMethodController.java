@@ -8,6 +8,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.repository.PaymentMetho
 import com.mypersonalportifolio.food_delivery_api.domain.service.PaymentMethodService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.PaymentMethodRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.PaymentMethodRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.PaymentMethodControllerOpenApi;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.hateoas.CollectionModel;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/payment-methods")
-public class PaymentMethodController {
+public class PaymentMethodController implements PaymentMethodControllerOpenApi {
 
     private final PaymentMethodRepository paymentMethodRepository;
     private final PaymentMethodService paymentMethodService;
@@ -46,15 +47,7 @@ public class PaymentMethodController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PaymentMethodRepresentationModel createResource(@RequestBody @Valid PaymentMethod paymentMethodCandidate) {
-        try {
-            return assembler.toModel(paymentMethodRepository.save(paymentMethodCandidate));
-
-        } catch (IllegalArgumentException e) {
-            throw new CandidateEntityInvalidException(
-                    PaymentMethod.class,
-                    paymentMethodCandidate.getDescription()
-            );
-        }
+        return assembler.toModel(paymentMethodService.validateAndSave(paymentMethodCandidate));
     }
 
     @PutMapping("/{paymentMethodId}")

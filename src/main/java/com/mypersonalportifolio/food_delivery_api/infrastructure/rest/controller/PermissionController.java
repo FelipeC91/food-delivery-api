@@ -6,6 +6,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.model.Permission;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.PermissionRepository;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.PermissionRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.PermissionRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.PermissionControllerOpenApi;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/permissions")
-public class PermissionController {
+public class PermissionController implements PermissionControllerOpenApi {
 
     private final PermissionRepository permissionRepository;
     private final PermissionRepresentationModelAssembler assembler;

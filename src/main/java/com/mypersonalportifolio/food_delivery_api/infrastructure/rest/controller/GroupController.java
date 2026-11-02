@@ -8,6 +8,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.repository.GroupReposit
 import com.mypersonalportifolio.food_delivery_api.domain.service.GroupService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.UserGroupRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.UserGroupRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.GroupControllerOpenApi;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/groups")
-public class GroupController {
+public class GroupController implements GroupControllerOpenApi {
 
     private final GroupRepository groupRepository;
     private final GroupService userGroupService;
@@ -43,28 +44,22 @@ public class GroupController {
 
     @GetMapping("/{userGroupId}")
     public ResponseEntity<UserGroupRepresentationModel> findOneResource(@PathVariable UUID userGroupId) {
-        var userGroup = assembler.toModel(userGroupService.findValidUserGroup(userGroupId));
+        var userGroup = assembler.toModel(userGroupService.findVerifiedUserGroup(userGroupId));
         return ResponseEntity.ok(userGroup);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserGroupRepresentationModel createResource(@RequestBody @Valid UserGroup userGroupCandidate) {
-        try {
-            return assembler.toModel(groupRepository.save(userGroupCandidate));
-        } catch (IllegalArgumentException e) {
-            throw new CandidateEntityInvalidException(UserGroup.class, userGroupCandidate.getName());
-        }
+        return assembler.toModel(userGroupService.validateAndCreate(userGroupCandidate));
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{userGroupId}")
-    public ResponseEntity<UserGroupRepresentationModel> updateResource(@PathVariable UUID userGroupId,
+    public UserGroupRepresentationModel updateResource(@PathVariable UUID userGroupId,
                                                      @RequestBody @Valid UserGroup userGroupSource) {
-        var userGroupTarget = userGroupService.findValidUserGroup(userGroupId);
+        return assembler.toModel(userGroupService.updateProperties(userGroupId, userGroupSource));
 
-        var updatedUserGroup = userGroupService.updateProperties(userGroupTarget, userGroupSource);
-
-        return ResponseEntity.ok(assembler.toModel(updatedUserGroup));
     }
 
     @DeleteMapping("/{userGroupId}")

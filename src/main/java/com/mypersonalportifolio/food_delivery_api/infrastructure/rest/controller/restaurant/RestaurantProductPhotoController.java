@@ -6,7 +6,12 @@ import com.mypersonalportifolio.food_delivery_api.application.use_case.UploadPro
 import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.ProductPhotoInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.model.ProductPhoto;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.ProductPhotoMetaDataRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.RestaurantProductPhotoControllerOpenApi;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -23,13 +28,12 @@ import java.util.UUID;
 
 @RequestMapping("restaurants/{restaurantId}/products/{productId}/photo")
 @RestController
-public class RestaurantProductPhotoController {
+public class RestaurantProductPhotoController implements RestaurantProductPhotoControllerOpenApi {
 
     private final UploadProductPhotoUseCase uploadProductPhotoUseCase;
     private final RetrieveProductPhotoUseCase retrieveProductPhotoUseCase;
     private final RemoveProductPhotoUseCase removeProductPhotoUseCase;
 
-    @Autowired
     public RestaurantProductPhotoController(UploadProductPhotoUseCase uploadProductPhotoUseCase,
                                             RetrieveProductPhotoUseCase retrieveProductPhotoUseCase, RemoveProductPhotoUseCase removeProductPhotoUseCase) {
         this.uploadProductPhotoUseCase = uploadProductPhotoUseCase;

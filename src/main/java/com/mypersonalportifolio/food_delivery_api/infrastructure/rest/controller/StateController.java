@@ -5,6 +5,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoun
 import com.mypersonalportifolio.food_delivery_api.domain.model.State;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.StateRepository;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.StateRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.StateControllerOpenApi;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/states")
 @RestController
-public class StateController {
+public class StateController implements StateControllerOpenApi {
     private final StateRepository stateRepository;
 
     public StateController(StateRepository stateRepository) {

@@ -2,6 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.SwitchRestaurantActivationUseCase;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.RestaurantActivationStateInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.RestaurantActivationControllerOpenApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import java.util.UUID;
 
 @RequestMapping("/restaurants/{restaurantId}/activation")
 @RestController
-public class RestaurantActivationController {
+public class RestaurantActivationController implements RestaurantActivationControllerOpenApi {
 
     private final SwitchRestaurantActivationUseCase switchRestaurantActivationUseCase;
 

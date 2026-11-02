@@ -3,6 +3,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 import com.mypersonalportifolio.food_delivery_api.domain.service.GroupService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.PermissionRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.PermissionRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.GroupPermissionControllerOpenApi;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/groups/{userGroupId}/permissions")
-public class GroupPermissionController {
+public class GroupPermissionController implements GroupPermissionControllerOpenApi {
 
     private final GroupService userGroupService;
     private final PermissionRepresentationModelAssembler assembler;

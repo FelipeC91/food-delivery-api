@@ -6,6 +6,7 @@ import com.mypersonalportifolio.food_delivery_api.application.use_case.ProcessDa
 import com.mypersonalportifolio.food_delivery_api.application.analytics.DailySalesProjectionDTO;
 import com.mypersonalportifolio.food_delivery_api.application.analytics.DailySalesQueryProjection;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.hateoas_link.AnalyticsLinkEngine;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.AnalyticsControllerOpenApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,11 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "Analytics", description = "Endpoints to access restaurant analytics")
 
 @RequestMapping("/analytics")
 @RestController
-public class AnalyticsController {
+public class AnalyticsController implements AnalyticsControllerOpenApi {
 
     private final ProcessDailySalesAnalyticsUseCase processDailySalesAnalyticsUseCase;
     private final ProcessDailySalesReportPdfUseCase processDailySalesReportPdfUseCase;
@@ -61,8 +61,7 @@ public class AnalyticsController {
                 .body(dailySalesPdf);
     }
 
-    @RequestMapping({"/",""})
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<AnalyticsRepresentationModel> getDiscoverability(){
         var representationModel = new AnalyticsRepresentationModel();
 
@@ -71,5 +70,5 @@ public class AnalyticsController {
         return ResponseEntity.ok(representationModel);
     }
 
-    private static class AnalyticsRepresentationModel  extends RepresentationModel<AnalyticsRepresentationModel> {}
+    public static class AnalyticsRepresentationModel extends RepresentationModel<AnalyticsRepresentationModel> {}
 }

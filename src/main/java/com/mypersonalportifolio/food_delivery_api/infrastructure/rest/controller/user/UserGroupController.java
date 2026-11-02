@@ -6,6 +6,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.repository.UserReposito
 import com.mypersonalportifolio.food_delivery_api.domain.service.UserService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.UserGroupRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.UserGroupRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.UserGroupControllerOpenApi;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/users/{userId}/groups")
-public class UserGroupController {
+public class UserGroupController implements UserGroupControllerOpenApi {
 
     private final UserRepository userRepository;
     private final UserService userService;

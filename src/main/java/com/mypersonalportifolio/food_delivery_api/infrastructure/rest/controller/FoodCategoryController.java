@@ -1,6 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller;
 
 import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEntityInvalidException;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityAlreadyExistsException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityIntegrityViolationException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.FoodCategory;
@@ -8,6 +9,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.repository.FoodCategory
 import com.mypersonalportifolio.food_delivery_api.domain.service.FoodCategoryService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.FoodCategoryRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.FoodCategoryRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.FoodCategoryControllerOpenApi;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +24,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/food-categories")
-public class FoodCategoryController {
+public class FoodCategoryController implements FoodCategoryControllerOpenApi {
 
     private final FoodCategoryRepository foodCategoryRepository;
     private final FoodCategoryService foodCategoryService;
@@ -47,7 +49,7 @@ public class FoodCategoryController {
 
     @GetMapping("/{foodCategoryId}")
     public ResponseEntity<FoodCategoryRepresentationModel> findSingleResource(@PathVariable UUID foodCategoryId) {
-        var foodCategory =foodCategoryService.findValidFoodCategory(foodCategoryId);
+        var foodCategory =foodCategoryService.findVerifiedFoodCategory(foodCategoryId);
 
         return ResponseEntity.ok(assembler.toModel(foodCategory));
 
@@ -56,21 +58,13 @@ public class FoodCategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public FoodCategoryRepresentationModel createResource(@RequestBody  @Valid FoodCategory foodCategoryCandidate) {
-        try {
-            var savedFoodCategory = foodCategoryRepository.save(foodCategoryCandidate);
-
-            return assembler.toModel(savedFoodCategory);
-
-        } catch (IllegalArgumentException e) {
-            throw new CandidateEntityInvalidException(FoodCategory.class, foodCategoryCandidate.getName());
-
-        }
+        return assembler.toModel( foodCategoryService.validateAndSave(foodCategoryCandidate) );
     }
 
     @PutMapping("/{foodCategoryId}")
     public ResponseEntity<?> updateResource(@PathVariable("foodCategoryId") UUID foodCategoryTargetId,
                                                 @RequestBody FoodCategory foodCategorySource) {
-        var foodCategoryTarget = foodCategoryService.findValidFoodCategory(foodCategoryTargetId);
+        var foodCategoryTarget = foodCategoryService.findVerifiedFoodCategory(foodCategoryTargetId);
 
         var updatedFoodCategory=  foodCategoryService.updateProperties(foodCategoryTarget, foodCategorySource);
 
@@ -80,16 +74,7 @@ public class FoodCategoryController {
 
     @DeleteMapping("/{foodCategoryId}")
     public ResponseEntity<?> deleteResource(@PathVariable("foodCategoryId") UUID foodCategoryTargetId) {
-        try {
-            foodCategoryRepository.deleteById(foodCategoryTargetId);
-
-            return ResponseEntity.noContent().build();
-
-        } catch (IllegalArgumentException e) {
-            throw  new EntityNotFoundException(FoodCategory.class, foodCategoryTargetId.toString());
-
-        } catch (DataIntegrityViolationException e) {
-            throw new EntityIntegrityViolationException(FoodCategory.class, foodCategoryTargetId.toString());
-        }
+        foodCategoryService.delete( foodCategoryTargetId );
+        return ResponseEntity.noContent().build();
     }
 }

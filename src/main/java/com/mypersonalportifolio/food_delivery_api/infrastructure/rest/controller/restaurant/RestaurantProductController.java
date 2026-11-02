@@ -7,6 +7,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.ProductRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.ProductRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.RestaurantProductControllerOpenApi;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.CollectionModel;
@@ -19,7 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/restaurants/{restaurantId}/products")
-public class RestaurantProductController {
+public class RestaurantProductController implements RestaurantProductControllerOpenApi {
 
     private final ProductRepository productRepository;
     private final RestaurantService restaurantService;
@@ -53,7 +54,8 @@ public class RestaurantProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductRepresentationModel> createResource(@PathVariable UUID restaurantId, @Valid @RequestBody Product productCandidate) {
+    public ResponseEntity<ProductRepresentationModel> createResource(@PathVariable UUID restaurantId,
+                                                                     @Valid @RequestBody Product productCandidate) {
         var restaurant = restaurantService.findValidRestaurant(restaurantId);
 
         productCandidate.setRestaurant(restaurant);
@@ -65,7 +67,7 @@ public class RestaurantProductController {
 
     @PutMapping
     public ResponseEntity<ProductRepresentationModel> associateResource(@PathVariable UUID restaurantId,
-                                                   @RequestBody @Valid Product productCandidate) {
+                                                                        @RequestBody @Valid Product productCandidate) {
         var restaurant = restaurantService.findValidRestaurant(restaurantId);
 
         try {

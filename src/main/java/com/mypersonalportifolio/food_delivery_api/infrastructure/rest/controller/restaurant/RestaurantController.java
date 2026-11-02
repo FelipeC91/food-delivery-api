@@ -10,6 +10,7 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.RestaurantRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.RestaurantSimplifiedRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.mapstruct.RestaurantMapper;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.RestaurantControllerOpenApi;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,7 +26,7 @@ import java.util.UUID;
 @CrossOrigin
 @RequestMapping("/restaurants")
 @RestController
-public class RestaurantController {
+public class RestaurantController implements RestaurantControllerOpenApi {
 
     private final RestaurantRepository restaurantRepository;
     private final RestaurantService restaurantService;
@@ -62,19 +63,11 @@ public class RestaurantController {
     }
 
     @PostMapping
-    private ResponseEntity<RestaurantRepresentationModel> createResource(@RequestBody @Valid RestaurantInputDTO restaurantInputDTO) {
-        try {
-            var restaurantCandidate = restaurantMapper.dtoToRestaurant(restaurantInputDTO);
+    public ResponseEntity<RestaurantRepresentationModel> createResource(@RequestBody @Valid RestaurantInputDTO restaurantInputDTO) {
+        var restaurantCandidate = restaurantMapper.dtoToRestaurant(restaurantInputDTO);
+        var savedRestaurant = restaurantService.validateAndSave(restaurantCandidate);
 
-            var validRestaurant = restaurantService.validateNewRestaurant(restaurantCandidate);
-            var savedRestaurant = restaurantRepository.save(validRestaurant);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(savedRestaurant));
-
-        } catch (IllegalArgumentException e) {
-            throw new CandidateEntityInvalidException(Restaurant.class, restaurantInputDTO.name());
-
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(savedRestaurant));
     }
 
     @PutMapping("/{restaurantId}")

@@ -9,6 +9,7 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_
 import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.UserService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.UserRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.UserControllerOpenApi;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.hateoas.CollectionModel;
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
-public class UserController {
+public class UserController implements UserControllerOpenApi {
 
     private final UserRepository userRepository;
     private final UserService userService;

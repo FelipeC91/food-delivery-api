@@ -5,6 +5,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.model.User;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.UserRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.UserRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.RestaurantManagersControllerOpenApi;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 @RequestMapping("restaurants/{restaurantId}/managers")
 @RestController
-public class RestaurantManagersController {
+public class RestaurantManagersController implements RestaurantManagersControllerOpenApi {
 
     private final RestaurantService restaurantService;
     private final UserRepresentationModelAssembler userAssembler;
@@ -48,11 +49,11 @@ public class RestaurantManagersController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{paymentMethodId}")
-    public void detachResource(@PathVariable UUID restaurantTargetId, @PathVariable UUID paymentMethodId) {
+    @DeleteMapping("/{managerId}")
+        public void detachResource(@PathVariable UUID restaurantTargetId, @PathVariable UUID managerId) {
         var validRestaurant = restaurantService.findValidRestaurant(restaurantTargetId);
 
-        restaurantService.removeManager(validRestaurant, paymentMethodId);
+        restaurantService.removeManager(validRestaurant, managerId);
 
     }
 

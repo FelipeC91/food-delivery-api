@@ -1,6 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller;
 
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.hateoas_link.*;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.RootEntryPointControllerOpenApi;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping({"", "/"})
 @RestController
-public class RootEntryPointController {
+public class RootEntryPointController implements RootEntryPointControllerOpenApi {
 
     @GetMapping
     public ResponseEntity<RootEntryPointRepresentationModel> rootEntryPoint() {
@@ -28,5 +29,5 @@ public class RootEntryPointController {
         return ResponseEntity.ok(rootEntryPointModel);
     }
 
-    private static class RootEntryPointRepresentationModel extends RepresentationModel<RootEntryPointRepresentationModel> {}
+    public static class RootEntryPointRepresentationModel extends RepresentationModel<RootEntryPointRepresentationModel> {}
 }

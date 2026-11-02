@@ -3,6 +3,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.PaymentMethodRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.PaymentMethodRepresentationModelAssembler;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.RestaurantPaymentMethodControllerOpenApi;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 @RequestMapping("/restaurants/{restaurantId}/payment-methods")
 @RestController
-public class RestaurantPaymentMethodController {
+public class RestaurantPaymentMethodController implements RestaurantPaymentMethodControllerOpenApi {
 
     private final RestaurantService restaurantService;
     private final PaymentMethodRepresentationModelAssembler assembler;

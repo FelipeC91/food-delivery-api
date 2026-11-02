@@ -2,6 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.UpdateOrderStatusUseCase;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.OrderStatusInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.OrderStatusControllerOpenApi;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import java.util.UUID;
 
 @RequestMapping("/orders/{orderId}/status")
 @RestController
-public class OrderStatusController {
+public class OrderStatusController implements OrderStatusControllerOpenApi {
 
     private final UpdateOrderStatusUseCase updateOrderStatusUseCase;
 
@@ -21,7 +22,8 @@ public class OrderStatusController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping
-    public ResponseEntity<Void> updateResourceProperty(@PathVariable UUID orderId, @Valid @RequestBody OrderStatusInputDTO orderStatusInputDTO) {
+    public ResponseEntity<Void> updateResourceProperty(@PathVariable UUID orderId,
+                                                       @Valid @RequestBody OrderStatusInputDTO orderStatusInputDTO) {
 
         orderStatusInputDTO.setOrderId(orderId);
         updateOrderStatusUseCase.execute(orderStatusInputDTO);

@@ -3,6 +3,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 
 import com.mypersonalportifolio.food_delivery_api.application.use_case.SwitchRestaurantOpeningUseCase;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.RestaurantOpeningStateInputDTO;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.RestaurantOpeningControllerOpenApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import java.util.UUID;
 
 @RequestMapping("/restaurants/{restaurantId}/opening")
 @RestController
-public class RestaurantOpeningController {
+public class RestaurantOpeningController implements RestaurantOpeningControllerOpenApi {
 
     private final SwitchRestaurantOpeningUseCase switchRestaurantOpeningUseCase;
 
