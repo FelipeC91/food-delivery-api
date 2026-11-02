@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
 public record CityInputDTO(
-        @Schema(example = "Indaiatuba")
+        @Schema(example = "Hortolândia")
         @NotBlank
         String name,
 
