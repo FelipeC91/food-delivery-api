@@ -9,6 +9,7 @@ public enum OrderStatus {
     CRIADO,
     PAGO,
     CONFIRMADO,
+    PRONTO,
     ENTREGUE,
     CANCELADO  ;
 }
