@@ -51,7 +51,7 @@ public SecurityFilterChain generalResourcesFilterChain(HttpSecurity http) throws
                     .authenticationEntryPoint(apiAuthenticationEntryPoint)
                     .accessDeniedHandler(apiAccessDeniedHandler))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/").authenticated()
+                    .requestMatchers(API_BASE_PATH + "/").authenticated()
 
                     .requestMatchers(HttpMethod.POST, API_BASE_PATH + "/food-categories/**").hasAuthority("EDITAR_COZINHAS")
                     .requestMatchers(HttpMethod.PUT, API_BASE_PATH + "/food-categories/**").hasAuthority("EDITAR_COZINHAS")
@@ -86,9 +86,12 @@ public SecurityFilterChain restaurantsFilterChain(HttpSecurity http) throws Exce
                     .authenticationEntryPoint(apiAuthenticationEntryPoint)
                     .accessDeniedHandler(apiAccessDeniedHandler))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/restaurants/{restaurantId}", "/restaurants").authenticated()
+                    .requestMatchers(HttpMethod.POST, API_BASE_PATH + "/restaurants").access(customSecurityPolicies::checkIfIsAnotherRestaurantManager)
+                    .requestMatchers(HttpMethod.PUT, API_BASE_PATH + "/restaurants/{restaurantId}").access((authenticationSupplier, context) -> customSecurityPolicies.checkRestaurantManager(authenticationSupplier, context, "EDITAR_RESTAURANTES"))
 
-                    .requestMatchers(HttpMethod.PATCH, API_BASE_PATH + "/restaurants/{restaurantId}/opening", "/restaurants/{restaurantId}/activation")
+                    .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/restaurants/{restaurantId}", API_BASE_PATH + "/restaurants").authenticated()
+
+                    .requestMatchers(HttpMethod.PATCH, API_BASE_PATH + "/restaurants/{restaurantId}/opening", API_BASE_PATH + "/restaurants/{restaurantId}/activation")
                         .access((authenticationSupplier, context) -> customSecurityPolicies.checkRestaurantManager(authenticationSupplier, context, "GERENCIAR_RESTAURANTES"))
 
                         .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/restaurants/{restaurantId}/managers")
@@ -108,7 +111,7 @@ public SecurityFilterChain restaurantsFilterChain(HttpSecurity http) throws Exce
                         .requestMatchers(HttpMethod.DELETE, API_BASE_PATH + "/restaurants/{restaurantId}/payment-methods/{paymentMethodId}")
                         .access((authenticationSupplier, context) -> customSecurityPolicies.checkRestaurantManager(authenticationSupplier, context, "GERENCIAR_RESTAURANTES"))
 
-                        .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/restaurants/{restaurantId}/products", "/restaurants/{restaurantId}/products/{productId}").authenticated()
+                        .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/restaurants/{restaurantId}/products", API_BASE_PATH + "/restaurants/{restaurantId}/products/{productId}").authenticated()
 
                         .requestMatchers(HttpMethod.POST, API_BASE_PATH + "/restaurants/{restaurantId}/products")
                         .access((authenticationSupplier, context) -> customSecurityPolicies.checkRestaurantManager(authenticationSupplier, context, "GERENCIAR_RESTAURANTES"))
@@ -209,7 +212,10 @@ public SecurityFilterChain restaurantsFilterChain(HttpSecurity http) throws Exce
     @Order(6)
     public SecurityFilterChain analyticsFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher( API_BASE_PATH + "/analytics/**")
+                .securityMatchers( matchers -> matchers
+                        .requestMatchers(PathPatternRequestMatcher.withDefaults().matcher(API_BASE_PATH + "/analytics/**"))
+                        .requestMatchers(PathPatternRequestMatcher.withDefaults().matcher(API_BASE_PATH + "/analytics/"))
+                )
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exceptions -> exceptions
@@ -225,6 +231,7 @@ public SecurityFilterChain restaurantsFilterChain(HttpSecurity http) throws Exce
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
     }
+
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
