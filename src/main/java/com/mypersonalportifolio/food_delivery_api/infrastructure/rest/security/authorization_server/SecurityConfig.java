@@ -34,7 +34,7 @@ public class SecurityConfig {
     @Order(0)
     public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/swagger-ui.html", "/swagger-ui/**", "/webjars/**", "/v3/api-docs/**")
+                .securityMatcher("/swagger-ui.html", "/swagger-ui/**", "/webjars/**", "/v3/api-docs", "/v3/api-docs/**", "/swagger-ui/oauth2-redirect.html")
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
 
         return http.build();
@@ -80,20 +80,21 @@ public class SecurityConfig {
 
     @Bean
     @Order(7)
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
-                                                            SecurityContextRepository securityContextRepository,
-                                                            DaoAuthenticationProvider userAuthenticationProvider) throws Exception {
+    public SecurityFilterChain loginSecurityFilterChain(
+            HttpSecurity http,
+            SecurityContextRepository securityContextRepository,
+            DaoAuthenticationProvider userAuthenticationProvider
+    ) throws Exception {
         http
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authenticationProvider(userAuthenticationProvider);
 
         return http.build();
     }
+
 
     @Bean
     public SecurityContextRepository securityContextRepository() {
