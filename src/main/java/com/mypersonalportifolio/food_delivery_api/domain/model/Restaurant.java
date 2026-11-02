@@ -19,6 +19,7 @@ import java.util.*;
 
 @Entity
 @Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class Restaurant extends DomainEntityUUID {
@@ -38,6 +39,7 @@ public class Restaurant extends DomainEntityUUID {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "food_category_id", nullable = false)
     @Setter
+    @ToString.Exclude
     private FoodCategory foodCategory;
 
     @Embedded
@@ -49,6 +51,7 @@ public class Restaurant extends DomainEntityUUID {
             joinColumns = @JoinColumn(name = "restaurant_id"),
             inverseJoinColumns = @JoinColumn(name = "payment_method_id")
     )
+    @ToString.Exclude
     private Set<PaymentMethod> paymentMethods = new HashSet<PaymentMethod>();
 
     @CreationTimestamp
@@ -62,6 +65,7 @@ public class Restaurant extends DomainEntityUUID {
 
     @Getter(AccessLevel.NONE)
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Set<Product> products = new HashSet<Product>();
 
 
@@ -86,7 +90,24 @@ public class Restaurant extends DomainEntityUUID {
                 joinColumns = @JoinColumn(name = "restaurant_id"),
                 inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+    @ToString.Exclude
     private Set<User> managers = new HashSet<>();
+
+    public void setManagers(Set<User> managers) {
+        this.managers = managers;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
+    }
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setPaymentMethods(Set<PaymentMethod> paymentMethods) {
+        this.paymentMethods = paymentMethods;
+    }
 
     public Set<User> getManagers() {
         return Collections.unmodifiableSet(managers);

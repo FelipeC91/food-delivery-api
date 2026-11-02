@@ -14,6 +14,7 @@ import java.util.*;
 
 @Entity(name = "order_model")
 @Getter
+@ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 public class Order extends  DomainEntityUUID {
@@ -21,8 +22,11 @@ public class Order extends  DomainEntityUUID {
     @ManyToOne
     private Restaurant restaurant;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_method_id")
+    @Setter
+    @ToString.Exclude
     private PaymentMethod paymentMethod;
 
     @ManyToOne

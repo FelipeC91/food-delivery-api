@@ -8,12 +8,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
+@ToString
 @Setter
 @Getter
 @AllArgsConstructor
