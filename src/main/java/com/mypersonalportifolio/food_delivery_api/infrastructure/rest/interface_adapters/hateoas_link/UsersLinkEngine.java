@@ -6,13 +6,13 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import java.util.UUID;
 
-public class UsersLinkEngine {
+public class UsersLinkEngine extends ApiBasePathLinkResolver {
 
     public static Link slashUsers() {
-        return WebMvcLinkBuilder.linkTo(UserController.class).withRel("/users");
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(UserController.class).withRel("/users"));
     }
 
     public static Link slashUsersUserId(UUID userId) {
-        return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).findOneResource(userId)).withSelfRel();
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).findOneResource(userId)).withSelfRel());
     }
 }

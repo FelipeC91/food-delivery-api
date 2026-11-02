@@ -7,29 +7,29 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import java.util.UUID;
 
-public class GroupsLinkEngine {
+public class GroupsLinkEngine extends ApiBasePathLinkResolver{
     public static Link slashUserGroups() {
-        return WebMvcLinkBuilder.linkTo(GroupController.class).withRel("/groups");
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(GroupController.class).withRel("/groups"));
     }
 
     public static Link slashUserGroups(UUID userGroupId) {
-        return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupController.class).findOneResource(userGroupId)).withSelfRel();
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupController.class).findOneResource(userGroupId)).withSelfRel());
     }
 
     public static Link slashUserGroupsSlashPermissions(UUID userGroupId) {
-        return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).listPermissions(userGroupId)).withSelfRel();
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).listPermissions(userGroupId)).withSelfRel());
     }
 
     public static Link slashUserGroupsSlashPermissionsSlashPermissionIdPUT(UUID userGroupId, UUID permissionId) {
-        return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).associateResource(userGroupId, permissionId))
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).associateResource(userGroupId, permissionId))
                 .withRel("/grant")
-                .andAffordance(WebMvcLinkBuilder.afford(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).associateResource(userGroupId, permissionId)));
+                .andAffordance(WebMvcLinkBuilder.afford(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).associateResource(userGroupId, permissionId))));
     }
 
     public static Link slashUserGroupsSlashPermissionsSlashPermissionIdDELETE(UUID userGroupId, UUID permissionId) {
-        return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).detachResource(userGroupId, permissionId))
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).detachResource(userGroupId, permissionId))
                 .withRel("/revoke")
-                .andAffordance(WebMvcLinkBuilder.afford(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).detachResource(userGroupId, permissionId)));
+                .andAffordance(WebMvcLinkBuilder.afford(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).detachResource(userGroupId, permissionId))));
     }
 }
 

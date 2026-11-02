@@ -6,14 +6,14 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import java.util.UUID;
 
-public class PermissionsLinkEngine {
+public class PermissionsLinkEngine extends ApiBasePathLinkResolver {
 
     public static Link slashPermissions() {
-        return WebMvcLinkBuilder.linkTo(PermissionController.class).withRel("/permissions");
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(PermissionController.class).withRel("/permissions"));
     }
 
     public static Link slashPermissions(UUID permissionId) {
-        return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PermissionController.class).getResourceById(permissionId)).withSelfRel();
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PermissionController.class).getResourceById(permissionId)).withSelfRel());
     }
 
 }

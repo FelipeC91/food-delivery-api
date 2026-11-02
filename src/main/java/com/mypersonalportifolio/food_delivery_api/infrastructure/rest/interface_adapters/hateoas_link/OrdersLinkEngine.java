@@ -11,7 +11,7 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import java.util.UUID;
 
-public class OrdersLinkEngine {
+public class OrdersLinkEngine extends  ApiBasePathLinkResolver {
 
     static final TemplateVariables STD_SORT_TEMPLATE_VARIABLES =  new TemplateVariables( new TemplateVariable("size", VariableType.REQUEST_PARAM),
                                                                                             new TemplateVariable("sort", VariableType.REQUEST_PARAM),
@@ -20,7 +20,7 @@ public class OrdersLinkEngine {
                                                                         );
 
    public static Link slashOrders() {
-        var link = WebMvcLinkBuilder.linkTo(OrderController.class).withRel("/orders");
+        var link = withApiBasePath(WebMvcLinkBuilder.linkTo(OrderController.class).withRel("/orders"));
         var uriTemplate = UriTemplate.of(link.getHref()).with(new TemplateVariables(
                 new TemplateVariable("restaurantId", VariableType.REQUEST_PARAM),
                 new TemplateVariable("customerId", VariableType.REQUEST_PARAM),
@@ -32,10 +32,10 @@ public class OrdersLinkEngine {
     }
 
     public static Link slashOrdersSlashOrderId(UUID orderId) {
-        return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(OrderController.class).getResource(orderId)).withSelfRel();
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(OrderController.class).getResource(orderId)).withSelfRel());
     }
 
     public static Link slashStatus(UUID orderId) {
-       return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(OrderStatusController.class).updateResourceProperty(orderId,null)).withRel("/status");
+       return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(OrderStatusController.class).updateResourceProperty(orderId,null)).withRel("/status"));
     }
 }

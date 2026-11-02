@@ -6,12 +6,12 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import java.util.UUID;
 
-public class FoodCategoryLinkEngine {
+public class FoodCategoryLinkEngine extends ApiBasePathLinkResolver{
     public static Link slashFoodCategory() {
-        return WebMvcLinkBuilder.linkTo(FoodCategoryController.class).withRel("/food-categories");
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(FoodCategoryController.class).withRel("/food-categories"));
     }
 
     public static Link slashFoodCategorySlashFoodCategoryId(UUID foodCategoryId) {
-        return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(FoodCategoryController.class).findSingleResource(foodCategoryId)).withSelfRel();
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(FoodCategoryController.class).findSingleResource(foodCategoryId)).withSelfRel());
     }
 }

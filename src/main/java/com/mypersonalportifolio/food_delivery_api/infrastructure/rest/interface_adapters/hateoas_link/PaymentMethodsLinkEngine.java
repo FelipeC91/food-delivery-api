@@ -6,13 +6,13 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import java.util.UUID;
 
-public class PaymentMethodsLinkEngine {
+public class PaymentMethodsLinkEngine extends ApiBasePathLinkResolver{
 
     public static Link slashPaymentMethods() {
-        return WebMvcLinkBuilder.linkTo(PaymentMethodController.class).withRel("/payment-methods");
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(PaymentMethodController.class).withRel("/payment-methods"));
     }
 
     public static Link slashPaymentMethodsSlashPaymentMethodId(UUID paymentMethodId) {
-        return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class).findSingleResource(paymentMethodId)).withSelfRel();
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PaymentMethodController.class).findSingleResource(paymentMethodId)).withSelfRel());
     }
 }

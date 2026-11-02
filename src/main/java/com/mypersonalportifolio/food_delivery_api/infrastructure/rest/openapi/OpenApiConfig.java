@@ -1,8 +1,10 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.*;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.Content;
@@ -10,7 +12,6 @@ import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +30,41 @@ import org.springframework.context.annotation.Configuration;
                 contact = @Contact(name = "Felipe Campos", url = "https://github.com/FelipeC91")
         )
 )
+@SecuritySchemes({
+        @SecurityScheme(name = "default_security_scheme",
+                type = SecuritySchemeType.OAUTH2,
+                flows = @OAuthFlows(authorizationCode =
+                            @OAuthFlow(authorizationUrl ="${springdoc.swagger-ui.oauth.authorization-url}",
+                                    tokenUrl = "${springdoc.swagger-ui.oauth.token-url}",
+                                    scopes = @OAuthScope( name = "openid")
+                            )
+                )
+        ),
+        @SecurityScheme(name = "Bearer_Auth",
+                type = SecuritySchemeType.HTTP,
+                scheme = "bearer",
+                bearerFormat = "JWT",
+                description = "Authenticate using a JWT bearer token"
+        )
+})
 public class OpenApiConfig {
+
+    @Bean
+    public OpenApiCustomizer pinDocsToVersionOne() {
+        return openApi -> {
+            var versionedPaths = openApi.getPaths().entrySet().stream()
+                    .filter(entry -> entry.getKey().contains("/v{version}"))
+                    .toList();
+
+            versionedPaths.forEach(entry -> {
+                openApi.getPaths().remove(entry.getKey());
+                openApi.getPaths().addPathItem(
+                        entry.getKey().replace("/v{version}", "/v1"),
+                        entry.getValue()
+                );
+            });
+        };
+    }
 
         @Bean
         public OpenApiCustomizer globalErrorResponseCustomizer() {
@@ -56,21 +91,21 @@ public class OpenApiConfig {
                 );
         }
 
-    @Bean
-    public OpenAPI customOpenAPI() {
-        final String securitySchemeName = "Bearer_Auth"; // Nome exato do vínculo
-
-        return new OpenAPI()
-                // 1. Tranca todos os endpoints globalmente (Cadeados fechados)
-                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
-                // 2. Define o campo para inserção do token
-                .components(new Components()
-                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT") // Opcional: dica visual para o desenvolvedor
-                                .description("Insira o seu token JWT gerado (ex: obtido via Postman ou endpoint de login)")));
-    }
+//    @Bean
+//    public OpenAPI customOpenAPI() {
+//        final String securitySchemeName = "Bearer_Auth"; // Nome exato do vínculo
+//
+//        return new OpenAPI()
+//                // 1. Tranca todos os endpoints globalmente (Cadeados fechados)
+//                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+//                // 2. Define o campo para inserção do token
+//                .components(new Components()
+//                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
+//                                .type(SecurityScheme.Type.HTTP)
+//                                .scheme("bearer")
+//                                .bearerFormat("JWT") // Opcional: dica visual para o desenvolvedor
+//                                .description("Insira o seu token JWT gerado (ex: obtido via Postman ou endpoint de login)")));
+//    }
 
 
 }

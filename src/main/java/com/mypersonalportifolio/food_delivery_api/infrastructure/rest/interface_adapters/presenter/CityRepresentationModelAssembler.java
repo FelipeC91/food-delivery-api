@@ -3,6 +3,8 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface
 import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.CityController;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.CityRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.hateoas_link.ApiBasePathLinkResolver;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.hateoas_link.CitiesLinkEngine;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.mapstruct.CityMapper;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -27,7 +29,7 @@ public class CityRepresentationModelAssembler  extends RepresentationModelAssemb
     }
 
     private CityRepresentationModel assembleHateoasLinks(CityRepresentationModel cityOutput) {
-        cityOutput.add( WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CityController.class).findOneResource(cityOutput.getId())).withSelfRel());
+        cityOutput.add(CitiesLinkEngine.slashCitiesSlashCityId(cityOutput.getId()));
 
         return cityOutput;
     }
@@ -35,6 +37,7 @@ public class CityRepresentationModelAssembler  extends RepresentationModelAssemb
     @Override
     public CollectionModel<CityRepresentationModel> toCollectionModel(Iterable<? extends City> entities) {
         return super.toCollectionModel(entities)
-                .add( WebMvcLinkBuilder.linkTo(CityController.class).withSelfRel() );
+                .add(ApiBasePathLinkResolver.withApiBasePath(
+                        WebMvcLinkBuilder.linkTo(CityController.class).withSelfRel()));
     }
 }

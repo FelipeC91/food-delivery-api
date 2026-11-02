@@ -7,11 +7,12 @@ import org.springframework.hateoas.TemplateVariables;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
-public class AnalyticsLinkEngine {
+public class AnalyticsLinkEngine extends ApiBasePathLinkResolver {
     public static Link slashAnalytics() {
         var link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AnalyticsController.class).getDailySales(null,null)).withRel("/daily-sales");
+        var linkWithApiBasePath = withApiBasePath(link);
 
-        var uriTemplate = UriTemplate.of(link.getHref()).with(new TemplateVariables(
+        var uriTemplate = UriTemplate.of(linkWithApiBasePath.getHref()).with(new TemplateVariables(
                 new TemplateVariable("offsetTimeZone", TemplateVariable.VariableType.REQUEST_PARAM),
                 new TemplateVariable("createdSince", TemplateVariable.VariableType.REQUEST_PARAM),
                 new TemplateVariable("createdUntil", TemplateVariable.VariableType.REQUEST_PARAM))

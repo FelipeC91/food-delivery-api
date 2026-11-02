@@ -4,12 +4,15 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
-public class CitiesLinkEngine {
+public class CitiesLinkEngine extends ApiBasePathLinkResolver {
 
     public static Link slashCities() {
-        return WebMvcLinkBuilder.linkTo(CityController.class).withRel("/cities");
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(CityController.class).withRel("/cities"));
     }
     public static Link slashCitiesSlashCityId(Long cityId) {
-        return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CityController.class).findOneResource(cityId)).withSelfRel();
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(CityController.class).findOneResource(cityId)).withSelfRel());
     }
+
+
 }
