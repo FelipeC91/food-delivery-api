@@ -3,19 +3,20 @@ package com.mypersonalportifolio.food_delivery_api.application.use_case;
 import com.mypersonalportifolio.food_delivery_api.application.storage.PhotoStorageService;
 import com.mypersonalportifolio.food_delivery_api.application.use_case.concept.UseCase;
 import com.mypersonalportifolio.food_delivery_api.domain.service.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class RemoveProductPhotoUseCase implements UseCase<UUID, Void> {
 
     private final ProductService productService;
     private final PhotoStorageService photoStorageService;
 
-    @Autowired
     public RemoveProductPhotoUseCase(ProductService productService,
                                      PhotoStorageService photoStorageService) {
         this.productService = productService;
@@ -33,6 +34,7 @@ public class RemoveProductPhotoUseCase implements UseCase<UUID, Void> {
 
         photoStorageService.removePhoto(fileName);
 
+        log.info("{} has been removed", fileName);
 
         return null;
     }
