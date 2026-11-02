@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, UUID> {
+
+    boolean existsByDescription(String description);
 }

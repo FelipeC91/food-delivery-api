@@ -2,6 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.
 
 import com.mypersonalportifolio.food_delivery_api.domain.repository.OrderRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationResult;
 import org.springframework.security.core.Authentication;
@@ -35,7 +36,9 @@ public class CustomSecurityPolicies {
         assert context != null;
         var pathVariables = context.getVariables();
 
-        var restaurantTargetId = Objects.nonNull(pathVariables.get("restaurantId")) ? pathVariables.get("restaurantId") : context.getRequest().getParameter("restaurantId");
+        var restaurantTargetId = Objects.nonNull(pathVariables.get("restaurantId"))
+                ? pathVariables.get("restaurantId")
+                : context.getRequest().getParameter("restaurantId");
         var userId =  extractRequestUser(jwtAuth);
 
         var isManager = restaurantRepository.existsManagerByRestaurantIdAndManagerId(UUID.fromString(restaurantTargetId), userId);
@@ -119,7 +122,7 @@ public class CustomSecurityPolicies {
 
         var userId =  extractRequestUser(jwtAuth);
 
-        return orderRepository.existsOrderByIdAndCustomerId(UUID.fromString(orderId), userId);
+        return orderRepository.existsByIdAndCustomerId(UUID.fromString(orderId), userId);
     }
 
     public AuthorizationDecision checkIfOrderBelongsToRestaurantPolicy(Supplier<? extends Authentication> authenticationSupplier, RequestAuthorizationContext context, String requiredPermission) {
@@ -134,7 +137,7 @@ public class CustomSecurityPolicies {
 
         var userId =  extractRequestUser(jwtAuth);
 
-        var isBelong =  orderRepository.existsOrderByIdAndCustomerId(UUID.fromString(pathVariables.get("orderId")), userId);
+        var isBelong =  orderRepository.existsByIdAndCustomerId(UUID.fromString(pathVariables.get("orderId")), userId);
 
         var  hasAuthority = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals(requiredPermission));
@@ -186,5 +189,22 @@ public class CustomSecurityPolicies {
 
             return new AuthorizationDecision(isAllowed);
         }
+    }
+
+    public AuthorizationResult checkIfIsAnotherRestaurantManager(Supplier<? extends Authentication> authenticationSupplier, RequestAuthorizationContext context) {
+            var authentication = authenticationSupplier.get();
+
+            if (!(authentication instanceof JwtAuthenticationToken jwtAuth)) {
+                return new AuthorizationDecision(false);
+            }
+
+            var isAllowed = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("EDITAR_RESTAURANTES"));
+
+            var userId =  extractRequestUser(jwtAuth);
+
+            var isGranted = (isAllowed && !restaurantRepository.existsManagerByManagerId(userId));
+
+            return new AuthorizationDecision(isGranted);
     }
 }

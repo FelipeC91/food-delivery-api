@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface GroupRepository extends JpaRepository<UserGroup, UUID> {
+
+    boolean existsByName(String name);
 }

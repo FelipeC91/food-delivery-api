@@ -48,4 +48,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, UUID>,
             "WHERE r.id = :restaurantId AND m.id = :managerId")
     boolean existsManagerByRestaurantIdAndManagerId(@Param("restaurantId") UUID restaurantId,
                                                     @Param("managerId") UUID managerId);
+
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM Restaurant r JOIN r.managers m " +
+            "WHERE m.id = :managerId")
+    boolean existsManagerByManagerId(@Param("managerId") UUID managerId);
 }
