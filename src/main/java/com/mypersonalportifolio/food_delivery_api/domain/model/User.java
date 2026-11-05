@@ -1,6 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
-import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
+import com.mypersonalportifolio.food_delivery_api.domain.concept.AggregateRootUUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -19,7 +19,7 @@ import java.util.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends DomainEntityUUID {
+public class User extends AggregateRootUUID {
 
     @NotBlank
     @Column(nullable = false)

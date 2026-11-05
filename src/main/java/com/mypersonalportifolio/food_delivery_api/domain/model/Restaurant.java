@@ -1,12 +1,11 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
-import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
-
-
+import com.mypersonalportifolio.food_delivery_api.domain.concept.AggregateRootUUID;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.bean_validation.ValidationGroups;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
 import lombok.*;
@@ -15,14 +14,17 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Restaurant extends DomainEntityUUID {
+public class Restaurant extends AggregateRootUUID {
 
     @NotBlank
     @Column(nullable = false)
@@ -102,7 +104,7 @@ public class Restaurant extends DomainEntityUUID {
     }
 
     public Set<Product> getProducts() {
-        return products;
+        return Collections.unmodifiableSet(this.products);
     }
 
     public void setPaymentMethods(Set<PaymentMethod> paymentMethods) {

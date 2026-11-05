@@ -1,7 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
+import com.mypersonalportifolio.food_delivery_api.domain.concept.AggregateRootUUID;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product extends DomainEntityUUID {
+public class Product extends AggregateRootUUID {
 
     @NotBlank
     @Column(nullable = false)

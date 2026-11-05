@@ -1,6 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
-import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
+import com.mypersonalportifolio.food_delivery_api.domain.concept.AggregateRootUUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentMethod extends DomainEntityUUID {
+public class PaymentMethod extends AggregateRootUUID {
 
     @Column(nullable = false)
     @NotBlank

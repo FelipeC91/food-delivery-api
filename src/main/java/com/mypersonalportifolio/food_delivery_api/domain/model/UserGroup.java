@@ -1,15 +1,13 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
+import com.mypersonalportifolio.food_delivery_api.domain.concept.AggregateRootUUID;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +15,7 @@ import java.util.*;
 
 @Entity(name = "user_group")
 
-public class UserGroup extends DomainEntityUUID {
+public class UserGroup extends AggregateRootUUID {
 
     @NotBlank
     @Column(nullable = false)

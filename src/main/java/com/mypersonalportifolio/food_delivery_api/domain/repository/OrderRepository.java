@@ -4,6 +4,8 @@ import com.mypersonalportifolio.food_delivery_api.domain.model.Order;
 import com.mypersonalportifolio.food_delivery_api.domain.model.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -24,4 +26,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecific
     boolean existsByCustomerIdAndStatusNotIn(UUID customerId, List<OrderStatus> notPendingConditions);
 
     List<Order> findByRestaurantId(UUID restaurantId);
+
+    Page<Order> findByRestaurantId(UUID restaurantId, Pageable pageable);
 }

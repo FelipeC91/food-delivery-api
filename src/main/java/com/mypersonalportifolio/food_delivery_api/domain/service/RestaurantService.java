@@ -2,11 +2,9 @@ package com.mypersonalportifolio.food_delivery_api.domain.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mypersonalportifolio.food_delivery_api.application.use_case.dto.RestaurantInputDTO;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.*;
 import com.mypersonalportifolio.food_delivery_api.domain.model.*;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.*;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapperImpl;
@@ -28,7 +26,7 @@ public class RestaurantService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
 
-    private final List<OrderStatus> SAFE_CONDITIONS = List.of(OrderStatus.ENTREGUE, OrderStatus.CANCELADO);
+    private final List<OrderStatus> SAFE_CONDITIONS = List.of(OrderStatus.DELIVERED, OrderStatus.CANCELLED);
 
     public RestaurantService(RestaurantRepository restaurantRepository,
                              CityRepository cityRepository,

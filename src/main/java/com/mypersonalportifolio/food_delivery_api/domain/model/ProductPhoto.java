@@ -11,6 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
 public class ProductPhoto  {
 
@@ -26,11 +27,5 @@ public class ProductPhoto  {
     @Column(table = "product_photo", name = "file_size")
     private Long fileSize;
 
-    public ProductPhoto(String fileName, String description, String contentType, Long fileSize) {
-        this.fileName = fileName;
-        this.description = description;
-        this.contentType = contentType;
-        this.fileSize = fileSize;
-    }
 }
 
