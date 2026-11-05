@@ -3,7 +3,6 @@ package com.mypersonalportifolio.food_delivery_api.domain.concept;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
@@ -14,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public abstract class DomainEntityUUID extends AbstractAggregateRoot<DomainEntityUUID> {
+public abstract class AggregateRootUUID extends AbstractAggregateRoot<AggregateRootUUID> {
 
 
     @Id
@@ -26,7 +25,7 @@ public abstract class DomainEntityUUID extends AbstractAggregateRoot<DomainEntit
     @Override
     public boolean equals(Object o) {
          if (o == null || getClass() != o.getClass()) return false;
-         DomainEntityUUID that = (DomainEntityUUID) o;
+         AggregateRootUUID that = (AggregateRootUUID) o;
          return Objects.equals(id, that.id);
     }
 

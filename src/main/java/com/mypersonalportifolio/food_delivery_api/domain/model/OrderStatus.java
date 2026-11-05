@@ -6,10 +6,11 @@ import lombok.Getter;
 @Getter
 public enum OrderStatus {
 
-    CRIADO,
-    PAGO,
-    CONFIRMADO,
-    PRONTO,
-    ENTREGUE,
-    CANCELADO  ;
+    CREATED,
+    PAID,
+    CONFIRMED,
+    READY_TO_DISPATCH,
+    ON_THE_WAY,
+    DELIVERED,
+    CANCELLED;
 }

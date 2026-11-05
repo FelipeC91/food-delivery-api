@@ -29,16 +29,16 @@ public class UpdateOrderStatusUseCase implements UseCase<OrderStatusInputDTO, Vo
         var orderTarget = orderService.findValidOrder(inputDTO.getOrderId());
 
         switch (inputDTO.getOrderStatus()) {
-            case CONFIRMADO -> {
+            case CONFIRMED -> {
                 orderTarget.confirm();
 
                 orderRepository.save(orderTarget); //it only to fire a domain event
             }
-            case ENTREGUE -> {
-                orderTarget.completeDelivery();
+            case READY_TO_DISPATCH -> {
+                orderTarget.dispatch();
             }
 
-            case CANCELADO -> {
+            case CANCELLED -> {
                 orderTarget.cancel();
 
                 orderRepository.save(orderTarget); //it only to fire a domain event

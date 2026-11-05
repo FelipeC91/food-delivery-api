@@ -1,6 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
-import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
+import com.mypersonalportifolio.food_delivery_api.domain.concept.AggregateRootUUID;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.bean_validation.ValidationGroups;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FoodCategory  extends DomainEntityUUID {
+public class FoodCategory  extends AggregateRootUUID {
 
     @Pattern(regexp = "^[^0-9]*$", groups = ValidationGroups.FoodCategoryRegistration.class)
     @NotBlank(groups = ValidationGroups.FoodCategoryRegistration.class)

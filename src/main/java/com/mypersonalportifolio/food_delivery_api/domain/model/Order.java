@@ -1,6 +1,6 @@
 package com.mypersonalportifolio.food_delivery_api.domain.model;
 
-import com.mypersonalportifolio.food_delivery_api.domain.concept.DomainEntityUUID;
+import com.mypersonalportifolio.food_delivery_api.domain.concept.AggregateRootUUID;
 import com.mypersonalportifolio.food_delivery_api.domain.event.OrderCancelledEvent;
 import com.mypersonalportifolio.food_delivery_api.domain.event.OrderConfirmedEvent;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.BusinessConstraintsViolationException;
@@ -17,7 +17,7 @@ import java.util.*;
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class Order extends  DomainEntityUUID {
+public class Order extends AggregateRootUUID {
 
     @ManyToOne
     private Restaurant restaurant;
@@ -75,7 +75,7 @@ public class Order extends  DomainEntityUUID {
     @Column(name = "delivered_in")
     private OffsetDateTime DeliveredIn;
 
-    public static Order confirmNewOrder(Restaurant restaurant, PaymentMethod paymentMethod, User customer, Address shippingAddress, Set<OrderItem> items) {
+    public static Order createNewOrder(Restaurant restaurant, PaymentMethod paymentMethod, User customer, Address shippingAddress, Set<OrderItem> items) {
         var subtotal = calculateSubtotal(items);
 
         return new Order(
@@ -84,7 +84,7 @@ public class Order extends  DomainEntityUUID {
                     customer,
                     shippingAddress,
                     restaurant.getShippingCost(),
-                    OrderStatus.CRIADO,
+                    OrderStatus.CREATED,
                     items,
                     subtotal,
                     subtotal.add(restaurant.getShippingCost()),
@@ -96,7 +96,7 @@ public class Order extends  DomainEntityUUID {
         );
     }
     private static BigDecimal calculateSubtotal(Collection<OrderItem> items) {
-        return items.stream().map(i -> i.getProduct().getPrice()).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return items.stream().map(OrderItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private void setStatus(OrderStatus newOrderStatus, OrderStatus previousMustBe) {
@@ -104,27 +104,28 @@ public class Order extends  DomainEntityUUID {
             this.status = newOrderStatus;
 
         } else {
-            var message = String.format("Status do pedido %s, estand oem %s não pode ser alterado para %s", this.getId().toString(), this.getStatus(), newOrderStatus);
+            var message = String.format("Status do pedido %s, estando em %s não pode ser alterado para %s", this.getId(), this.getStatus(), newOrderStatus);
             throw new BusinessConstraintsViolationException(message);
         }
     }
     public void confirm() {
-        setStatus(OrderStatus.CONFIRMADO, OrderStatus.CRIADO);
+        setStatus(OrderStatus.CONFIRMED, OrderStatus.PAID);
         this.confirmedAt = OffsetDateTime.now();
 
         super.registerEvent(new OrderConfirmedEvent(this));
 
     }
 
-    public void completeDelivery() {
-        setStatus(OrderStatus.ENTREGUE, OrderStatus.CONFIRMADO);
-        this.confirmedAt = OffsetDateTime.now();
+    public void dispatch() {
+        setStatus(OrderStatus.READY_TO_DISPATCH, OrderStatus.CONFIRMED);
+        this.DeliveredIn = OffsetDateTime.now();
 
+        //TODO create event
     }
 
 
     public void cancel() {
-        setStatus(OrderStatus.CANCELADO, OrderStatus.CRIADO);
+        setStatus(OrderStatus.CANCELLED, OrderStatus.PAID);
         this.cancelledAt = OffsetDateTime.now();
 
         super.registerEvent(new OrderCancelledEvent(this));

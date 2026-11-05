@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -28,7 +27,7 @@ public class ProcessNewOrderUseCase implements UseCase<OrderInputDTO, Order> {
     private final PaymentMethodService paymentMethodService;
     private final UserService userService;
 
-    private final List<OrderStatus> NOT_PENDING_CONDITIONS = List.of( OrderStatus.ENTREGUE, OrderStatus.CANCELADO );
+    private final List<OrderStatus> NOT_PENDING_CONDITIONS = List.of( OrderStatus.DELIVERED, OrderStatus.CANCELLED);
 
     public ProcessNewOrderUseCase(OrderService orderService,
                                   OrderRepository orderRepository,
@@ -64,7 +63,7 @@ public class ProcessNewOrderUseCase implements UseCase<OrderInputDTO, Order> {
         var orderItemSet = orderService.processItems(orderCandidate);
 
 
-        var validOrder = Order.confirmNewOrder(restaurantTarget, paymentMethodTarget, customer, shippingAddress, orderItemSet);
+        var validOrder = Order.createNewOrder(restaurantTarget, paymentMethodTarget, customer, shippingAddress, orderItemSet);
 
         var order =   orderRepository.save(validOrder);
 
