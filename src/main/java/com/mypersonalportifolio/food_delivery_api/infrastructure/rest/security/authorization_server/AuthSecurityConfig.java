@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -13,7 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -29,7 +32,7 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class AuthSecurityConfig {
     @Bean
     @Order(0)
     public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -47,6 +50,7 @@ public class SecurityConfig {
             HttpSecurity http,
             SecurityContextRepository securityContextRepository,
             OAuth2AuthorizationService authorizationService,
+            OAuth2AuthorizationConsentService authorizationConsentService,
             JwtAuthenticationConverter jwtAuthenticationConverter
     ) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
@@ -58,6 +62,7 @@ public class SecurityConfig {
                 // 1. Ativa nativamente o Servidor de Autorização na DSL do Spring Security 7+
                 .with(authorizationServerConfigurer, authorizationServer -> authorizationServer
                         .authorizationService(authorizationService)
+                        .authorizationConsentService(authorizationConsentService)
                         .oidc(Customizer.withDefaults()) // Ativa o OpenID Connect 1.0 por padrão
                 )
                 .authorizeHttpRequests(authorize -> authorize
@@ -125,8 +130,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public OAuth2AuthorizationService oAuth2AuthorizationService() {
-        // Códigos e refresh tokens ficam somente na memória deste processo.
-        return new InMemoryOAuth2AuthorizationService();
+    public OAuth2AuthorizationService oAuth2AuthorizationService(JdbcOperations jdbcOperations
+            , RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationService(jdbcOperations, registeredClientRepository);
+    }
+
+    @Bean
+    public OAuth2AuthorizationConsentService oAuth2AuthorizationConsentService(JdbcOperations jdbcOperations,
+            RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationConsentService(jdbcOperations, registeredClientRepository);
     }
 }

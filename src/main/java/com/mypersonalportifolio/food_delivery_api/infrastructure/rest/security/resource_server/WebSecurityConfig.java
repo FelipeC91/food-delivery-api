@@ -89,6 +89,9 @@ public SecurityFilterChain restaurantsFilterChain(HttpSecurity http) throws Exce
                     .requestMatchers(HttpMethod.POST, API_BASE_PATH + "/restaurants").access(customSecurityPolicies::checkIfIsAnotherRestaurantManager)
                     .requestMatchers(HttpMethod.PUT, API_BASE_PATH + "/restaurants/{restaurantId}").access((authenticationSupplier, context) -> customSecurityPolicies.checkRestaurantManager(authenticationSupplier, context, "EDITAR_RESTAURANTES"))
 
+                    .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/restaurants/{restaurantId}/orders")
+                    .access((authenticationSupplier, context) -> customSecurityPolicies.checkRestaurantManager(authenticationSupplier, context, "CONSULTAR_PEDIDOS"))
+
                     .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/restaurants/{restaurantId}", API_BASE_PATH + "/restaurants").authenticated()
 
                     .requestMatchers(HttpMethod.PATCH, API_BASE_PATH + "/restaurants/{restaurantId}/opening", API_BASE_PATH + "/restaurants/{restaurantId}/activation")
@@ -237,7 +240,7 @@ public SecurityFilterChain restaurantsFilterChain(HttpSecurity http) throws Exce
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         var grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
-        grantedAuthoritiesConverter.setAuthoritiesClaimName(JwtClaimKeys.AUTHORITIES.getKey());
+        grantedAuthoritiesConverter.setAuthoritiesClaimName(JwtClaimNames.AUTHORITIES.getKey());
         grantedAuthoritiesConverter.setAuthorityPrefix("");
 
         var jwtAuthenticationConverter = new JwtAuthenticationConverter();

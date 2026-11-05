@@ -2,6 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.User;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server.CustomUserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

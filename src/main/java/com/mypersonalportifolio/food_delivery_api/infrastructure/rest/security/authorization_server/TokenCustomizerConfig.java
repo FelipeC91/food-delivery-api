@@ -1,6 +1,5 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server;
 
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server.jpa.CustomUserDetails;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server.jpa.JpaUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,25 +49,23 @@ public class TokenCustomizerConfig {
                             .claim("user_id", customUserDetails.getId())
                             .claim("user_name", customUserDetails.getFullUsername())
                             .claim("authorities", clientAuthorities);
-                } else if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-                    var authorities = userDetails instanceof CustomUserDetails customUserDetails
-                            ? customUserDetails.getAuthorities()
-                            : authentication.getAuthorities();
+                } else if (authentication != null && authentication.isAuthenticated()) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getName());
+                    if (!(userDetails instanceof CustomUserDetails customUserDetails)) {
+                        throw new IllegalStateException(
+                                "Expected CustomUserDetails for user " + authentication.getName());
+                    }
 
-                    Set<String> userAuthorities = authorities.stream()
+                    Set<String> userAuthorities = userDetails.getAuthorities().stream()
                             .map(GrantedAuthority::getAuthority)
                             .collect(Collectors.toSet());
 
                     context.getClaims()
                             .claim("grant_type", "authorization_code")
-                            .claim("user_name", userDetails.getUsername())
+                            .claim("user_name", customUserDetails.getFullUsername())
                             .claim("authorities", userAuthorities);
 
-                    if (userDetails instanceof CustomUserDetails customUserDetails) {
-                        context.getClaims()
-                                .claim("user_id", customUserDetails.getId())
-                                .claim("user_name", customUserDetails.getFullUsername());
-                    }
+                    context.getClaims().claim("user_id", customUserDetails.getId());
                 }
             }
         };

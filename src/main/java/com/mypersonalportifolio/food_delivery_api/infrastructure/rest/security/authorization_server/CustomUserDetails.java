@@ -1,4 +1,4 @@
-package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server.jpa;
+package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.authorization_server;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

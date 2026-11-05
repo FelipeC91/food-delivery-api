@@ -2,7 +2,6 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.
 
 import com.mypersonalportifolio.food_delivery_api.domain.repository.OrderRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationResult;
 import org.springframework.security.core.Authentication;
@@ -151,7 +150,11 @@ public class CustomSecurityPolicies {
 
     private UUID extractRequestUser(JwtAuthenticationToken jwtAuth) {
         var jwt = jwtAuth.getToken();
-        return   UUID.fromString(jwt.getClaimAsString(JwtClaimKeys.USER_ID.getKey()));
+
+        System.out.println("------------------------------");
+        System.out.println(JwtClaimNames.USER_ID.getKey());
+        System.out.println("------------------------------");
+        return   UUID.fromString(jwt.getClaimAsString(JwtClaimNames.USER_ID.getKey()));
     }
 
     public  AuthorizationResult checkIfCanAccessReports(Supplier<? extends Authentication> authenticationSupplier, RequestAuthorizationContext context) {

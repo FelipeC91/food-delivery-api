@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public enum JwtClaimKeys {
+public enum JwtClaimNames {
     USER_ID("user_id"),
     USER_NAME("user_name"),
     AUTHORITIES("authorities");
