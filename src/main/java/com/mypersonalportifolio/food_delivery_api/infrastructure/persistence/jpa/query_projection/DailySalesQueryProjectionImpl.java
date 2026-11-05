@@ -12,7 +12,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class DailySalesQueryProjectionImpl implements DailySalesQueryProjection 
     private List<Predicate> processPredicates(CriteriaBuilder criteriaBuilder, Root<Order> fromOrder, DailySalesFilterDTO filter) {
         var predicates = new ArrayList<Predicate>();
 
-        predicates.add(fromOrder.get(Order_.STATUS).in(OrderStatus.CONFIRMADO, OrderStatus.ENTREGUE));
+        predicates.add(fromOrder.get(Order_.STATUS).in(OrderStatus.CONFIRMED, OrderStatus.DELIVERED));
 
         if (filter.getRestaurantId() != null) {
             predicates.add(criteriaBuilder.equal(fromOrder.get(Order_.RESTAURANT).get(Restaurant_.ID), filter.getRestaurantId()));

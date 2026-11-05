@@ -13,7 +13,7 @@ import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.OrderSimplifiedRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.OrderControllerOpenApi;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.pagination.PageableTranslator;
-import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.resource_server.JwtClaimKeys;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.resource_server.JwtClaimNames;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -69,7 +69,7 @@ public class OrderController implements OrderControllerOpenApi {
     @PostMapping
     public OrderRepresentationModel createResource(@RequestBody OrderInputDTO orderInputDTO,
                                                     @AuthenticationPrincipal Jwt jwt) {
-        var customerId = UUID.fromString(jwt.getClaim(JwtClaimKeys.USER_ID.getKey()));
+        var customerId = UUID.fromString(jwt.getClaim(JwtClaimNames.USER_ID.getKey()));
         orderInputDTO.setCustomerId(customerId);
 
         return assembler.toModel( processNewOrderUseCase.execute(orderInputDTO) );
