@@ -9,7 +9,7 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 public class AnalyticsLinkEngine extends ApiBasePathLinkResolver {
     public static Link slashAnalytics() {
-        var link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AnalyticsController.class).getDailySales(null,null)).withRel("/daily-sales");
+        var link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(AnalyticsController.class).getDailySales(null)).withRel("/daily-sales");
         var linkWithApiBasePath = withApiBasePath(link);
 
         var uriTemplate = UriTemplate.of(linkWithApiBasePath.getHref()).with(new TemplateVariables(

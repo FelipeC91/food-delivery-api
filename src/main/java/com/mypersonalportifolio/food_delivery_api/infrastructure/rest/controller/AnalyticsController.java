@@ -36,19 +36,15 @@ public class AnalyticsController implements AnalyticsControllerOpenApi {
 
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "/{restaurantId}/daily-sales", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<DailySalesProjectionDTO> getDailySales(@Valid DailySalesFilterDTO filter,
-                                                       @PathVariable UUID restaurantId){
-        filter.setRestaurantId(restaurantId);
+    @GetMapping(path = "/daily-sales", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<DailySalesProjectionDTO> getDailySales(@Valid DailySalesFilterDTO filter){
 
         return processDailySalesAnalyticsUseCase.execute(filter);
     }
 
 
-    @GetMapping(path = "/{restaurantId}/daily-sales", produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<byte[]> getDailySalesInPdf(@Valid DailySalesFilterDTO filter,
-                                                     @PathVariable UUID restaurantId){
-        filter.setRestaurantId(restaurantId);
+    @GetMapping(path = "/daily-sales", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> getDailySalesInPdf(@Valid DailySalesFilterDTO filter){
 
         var dailySalesPdf = processDailySalesReportPdfUseCase.execute(filter);
 

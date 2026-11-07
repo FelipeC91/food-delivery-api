@@ -24,7 +24,10 @@ public class FileExtensionValidator implements ConstraintValidator<FileExtension
 
     @Override
     public boolean isValid(MultipartFile value, ConstraintValidatorContext context) {
-        if (value == null || value.isEmpty() || value.getOriginalFilename() == null)
+        if (value == null)
+            return true;
+
+        if (value.isEmpty() || value.getOriginalFilename() == null)
             return false;
 
         var extension = this.parseNameToExtension( value.getOriginalFilename() );

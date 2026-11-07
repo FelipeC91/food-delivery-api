@@ -20,7 +20,7 @@ class ProcessDailySalesReportPdfUseCaseTest {
         var projection = mock(DailySalesQueryProjection.class);
         var reportStatsService = mock(ReportStatsService.class);
         var useCase = new ProcessDailySalesReportPdfUseCase(projection, reportStatsService);
-        var filter = new DailySalesFilterDTO("00:00", null, null);
+        var filter = new DailySalesFilterDTO(null, "00:00", null, null);
         var sales = List.of(mock(DailySalesProjectionDTO.class));
         var pdf = new byte[]{1, 2, 3};
         when(projection.retrieveDailySales(filter)).thenReturn(sales);

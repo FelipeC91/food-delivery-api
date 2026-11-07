@@ -18,7 +18,7 @@ class ProcessDailySalesAnalyticsUseCaseTest {
     void retrievesDailySalesForTheGivenFilter() {
         var projection = mock(DailySalesQueryProjection.class);
         var useCase = new ProcessDailySalesAnalyticsUseCase(projection);
-        var filter = new DailySalesFilterDTO("00:00", null, null);
+        var filter = new DailySalesFilterDTO(null,"00:00", null, null);
         var sales = List.of(mock(DailySalesProjectionDTO.class));
         when(projection.retrieveDailySales(filter)).thenReturn(sales);
 
