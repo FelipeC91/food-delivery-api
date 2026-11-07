@@ -28,7 +28,7 @@ public class FoodCategoryService {
 
     @Transactional
     public FoodCategory updateProperties(FoodCategory foodCategoryTarget, FoodCategory foodCategorySource) {
-        if (foodCategoryRepository.existsByName(foodCategoryTarget.getName()))
+        if (foodCategoryRepository.existsByName(foodCategorySource.getName()))
             throw new EntityAlreadyExistsException(foodCategoryTarget.getClass(), "FoodCategory with name " + foodCategoryTarget.getName() + " already exists");
 
         BeanUtils.copyProperties(foodCategorySource,foodCategoryTarget, "id");
