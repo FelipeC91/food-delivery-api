@@ -1,6 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.domain.service;
 
 import com.mypersonalportifolio.food_delivery_api.domain.model.Permission;
+import com.mypersonalportifolio.food_delivery_api.domain.model.PermissionEncapsulation;
 import com.mypersonalportifolio.food_delivery_api.domain.model.UserGroup;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.GroupRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.PermissionRepository;
@@ -35,7 +36,7 @@ class GroupServiceTest {
         var groupId = UUID.randomUUID();
         var permissionId = UUID.randomUUID();
         var group = new UserGroup();
-        var permission = new Permission("READ_ORDERS", "Read orders");
+        var permission = new Permission("READ_ORDERS", "Read orders", PermissionEncapsulation.PUBLIC);
         when(groupRepository.findById(groupId)).thenReturn(Optional.of(group));
         when(permissionRepository.findById(permissionId)).thenReturn(Optional.of(permission));
 

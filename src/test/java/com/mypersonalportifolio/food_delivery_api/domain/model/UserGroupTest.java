@@ -11,7 +11,7 @@ class UserGroupTest {
     @Test
     void shouldAttachAndDetachPermissions() {
         var group = new UserGroup();
-        var permission = new Permission("READ_ORDERS", "Read orders");
+        var permission = new Permission("READ_ORDERS", "Read orders", PermissionEncapsulation.PUBLIC);
 
         assertTrue(group.attachPermission(permission));
         assertFalse(group.attachPermission(permission));
@@ -23,7 +23,7 @@ class UserGroupTest {
     @Test
     void shouldExposePermissionsAsReadOnly() {
         var group = new UserGroup();
-        var permission = new Permission("READ_ORDERS", "Read orders");
+        var permission = new Permission("READ_ORDERS", "Read orders", PermissionEncapsulation.PUBLIC);
         group.attachPermission(permission);
 
         assertThrows(UnsupportedOperationException.class,

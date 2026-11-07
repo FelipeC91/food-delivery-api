@@ -5,6 +5,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEnti
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityAlreadyExistsException;
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Permission;
+import com.mypersonalportifolio.food_delivery_api.domain.model.PermissionEncapsulation;
 import com.mypersonalportifolio.food_delivery_api.domain.model.UserGroup;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.PermissionRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.GroupRepository;
@@ -108,5 +109,14 @@ public class GroupService {
         } catch (IllegalArgumentException e) {
             throw new CandidateEntityInvalidException(UserGroup.class, userGroupCandidate.getName());
         }
+    }
+
+    public boolean checkIfContainsProtectedPermissions(UUID userGroupId) {
+        var targetGroup = this.findVerifiedUserGroup(userGroupId);
+
+        return targetGroup.getPermissions()
+                .stream()
+                .map(Permission::getEncapsulation)
+                .anyMatch(PermissionEncapsulation.PROTECTED::equals);
     }
 }

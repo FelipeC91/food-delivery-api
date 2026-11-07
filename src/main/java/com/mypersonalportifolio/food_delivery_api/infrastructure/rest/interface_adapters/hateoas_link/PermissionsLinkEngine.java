@@ -13,7 +13,7 @@ public class PermissionsLinkEngine extends ApiBasePathLinkResolver {
     }
 
     public static Link slashPermissions(UUID permissionId) {
-        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PermissionController.class).getResourceById(permissionId)).withSelfRel());
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PermissionController.class).getResourceById(permissionId, null)).withSelfRel());
     }
 
 }

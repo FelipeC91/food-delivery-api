@@ -1,0 +1,1 @@
+ALTER TABLE permission ADD COLUMN `encapsulation` VARCHAR(9);

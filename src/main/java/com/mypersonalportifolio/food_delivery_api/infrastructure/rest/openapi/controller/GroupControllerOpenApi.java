@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 
 import java.util.UUID;
 
@@ -45,7 +46,8 @@ public interface GroupControllerOpenApi {
     UserGroupRepresentationModel updateResource(
             @Parameter(description = "Group identifier", required = true) UUID userGroupId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Updated user group", required = true)
-            UserGroup userGroupSource);
+            UserGroup userGroupSource,
+            Authentication authentication);
 
     @Operation(summary = "Delete a group", description = "Deletes the specified user group.")
     @ApiResponses({
@@ -53,5 +55,6 @@ public interface GroupControllerOpenApi {
             @ApiResponse(responseCode = "404", description = "Group not found")
     })
     ResponseEntity<Void> deleteResource(
-            @Parameter(description = "Group identifier", required = true) UUID userGroupId);
+            @Parameter(description = "Group identifier", required = true) UUID userGroupId,
+            Authentication authentication);
 }

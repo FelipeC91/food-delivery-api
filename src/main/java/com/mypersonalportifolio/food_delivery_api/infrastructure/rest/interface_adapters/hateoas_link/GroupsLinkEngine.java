@@ -21,15 +21,15 @@ public class GroupsLinkEngine extends ApiBasePathLinkResolver{
     }
 
     public static Link slashUserGroupsSlashPermissionsSlashPermissionIdPUT(UUID userGroupId, UUID permissionId) {
-        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).associateResource(userGroupId, permissionId))
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).associateResource(userGroupId, permissionId, null))
                 .withRel("/grant")
-                .andAffordance(WebMvcLinkBuilder.afford(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).associateResource(userGroupId, permissionId))));
+                .andAffordance(WebMvcLinkBuilder.afford(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).associateResource(userGroupId, permissionId, null))));
     }
 
     public static Link slashUserGroupsSlashPermissionsSlashPermissionIdDELETE(UUID userGroupId, UUID permissionId) {
-        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).detachResource(userGroupId, permissionId))
+        return withApiBasePath(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).detachResource(userGroupId, permissionId, null))
                 .withRel("/revoke")
-                .andAffordance(WebMvcLinkBuilder.afford(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).detachResource(userGroupId, permissionId))));
+                .andAffordance(WebMvcLinkBuilder.afford(WebMvcLinkBuilder.methodOn(GroupPermissionController.class).detachResource(userGroupId, permissionId, null))));
     }
 }
 

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 
 import java.util.UUID;
 
@@ -28,7 +29,8 @@ public interface GroupPermissionControllerOpenApi {
     })
     ResponseEntity<Void> associateResource(
             @Parameter(description = "Group identifier", required = true) UUID userGroupId,
-            @Parameter(description = "Permission identifier", required = true) UUID permissionId);
+            @Parameter(description = "Permission identifier", required = true) UUID permissionId,
+            Authentication authentication);
 
     @Operation(summary = "Revoke a permission from a group", description = "Removes a permission from the specified group.")
     @ApiResponses({
@@ -37,5 +39,6 @@ public interface GroupPermissionControllerOpenApi {
     })
     ResponseEntity<Void> detachResource(
             @Parameter(description = "Group identifier", required = true) UUID userGroupId,
-            @Parameter(description = "Permission identifier", required = true) UUID permissionId);
+            @Parameter(description = "Permission identifier", required = true) UUID permissionId,
+            Authentication authentication);
 }

@@ -3,6 +3,8 @@ package com.mypersonalportifolio.food_delivery_api.domain.model;
 import com.mypersonalportifolio.food_delivery_api.domain.concept.AggregateRootUUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +22,7 @@ public class Permission extends AggregateRootUUID {
 
     @Column(nullable = false)
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    private PermissionEncapsulation encapsulation;
 }

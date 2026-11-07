@@ -5,6 +5,7 @@ import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRe
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationResult;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.stereotype.Component;
@@ -165,13 +166,17 @@ public class CustomSecurityPolicies {
         }
 
         assert context != null;
-        var pathVariables = context.getVariables();
+        var restaurantIdOptional =Optional.ofNullable(context.getRequest().getParameter("restaurantId"));
 
-        var isAllowed = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("CONSULTAR_RELATORIOS"));
+        if (restaurantIdOptional.isEmpty()) {
+            var isAllowed = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("GERENCIAR_TODOS_RESTAURANTES"));
+            return new AuthorizationDecision(isAllowed);
+        } else {
 
-        return isAllowed ? checkIfOrderBelongsToRestaurantPolicy(authenticationSupplier, context, "GERENCIAR_RESTAURANTES")
-                        : new AuthorizationDecision(false);
+            return checkRestaurantManager(authenticationSupplier, context, "CONSULTAR_RELATORIOS");
+
+        }
 
 
     }
@@ -209,5 +214,9 @@ public class CustomSecurityPolicies {
             var isGranted = (isAllowed && !restaurantRepository.existsManagerByManagerId(userId));
 
             return new AuthorizationDecision(isGranted);
+    }
+
+    public boolean hasAccessToProtectedPermissions(Authentication authenticationContext) {
+        return authenticationContext.getAuthorities().contains(new SimpleGrantedAuthority("GERENCIAR_PERMISSOES"));
     }
 }

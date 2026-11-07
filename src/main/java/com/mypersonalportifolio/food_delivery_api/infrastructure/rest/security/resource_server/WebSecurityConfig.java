@@ -53,8 +53,9 @@ public SecurityFilterChain generalResourcesFilterChain(HttpSecurity http) throws
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(API_BASE_PATH + "/").authenticated()
 
-                    .requestMatchers(HttpMethod.POST, API_BASE_PATH + "/food-categories/**").hasAuthority("EDITAR_COZINHAS")
-                    .requestMatchers(HttpMethod.PUT, API_BASE_PATH + "/food-categories/**").hasAuthority("EDITAR_COZINHAS")
+                    .requestMatchers(HttpMethod.POST, API_BASE_PATH + "/food-categories/**").hasAuthority("GERENCIAR_CATEGORIAS")
+                    .requestMatchers(HttpMethod.PUT, API_BASE_PATH + "/food-categories/**").hasAuthority("GERENCIAR_CATEGORIAS")
+                    .requestMatchers(HttpMethod.DELETE, API_BASE_PATH + "/food-categories/**").hasAuthority("GERENCIAR_CATEGORIAS")
                     .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/food-categories/**").authenticated()
 
                     .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/payment-methods/**").authenticated()
@@ -202,7 +203,7 @@ public SecurityFilterChain restaurantsFilterChain(HttpSecurity http) throws Exce
                         .requestMatchers(HttpMethod.PUT, API_BASE_PATH + "/groups/{userGroupId}").hasAuthority("GERENCIAR_USUARIOS")
                         .requestMatchers(HttpMethod.DELETE, API_BASE_PATH + "/groups/{userGroupId}").hasAuthority("GERENCIAR_USUARIOS")
 
-                        .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/permissions").hasAuthority("CONSULTAR_USUARIOS")
+                        .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/permissions").hasAuthority("CONSULTAR_PERMISSOES")
                         .anyRequest().denyAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
@@ -226,7 +227,7 @@ public SecurityFilterChain restaurantsFilterChain(HttpSecurity http) throws Exce
                         .accessDeniedHandler(apiAccessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/analytics/").hasAuthority("CONSULTAR_RELATORIOS")
-                        .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/analytics/{restaurantId}/daily-sales").access(customSecurityPolicies::checkIfCanAccessReports)
+                        .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/analytics/daily-sales").access(customSecurityPolicies::checkIfCanAccessReports)
                         .anyRequest().denyAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
