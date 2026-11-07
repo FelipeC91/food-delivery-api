@@ -21,8 +21,7 @@ public interface AnalyticsControllerOpenApi {
             @ApiResponse(responseCode = "200", description = "Daily sales data returned")
     })
     List<DailySalesProjectionDTO> getDailySales(
-            @Parameter(description = "Optional date range and UTC offset filters") DailySalesFilterDTO filter,
-            @Parameter(description = "Restaurant identifier", required = true) UUID restaurantId);
+            @Parameter(description = "Optional date range and UTC offset filters") DailySalesFilterDTO filter);
 
     @Operation(summary = "Download daily sales report as PDF",
             description = "Downloads a PDF report of daily sales for a restaurant and optional date/time-zone filters.")
@@ -31,8 +30,7 @@ public interface AnalyticsControllerOpenApi {
             @ApiResponse(responseCode = "404", description = "Restaurant not found")
     })
     ResponseEntity<byte[]> getDailySalesInPdf(
-            @Parameter(description = "Optional date range and UTC offset filters") DailySalesFilterDTO filter,
-            @Parameter(description = "Restaurant identifier", required = true) UUID restaurantId);
+            @Parameter(description = "Optional date range and UTC offset filters") DailySalesFilterDTO filter);
 
     @Operation(summary = "Discover analytics endpoints",
             description = "Returns links to the available analytics resources.")
