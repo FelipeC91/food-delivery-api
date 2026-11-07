@@ -47,4 +47,7 @@ Estimo que 94% deste projeto foi construído artesanalmente, sem o auxílio de I
 + Possibilidade de integração com Google Maps para validação de raio de entrega interações com agente entregador
 
 
-+ remodelagem da base de dados de produtos para banco de dados orientado a documentos (Mongo DB) para flexibilização dos tipos de produto
++ Remodelagem da base de dados de produtos para banco de dados orientado a documentos (Mongo DB) para flexibilização dos tipos de produto
+
+
++ Amazon SNS para disparo de SMS de notificação

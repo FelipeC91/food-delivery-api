@@ -7,17 +7,18 @@ import com.mypersonalportifolio.food_delivery_api.domain.model.City;
 import com.mypersonalportifolio.food_delivery_api.domain.model.FoodCategory;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.CityRepository;
+import com.mypersonalportifolio.food_delivery_api.domain.repository.OrderRepository;
+import com.mypersonalportifolio.food_delivery_api.domain.repository.PaymentMethodRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
+import com.mypersonalportifolio.food_delivery_api.domain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.SmartValidator;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +42,15 @@ class RestaurantServiceTest {
     @Mock
     private SmartValidator validator;
 
-    @InjectMocks
+    @Mock
+    private PaymentMethodRepository paymentMethodRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private OrderRepository orderRepository;
+
     private RestaurantService restaurantService;
 
     private FoodCategory foodCategory;
@@ -51,6 +60,8 @@ class RestaurantServiceTest {
     void setUp() {
         foodCategory = new FoodCategory("Pizza", null);
         restaurantTarget = restaurant("Original Restaurant", new BigDecimal("5.00"), foodCategory);
+        restaurantService = new RestaurantService(restaurantRepository, cityRepository, validator,
+                paymentMethodRepository, userRepository, orderRepository);
     }
 
     @Test
@@ -132,6 +143,8 @@ class RestaurantServiceTest {
     @Test
     void shouldSaveUpdatedRestaurantProperties() {
         var source = restaurant("Updated Restaurant", new BigDecimal("8.99"), foodCategory);
+        var persistedCity = new City("Central", null);
+        when(cityRepository.findByName("Central")).thenReturn(Optional.of(persistedCity));
         when(restaurantRepository.save(restaurantTarget)).thenReturn(restaurantTarget);
 
         var result = restaurantService.updateProperties(source, restaurantTarget);
@@ -143,20 +156,19 @@ class RestaurantServiceTest {
 
     @Test
     void shouldReplaceTransientCityWithPersistedCityBeforeSaving() {
-        var cityId = 1L;
         var transientCity = org.mockito.Mockito.mock(City.class);
         var persistedCity = org.mockito.Mockito.mock(City.class);
         var source = restaurant("Updated Restaurant", new BigDecimal("8.99"), foodCategory);
         source.setAddress(new Address("Neighborhood", "12345678", "Street", 10, transientCity));
 
-        when(transientCity.getId()).thenReturn(cityId);
-        when(cityRepository.findById(cityId)).thenReturn(Optional.of(persistedCity));
+        when(transientCity.getName()).thenReturn("Transient");
+        when(cityRepository.findByName("Transient")).thenReturn(Optional.of(persistedCity));
         when(restaurantRepository.save(restaurantTarget)).thenReturn(restaurantTarget);
 
         restaurantService.updateProperties(source, restaurantTarget);
 
         assertSame(persistedCity, restaurantTarget.getAddress().getCity());
-        verify(cityRepository).findById(cityId);
+        verify(cityRepository).findByName("Transient");
     }
 
     private Restaurant restaurant(String name, BigDecimal shippingCost, FoodCategory category) {
@@ -164,12 +176,14 @@ class RestaurantServiceTest {
                 name,
                 shippingCost,
                 category,
+                new Address("Neighborhood", "12345678", "Street", 10, new City("Central", null)),
+                java.util.Set.of(),
                 null,
-                new ArrayList<>(),
                 null,
-                null,
-                new ArrayList<>(),
-                true
+                java.util.Set.of(),
+                true,
+                false,
+                java.util.Set.of()
         );
     }
 }

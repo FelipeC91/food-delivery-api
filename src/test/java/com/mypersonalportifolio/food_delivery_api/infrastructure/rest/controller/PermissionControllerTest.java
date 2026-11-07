@@ -3,11 +3,17 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
 import com.mypersonalportifolio.food_delivery_api.domain.model.Permission;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.PermissionRepository;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.PermissionRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.PermissionRepresentationModelAssembler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +30,15 @@ class PermissionControllerTest {
     @Mock
     private PermissionRepository permissionRepository;
 
+    @Mock
+    private PermissionRepresentationModelAssembler assembler;
+
+    @Mock
+    private PagedResourcesAssembler<Permission> pagedResourcesAssembler;
+
+    @Mock
+    private PagedModel<PermissionRepresentationModel> pagedModel;
+
     @InjectMocks
     private PermissionController permissionController;
 
@@ -33,12 +48,16 @@ class PermissionControllerTest {
                 new Permission("READ_ORDERS", "Read orders"),
                 new Permission("MANAGE_USERS", "Manage users")
         );
-        when(permissionRepository.findAll()).thenReturn(permissions);
+        var pageable = Pageable.unpaged();
+        var permissionPage = new PageImpl<>(permissions, pageable, permissions.size());
+        when(permissionRepository.findAll(pageable)).thenReturn(permissionPage);
+        when(pagedResourcesAssembler.toModel(permissionPage, assembler)).thenReturn(pagedModel);
 
-        var result = permissionController.listAllResources();
+        var result = permissionController.listAllResources(pageable);
 
-        assertSame(permissions, result);
-        verify(permissionRepository).findAll();
+        assertSame(pagedModel, result);
+        verify(permissionRepository).findAll(pageable);
+        verify(pagedResourcesAssembler).toModel(permissionPage, assembler);
     }
 
     @Test

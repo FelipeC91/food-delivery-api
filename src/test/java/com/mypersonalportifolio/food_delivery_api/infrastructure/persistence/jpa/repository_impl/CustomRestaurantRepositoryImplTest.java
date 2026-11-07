@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -328,11 +328,13 @@ class CustomRestaurantRepositoryImplTest {
                 shippingCost,
                 testCategory,
                 address,
-                new ArrayList<>(),
+                new HashSet<>(),
                 null,
                 null,
-                new ArrayList<>(),
-                true
+                new HashSet<>(),
+                true,
+                false,
+                new HashSet<>()
         );
     }
 }

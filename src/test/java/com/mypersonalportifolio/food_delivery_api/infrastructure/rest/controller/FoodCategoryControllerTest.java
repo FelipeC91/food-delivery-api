@@ -6,16 +6,16 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoun
 import com.mypersonalportifolio.food_delivery_api.domain.model.FoodCategory;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.FoodCategoryRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.FoodCategoryService;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.FoodCategoryRepresentationModel;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.FoodCategoryRepresentationModelAssembler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpStatus;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +34,15 @@ class FoodCategoryControllerTest {
     @Mock
     private FoodCategoryService foodCategoryService;
 
-    @InjectMocks
+    @Mock
+    private FoodCategoryRepresentationModelAssembler assembler;
+
+    @Mock
+    private PagedResourcesAssembler<FoodCategory> pagedResourcesAssembler;
+
+    @Mock
+    private FoodCategoryRepresentationModel representationModel;
+
     private FoodCategoryController foodCategoryController;
 
     private FoodCategory foodCategory;
@@ -42,24 +50,30 @@ class FoodCategoryControllerTest {
     @BeforeEach
     void setUp() {
         foodCategory = new FoodCategory("Pizza", "Traditional pizza");
+        foodCategoryController = new FoodCategoryController(foodCategoryRepository, foodCategoryService,
+                assembler, pagedResourcesAssembler);
     }
 
 
     @Test
     void shouldThrowWhenFoodCategoryIsNotFound() {
         var id = UUID.randomUUID();
-        when(foodCategoryRepository.findById(id)).thenReturn(Optional.empty());
+        when(foodCategoryService.findVerifiedFoodCategory(id))
+                .thenThrow(new EntityNotFoundException(FoodCategory.class, id.toString()));
 
         assertThrows(EntityNotFoundException.class,
-                () -> foodCategoryController.findOneResource(id, id));
+                () -> foodCategoryController.findSingleResource(id));
+        verify(foodCategoryService).findVerifiedFoodCategory(id);
     }
 
     @Test
     void shouldTranslateInvalidCandidateExceptionWhenCreating() {
-        when(foodCategoryRepository.save(foodCategory)).thenThrow(new IllegalArgumentException());
+        when(foodCategoryService.validateAndSave(foodCategory))
+                .thenThrow(new CandidateEntityInvalidException(FoodCategory.class, foodCategory.getName()));
 
         assertThrows(CandidateEntityInvalidException.class,
                 () -> foodCategoryController.createResource(foodCategory));
+        verify(foodCategoryService).validateAndSave(foodCategory);
     }
 
     @Test
@@ -67,13 +81,15 @@ class FoodCategoryControllerTest {
         var id = UUID.randomUUID();
         var source = new FoodCategory("Updated pizza", "Updated description");
         var updated = new FoodCategory("Updated pizza", "Updated description");
-        when(foodCategoryRepository.findById(id)).thenReturn(Optional.of(foodCategory));
+        when(foodCategoryService.findVerifiedFoodCategory(id)).thenReturn(foodCategory);
         when(foodCategoryService.updateProperties(foodCategory, source)).thenReturn(updated);
+        when(assembler.toModel(updated)).thenReturn(representationModel);
 
         var result = foodCategoryController.updateResource(id, source);
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertSame(updated, result.getBody());
+        assertSame(representationModel, result.getBody());
+        verify(foodCategoryService).findVerifiedFoodCategory(id);
         verify(foodCategoryService).updateProperties(foodCategory, source);
     }
 
@@ -84,13 +100,14 @@ class FoodCategoryControllerTest {
         var result = foodCategoryController.deleteResource(id);
 
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
-        verify(foodCategoryRepository).deleteById(id);
+        verify(foodCategoryService).delete(id);
     }
 
     @Test
-    void shouldTranslateIllegalArgumentExceptionWhenDeleting() {
+    void shouldPropagateNotFoundExceptionWhenDeleting() {
         var id = UUID.randomUUID();
-        doThrow(new IllegalArgumentException()).when(foodCategoryRepository).deleteById(id);
+        doThrow(new EntityNotFoundException(FoodCategory.class, id.toString()))
+                .when(foodCategoryService).delete(id);
 
         assertThrows(EntityNotFoundException.class,
                 () -> foodCategoryController.deleteResource(id));
@@ -98,10 +115,10 @@ class FoodCategoryControllerTest {
 
 
     @Test
-    void shouldTranslateDataIntegrityViolationWhenDeleting() {
+    void shouldPropagateIntegrityViolationWhenDeleting() {
         var id = UUID.randomUUID();
-        doThrow(new DataIntegrityViolationException("category is in use"))
-                .when(foodCategoryRepository).deleteById(id);
+        doThrow(new EntityIntegrityViolationException(FoodCategory.class, id.toString()))
+                .when(foodCategoryService).delete(id);
 
         assertThrows(EntityIntegrityViolationException.class,
                 () -> foodCategoryController.deleteResource(id));

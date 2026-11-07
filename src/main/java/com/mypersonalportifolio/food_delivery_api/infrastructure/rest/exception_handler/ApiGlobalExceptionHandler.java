@@ -4,12 +4,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.exception
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
-
-import com.mypersonalportifolio.food_delivery_api.domain.exception.BusinessConstraintsViolationException;
-import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityAlreadyExistsException;
-import com.mypersonalportifolio.food_delivery_api.domain.exception.EntityNotFoundException;
-
-import com.mypersonalportifolio.food_delivery_api.domain.exception.FailOnValidateEntityPropertiesException;
+import com.mypersonalportifolio.food_delivery_api.domain.exception.*;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.exception_handler.ApiProblemDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -40,6 +35,20 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private MessageSource errorMessageSource;
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException exception, WebRequest request) {
+        var status = HttpStatus.NOT_FOUND;
+
+        var problemDetails = ApiProblemDetails.builder()
+                .title(status.getReasonPhrase())
+                .detail(exception.getMessage())
+                .httpStatusCode(status.value())
+                .timestamp(OffsetDateTime.now())
+                .build();
+
+        return this.handleExceptionInternal(exception, problemDetails, HttpHeaders.EMPTY, status, request);
+    }
+
     @ExceptionHandler(BusinessConstraintsViolationException.class)
     public ResponseEntity<?> handleBusinessConstraintsViolationException(BusinessConstraintsViolationException exception, WebRequest request) {
         var defaultHttpStatusCode = HttpStatus.BAD_REQUEST;
@@ -54,8 +63,20 @@ public class ApiGlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.handleExceptionInternal(exception, problemDetails, HttpHeaders.EMPTY, defaultHttpStatusCode, request);
 
     }
+    @ExceptionHandler(EntityIntegrityViolationException.class)
+    public ResponseEntity<?> handleEntityIntegrityViolationException(BusinessConstraintsViolationException exception, WebRequest request) {
+        var defaultHttpStatusCode = HttpStatus.BAD_REQUEST;
 
+        var problemDetails = ApiProblemDetails.builder()
+                .title(defaultHttpStatusCode.getReasonPhrase())
+                .detail(exception.getMessage())
+                .httpStatusCode(defaultHttpStatusCode.value())
+                .timestamp(OffsetDateTime.now())
+                .build();
 
+        return this.handleExceptionInternal(exception, problemDetails, HttpHeaders.EMPTY, defaultHttpStatusCode, request);
+
+    }
     @Override
     protected @Nullable ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode httpStatusCode, WebRequest request) {
         var rootCause = ExceptionUtils.getRootCause(ex);
