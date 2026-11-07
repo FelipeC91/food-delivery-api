@@ -17,7 +17,7 @@ INSERT INTO oauth2_registered_client (
     'Food Delivery Swagger UI',
     'none',
     'authorization_code',
-    'http://localhost:8080/swagger-ui/oauth2-redirect.html,http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html',
+    'http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html,http://localhost:8080/swagger-ui/oauth2-redirect.html',
     NULL,
     'openid,profile',
     '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":true,"settings.client.require-authorization-consent":true}',

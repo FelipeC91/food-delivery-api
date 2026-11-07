@@ -30,7 +30,7 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
         var status = HttpStatus.UNAUTHORIZED;
         var problemDetails = ApiProblemDetails.builder()
                 .title("Não autenticado")
-                .detail("É necessário autenticar para acessar esse recurso")
+                .detail("É necessário se autenticar para acessar esse recurso")
                 .httpStatusCode(status.value())
                 .timestamp(OffsetDateTime.now())
                 .build();

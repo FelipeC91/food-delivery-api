@@ -27,12 +27,23 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
 public class AuthSecurityConfig {
+    private static final String CANONICAL_AUTHORIZATION_SERVER_URL = "http://127.0.0.1:8080";
+
     @Bean
     @Order(0)
     public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -72,13 +83,30 @@ public class AuthSecurityConfig {
                 // 2. Redireciona para a página de login caso o usuário final não esteja autenticado
                 .exceptionHandling(exceptions -> exceptions
                         .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint("/login"),
+                                new LoginUrlAuthenticationEntryPoint(CANONICAL_AUTHORIZATION_SERVER_URL + "/login"),
                                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                         )
                 )
                 // 3. Permite validar tokens de acesso para os endpoints internos (ex: UserInfo)
                 .oauth2ResourceServer(resourceServer -> resourceServer.jwt(jwt ->
                         jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+
+        http.addFilterBefore(new OncePerRequestFilter() {
+            @Override
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                            FilterChain filterChain) throws ServletException, IOException {
+                if ("localhost".equals(request.getServerName())
+                        && "/oauth2/authorize".equals(request.getRequestURI())) {
+                    var query = request.getQueryString();
+                    var location = CANONICAL_AUTHORIZATION_SERVER_URL + request.getRequestURI()
+                            + (query == null ? "" : "?" + query);
+                    response.sendRedirect(location);
+                    return;
+                }
+
+                filterChain.doFilter(request, response);
+            }
+        }, SecurityContextHolderFilter.class);
 
         return http.build();
     }
