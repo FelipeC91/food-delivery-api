@@ -1,5 +1,7 @@
 package com.mypersonalportifolio.food_delivery_api.infrastructure.persistence.jpa.repository_impl;
 
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import com.mypersonalportifolio.food_delivery_api.domain.model.*;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,7 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
@@ -19,9 +22,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@TestPropertySource("classpath:application-test.properties")
 @DisplayName("CustomRestaurantRepositoryImpl Tests")
 class CustomRestaurantRepositoryImplTest {
+
+    @MockitoBean(name = "jwkSource")
+    private JWKSource<SecurityContext> jwkSource;
 
     @Autowired
     private RestaurantRepository restaurantRepository;
