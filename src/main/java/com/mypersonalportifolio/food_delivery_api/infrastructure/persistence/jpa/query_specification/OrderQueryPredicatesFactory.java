@@ -16,10 +16,10 @@ public class OrderQueryPredicatesFactory {
         return (root, criteriaQuery, criteriaBuilder) -> {
             var predicates = new ArrayList<Predicate>();
 
-            if (filter.customerId() != null)
+            if (filter.customerId() != null && !filter.customerId().toString().isBlank())
                 predicates.add(criteriaBuilder.equal(root.get(Order_.CUSTOMER).get(User_.ID), filter.customerId()));
 
-            if (filter.restaurantId() != null)
+            if (filter.restaurantId() != null && !filter.restaurantId().toString().isBlank())
                 predicates.add(criteriaBuilder.equal(root.get(Order_.RESTAURANT).get(Restaurant_.ID), filter.restaurantId()));
 
             if (filter.createdSince() != null)

@@ -41,6 +41,7 @@ public class RestaurantService {
         this.orderRepository = orderRepository;
     }
 
+
     @Transactional
     public void mergeProperties(Map<String, Object> restaurantFieldsSourceProperties,
                                                 Restaurant restaurantTarget)  {
@@ -140,7 +141,7 @@ public class RestaurantService {
 
     //handle
     @Transactional
-    public void handleDelete(UUID restaurantTargetId, UUID paymentMethodId) {
+    public void removePaymentMethod(UUID restaurantTargetId, UUID paymentMethodId) {
         var restaurantTarget = findValidRestaurant(restaurantTargetId);
 
         var validPaymentMethod =paymentMethodRepository.findById(paymentMethodId)
@@ -157,13 +158,15 @@ public class RestaurantService {
                 .orElseThrow(()-> new EntityNotFoundException(PaymentMethod.class, paymentMethodId.toString()));
 
 
-        var isAlreadyAttached = ! restaurantTarget.attachAllowedPaymentMethod(paymentMethod);
+        var isAlreadyAttached = !restaurantTarget.attachAllowedPaymentMethod(paymentMethod);
 
         if (isAlreadyAttached)
             throw new BusinessConstraintsViolationException("Forma de pagamento já consta associada ");
 
         restaurantRepository.flush();
     }
+
+
 
     public Restaurant findValidRestaurant(UUID restaurantTargetId) {
         return restaurantRepository.findById(restaurantTargetId)
@@ -183,14 +186,12 @@ public class RestaurantService {
     }
 
     @Transactional
-    public void removeManager(Restaurant restaurantTarget, UUID paymentMethodId) {
-        var validUser = userRepository.findById(paymentMethodId)
-                .orElseThrow(()-> new EntityNotFoundException(User.class, paymentMethodId.toString()));
+    public void removeManager(Restaurant restaurantTarget, UUID managerId) {
+        var validUser = userRepository.findById(managerId)
+                .orElseThrow(()-> new EntityNotFoundException(User.class, managerId.toString()));
 
-        var isAlreadyAdded  =restaurantTarget.removeManager(validUser);
+        restaurantTarget.removeManager(validUser);
 
-        if (isAlreadyAdded)
-            throw new BusinessConstraintsViolationException("Forma de pagamento já consta associada");
     }
 
     public boolean isRestaurantIReadyToDeactivateOrClose(Restaurant restaurantTarget) {

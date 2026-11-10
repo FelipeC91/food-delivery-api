@@ -48,6 +48,7 @@ public class Restaurant extends AggregateRootUUID {
     @Setter
     private Address address;
 
+    @Setter
     @ManyToMany
     @JoinTable(name = "restaurant_payment_method",
             joinColumns = @JoinColumn(name = "restaurant_id"),
@@ -65,6 +66,7 @@ public class Restaurant extends AggregateRootUUID {
     private OffsetDateTime updatedAt;
 
 
+    @Setter
     @Getter(AccessLevel.NONE)
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     @ToString.Exclude
@@ -86,6 +88,8 @@ public class Restaurant extends AggregateRootUUID {
                         !this.getAllowedPaymentMethods().isEmpty()
         );
     }
+
+    @Setter
     @Getter(AccessLevel.NONE)
     @ManyToMany
     @JoinTable(name = "restaurant_user",
@@ -95,20 +99,9 @@ public class Restaurant extends AggregateRootUUID {
     @ToString.Exclude
     private Set<User> managers = new HashSet<>();
 
-    public void setManagers(Set<User> managers) {
-        this.managers = managers;
-    }
-
-    public void setProducts(Set<Product> products) {
-        this.products = products;
-    }
 
     public Set<Product> getProducts() {
         return Collections.unmodifiableSet(this.products);
-    }
-
-    public void setPaymentMethods(Set<PaymentMethod> paymentMethods) {
-        this.paymentMethods = paymentMethods;
     }
 
     public Set<User> getManagers() {
