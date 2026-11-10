@@ -5,12 +5,14 @@ import com.mypersonalportifolio.food_delivery_api.domain.exception.CandidateEnti
 import com.mypersonalportifolio.food_delivery_api.domain.model.Restaurant;
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
+import com.mypersonalportifolio.food_delivery_api.domain.service.UserService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.RestaurantRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.dto.RestaurantSimplifiedRepresentationModel;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.RestaurantRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.RestaurantSimplifiedRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.mapstruct.RestaurantMapper;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.openapi.controller.RestaurantControllerOpenApi;
+import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.security.resource_server.JwtClaimNames;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -19,8 +21,11 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
 import java.util.UUID;
 
 @CrossOrigin
@@ -34,19 +39,21 @@ public class RestaurantController implements RestaurantControllerOpenApi {
     private final RestaurantRepresentationModelAssembler assembler;
     private final RestaurantSimplifiedRepresentationModelAssembler simplifiedAssembler;
     private final PagedResourcesAssembler<Restaurant> pagedResourcesAssembler;
+    private final UserService userService;
 
 
     public RestaurantController(RestaurantRepository restaurantRepository,
                                 RestaurantService restaurantService,
                                 RestaurantMapper restaurantMapper,
                                 RestaurantRepresentationModelAssembler assembler,
-                                RestaurantSimplifiedRepresentationModelAssembler simplifiedAssembler, PagedResourcesAssembler<Restaurant> pagedResourcesAssembler) {
+                                RestaurantSimplifiedRepresentationModelAssembler simplifiedAssembler, PagedResourcesAssembler<Restaurant> pagedResourcesAssembler, UserService userService) {
         this.restaurantRepository = restaurantRepository;
         this.restaurantService = restaurantService;
         this.restaurantMapper = restaurantMapper;
         this.assembler = assembler;
         this.simplifiedAssembler = simplifiedAssembler;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -63,11 +70,18 @@ public class RestaurantController implements RestaurantControllerOpenApi {
     }
 
     @PostMapping
-    public ResponseEntity<RestaurantRepresentationModel> createResource(@RequestBody @Valid RestaurantInputDTO restaurantInputDTO) {
+    public ResponseEntity<RestaurantRepresentationModel> createResource(@RequestBody @Valid RestaurantInputDTO restaurantInputDTO,
+                                                                        @AuthenticationPrincipal Jwt jwt) {
+        var userIdAsString = (String) jwt.getClaim(JwtClaimNames.USER_ID.getKey());
+
+        var manager = userService.findVerifiedUser(UUID.fromString(userIdAsString));
+
         var restaurantCandidate = restaurantMapper.dtoToRestaurant(restaurantInputDTO);
+        restaurantCandidate.setManagers(Set.of(manager));
         var savedRestaurant = restaurantService.validateAndSave(restaurantCandidate);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(savedRestaurant));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                            .body(assembler.toModel(savedRestaurant));
     }
 
     @PutMapping("/{restaurantId}")
