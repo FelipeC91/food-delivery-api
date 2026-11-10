@@ -41,7 +41,7 @@ public class RestaurantManagersController implements RestaurantManagersControlle
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping
+    @PutMapping("/{userId}")
     public void attachResource(@PathVariable UUID restaurantId, @PathVariable UUID userId) {
         var restaurantTarget = restaurantService.findValidRestaurant(restaurantId);
 
@@ -49,11 +49,11 @@ public class RestaurantManagersController implements RestaurantManagersControlle
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{managerId}")
-        public void detachResource(@PathVariable UUID restaurantTargetId, @PathVariable UUID managerId) {
-        var validRestaurant = restaurantService.findValidRestaurant(restaurantTargetId);
+    @DeleteMapping("/{userId}")
+        public void detachResource(@PathVariable UUID restaurantId, @PathVariable UUID userId) {
+        var validRestaurant = restaurantService.findValidRestaurant(restaurantId);
 
-        restaurantService.removeManager(validRestaurant, managerId);
+        restaurantService.removeManager(validRestaurant, userId);
 
     }
 
