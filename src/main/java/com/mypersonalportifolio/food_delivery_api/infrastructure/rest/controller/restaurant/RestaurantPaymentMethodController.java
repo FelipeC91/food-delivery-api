@@ -44,7 +44,7 @@ public class RestaurantPaymentMethodController implements RestaurantPaymentMetho
     @DeleteMapping("/{paymentMethodId}")
     public ResponseEntity<Void> deletePaymentMethod(@PathVariable UUID restaurantTargetId,
                                     @PathVariable UUID paymentMethodId) {
-            restaurantService.handleDelete(restaurantTargetId, paymentMethodId);
+            restaurantService.removePaymentMethod(restaurantTargetId, paymentMethodId);
 
             return ResponseEntity.noContent().build();
     }

@@ -2,6 +2,7 @@ package com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controlle
 
 import com.mypersonalportifolio.food_delivery_api.domain.repository.RestaurantRepository;
 import com.mypersonalportifolio.food_delivery_api.domain.service.RestaurantService;
+import com.mypersonalportifolio.food_delivery_api.domain.service.UserService;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.controller.restaurant.RestaurantController;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.RestaurantRepresentationModelAssembler;
 import com.mypersonalportifolio.food_delivery_api.infrastructure.rest.interface_adapters.presenter.RestaurantSimplifiedRepresentationModelAssembler;
@@ -19,7 +20,7 @@ class RestaurantControllerMockMvcTest extends MockMvcTestSupport {
         var controller = new RestaurantController(mock(RestaurantRepository.class), mock(RestaurantService.class),
                 mock(RestaurantMapper.class),
                 mock(RestaurantRepresentationModelAssembler.class), mock(RestaurantSimplifiedRepresentationModelAssembler.class),
-                mockPagedResourcesAssembler());
+                mockPagedResourcesAssembler(), mock(UserService.class));
 
         mockMvc(controller).perform(get("/restaurants")).andExpect(status().isOk());
     }

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.UUID;
 
@@ -37,7 +38,8 @@ public interface RestaurantControllerOpenApi {
     })
     ResponseEntity<RestaurantRepresentationModel> createResource(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Restaurant details and address", required = true)
-            RestaurantInputDTO restaurantInputDTO);
+            RestaurantInputDTO restaurantInputDTO,
+            Jwt jwt);
 
     @Operation(summary = "Update a restaurant", description = "Replaces the specified restaurant's details.")
     @ApiResponses({

@@ -43,7 +43,7 @@ public interface GroupControllerOpenApi {
             @ApiResponse(responseCode = "400", description = "The group data is invalid"),
             @ApiResponse(responseCode = "404", description = "Group not found")
     })
-    UserGroupRepresentationModel updateResource(
+    ResponseEntity<Void> updateResource(
             @Parameter(description = "Group identifier", required = true) UUID userGroupId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Updated user group", required = true)
             UserGroup userGroupSource,
