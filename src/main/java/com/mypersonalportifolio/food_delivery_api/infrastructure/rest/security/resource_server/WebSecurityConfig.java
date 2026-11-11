@@ -101,10 +101,10 @@ public SecurityFilterChain restaurantsFilterChain(HttpSecurity http) throws Exce
                         .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/restaurants/{restaurantId}/managers")
                         .access((authenticationSupplier, context) -> customSecurityPolicies.checkRestaurantManager(authenticationSupplier, context, "EDITAR_RESTAURANTES"))
 
-                        .requestMatchers(HttpMethod.PUT, API_BASE_PATH + "/restaurants/{restaurantId}/managers")
+                        .requestMatchers(HttpMethod.PUT, API_BASE_PATH + "/restaurants/{restaurantId}/managers/{managerId}")
                         .access((authenticationSupplier, context) -> customSecurityPolicies.checkRestaurantManager(authenticationSupplier, context, "GERENCIAR_RESTAURANTES"))
 
-                        .requestMatchers(HttpMethod.DELETE, API_BASE_PATH + "/restaurants/{restaurantId}/managers/{paymentMethodId}")
+                        .requestMatchers(HttpMethod.DELETE, API_BASE_PATH + "/restaurants/{restaurantId}/managers/{managerId}")
                         .access((authenticationSupplier, context) -> customSecurityPolicies.checkRestaurantManager(authenticationSupplier, context, "GERENCIAR_RESTAURANTES"))
 
                         .requestMatchers(HttpMethod.GET, API_BASE_PATH + "/restaurants/{restaurantId}/payment-methods").authenticated()

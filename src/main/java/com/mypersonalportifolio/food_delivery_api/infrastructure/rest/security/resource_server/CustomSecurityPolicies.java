@@ -63,19 +63,19 @@ public class CustomSecurityPolicies {
         var restaurantIdOptional   = Optional.ofNullable(context.getRequest().getParameter("restaurantId"));
 
 
-        if (userIdOptional.isPresent()) {
+        if (userIdOptional.isPresent() && !userIdOptional.get().isBlank()) {
             var loggedUserId = this.extractRequestUser(jwtAuth);
 
             if (loggedUserId.equals(UUID.fromString(userIdOptional.get()))) {
                 return new AuthorizationDecision(true);
 
             } else {
-                return restaurantIdOptional.isPresent() ? this.checkRestaurantManager(authenticationSupplier, context, "CONSULTAR_PEDIDOS")
+                return restaurantIdOptional.isPresent() && !restaurantIdOptional.get().isBlank() ? this.checkRestaurantManager(authenticationSupplier, context, "CONSULTAR_PEDIDOS")
                                                         : new AuthorizationDecision(false);
             }
         }
 
-        return restaurantIdOptional.isPresent() ? this.checkRestaurantManager(authenticationSupplier, context, "CONSULTAR_PEDIDOS")
+        return restaurantIdOptional.isPresent() && !restaurantIdOptional.get().isBlank() ? this.checkRestaurantManager(authenticationSupplier, context, "CONSULTAR_PEDIDOS")
                                                 : new AuthorizationDecision(false);
 
     }
@@ -152,9 +152,6 @@ public class CustomSecurityPolicies {
     private UUID extractRequestUser(JwtAuthenticationToken jwtAuth) {
         var jwt = jwtAuth.getToken();
 
-        System.out.println("------------------------------");
-        System.out.println(JwtClaimNames.USER_ID.getKey());
-        System.out.println("------------------------------");
         return   UUID.fromString(jwt.getClaimAsString(JwtClaimNames.USER_ID.getKey()));
     }
 
