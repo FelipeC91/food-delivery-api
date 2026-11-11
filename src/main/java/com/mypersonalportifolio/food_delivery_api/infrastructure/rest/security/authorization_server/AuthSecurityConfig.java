@@ -48,7 +48,7 @@ public class AuthSecurityConfig {
     @Order(0)
     public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/swagger-ui.html", "/swagger-ui/**", "/webjars/**", "/v3/api-docs", "/v3/api-docs/**", "/swagger-ui/oauth2-redirect.html")
+                .securityMatcher("/swagger-ui.html", "/swagger-ui/**", "/webjars/**", "/v3/api-docs", "/v3/api-docs/**", "/swagger-ui/oauth2-redirect.html","/actuator/**")
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
 
         return http.build();
