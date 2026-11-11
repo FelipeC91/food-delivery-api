@@ -1,5 +1,9 @@
+networks:
+  food-delivery:
+    driver: bridge
+
 services:
-  mysql:
+  food-delivery-mysql:
     image: 'mysql:9.4'
     environment:
       MYSQL_DATABASE: food-delivery-api-db
@@ -9,3 +13,12 @@ services:
     volumes:
       - '/home/felipe-campos/Documents/dev/data:/var/lib/mysql'
     restart: 'on-failure'
+
+  food-delivery-api:
+    environment:
+
+    ports:
+      - '8080:8080'
+    restart: 'on-failure'
+    depends_on:
+      - 'food-delivery-mysql'
