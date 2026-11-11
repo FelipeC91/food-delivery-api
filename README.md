@@ -15,10 +15,10 @@ Estimo que 94% deste projeto foi construído artesanalmente, sem o auxílio de I
 + ***Conceitos de de DDD e design patterns relacionados aplicados neste projeto:*** Aggregate Root, Domain Entity, Value Object e Domain Events, Repository Domain Services, Factory.
 
 
-+ ***Framework***: Projetos Spring Boot (4.0.3) utilizados nesta aplicação: Spring Security (7), Authorization Server, Resource Server, Spring Data JPA, HATEOAS, SpringDoc-OpenApi e Java Mail Sender
++ ***Framework***: Projetos Spring Boot (4.0.3) utilizados nesta aplicação: Spring Security (7), Authorization Server, Resource Server, Spring Data JPA, HATEOAS, SpringDoc-OpenApi, Spring Actuator e Java Mail Sender
 
 
-+ ***Outras integrações***: Loggly para armazenamento de logs em nuvem, Mailgun como serividor SMTP e JasperReports para geração de relatórios em PDF.
++ ***Outras integrações***: Loggly para armazenamento de logs em nuvem, Mailgun como serividor SMTP, JasperReports para geração de relatórios em PDF e Bucket4j e hazelcast para implementação ed rate limit.
 
 
 + ***AWS***: Serviços utilizados na hospedagem deste projeto: S3, IAM, EC2, ECS
