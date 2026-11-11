@@ -14,6 +14,8 @@ Estimo que 94% deste projeto foi construído artesanalmente, sem o auxílio de I
 
 + ***Conceitos de de DDD e design patterns relacionados aplicados neste projeto:*** Aggregate Root, Domain Entity, Value Object e Domain Events, Repository Domain Services, Factory.
 
+![diagrama de classes](https://github.com/FelipeC91/food-delivery-api/blob/master/food-delivery-uml.png)
+
 
 + ***Framework***: Projetos Spring Boot (4.0.3) utilizados nesta aplicação: Spring Security (7), Authorization Server, Resource Server, Spring Data JPA, HATEOAS, SpringDoc-OpenApi, Spring Actuator e Java Mail Sender
 
